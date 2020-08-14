@@ -78,7 +78,7 @@ to setup
           (ycor * (max-pycor - 1) / (5 / 2 - 0.5))
   ]
   create-orangutans 1 [
-    set color orange
+    set color white
     set shape "person"
     set size 2
     set energy 100
