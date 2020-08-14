@@ -4,7 +4,7 @@ breed [orangutans orangutan]
 
 connections-own [conn-type]
 trees-own [height dbh stiffness tree-type]
-orangutans-own [location energy category hungry? fatigue?]
+orangutans-own [location energy category hungry? fatigue? selected-conn selected-link destination-tree]
 
 globals [
 
@@ -38,6 +38,7 @@ to setup
 
 
   ask trees [
+    set height random 3
     let neighbor-nodes turtle-set [trees-here] of neighbors4
 
     create-connections-with neighbor-nodes
@@ -99,36 +100,42 @@ to go
 end
 
 to select-locomotion-mode
-  let conn-opt link-set my-links
-  ;check if destination tree is higher, same, or lower than my tree
-  ;if (this neighboring node) is higher than me
-  ;[
-    ;if (liana)
-    ;sway
-    ;climb
+  ;let conn-opt link-set my-links
 
-    ;if (canopy)
-    ;walk / brachiate
-    ;climb
-  ;]
-  ;if (this neighboring node) is lower than me
-  ;[
-    ;if (liana)
-    ;descent
-    ;sway
+  ;set priority of selection based on height difference
+  ;set selected-conn link-set my-links with [[height] of other-end = [height] of self]
+  set selected-conn link-set my-links with [[height] of other-end < 3]
+  if selected-conn = nobody
+  [set selected-conn link-set my-links with [[height] of other-end < [height] of self]]
+  if selected-conn = nobody
+  ;[set selected-conn link-set my-links with [[height] of other-end > [height] of self]]
 
-    ;if (canopy)
-    ;descent
-    ;walk / brachiate
-  ;]
-  ;if (this neighboring node) has same height to me
-  ;[
-    ;if (liana)
+  ;set priority of selection based on connection type
+  set selected-link one-of selected-conn with [conn-type = "canopy + liana"]
+  if selected-link = nobody
+  [set selected-link one-of selected-conn with [conn-type = "liana"]]
+  if selected-link = nobody
+  [set selected-link one-of selected-conn with [conn-type = "canopy"]]
+
+  ;move to the other end of the selected tree
+  set destination-tree [other-end] of selected-link
+  move-to destination-tree
+
+  if [conn-type] of selected-link = "canopy + liana"
+  [
     ;sway
-    ;if (canopy)
-    ;walk / brachiate
-  ;]
-  ;check the connection type
+    set energy energy - sway-cost
+  ]
+  if [conn-type] of selected-link = "liana"
+  [
+    ;sway
+    set energy energy - sway-cost
+  ]
+  if [conn-type] of selected-link = "canopy"
+  [
+    ;climb
+    set energy energy - climb-cost
+  ]
 end
 
 to-report check-hunger
@@ -326,6 +333,66 @@ TEXTBOX
 11
 0.0
 1
+
+SLIDER
+744
+17
+916
+50
+sway-cost
+sway-cost
+0
+10
+2.0
+1
+1
+NIL
+HORIZONTAL
+
+SLIDER
+746
+71
+918
+104
+climb-cost
+climb-cost
+0
+10
+3.0
+1
+1
+NIL
+HORIZONTAL
+
+SLIDER
+748
+123
+920
+156
+walk-cost
+walk-cost
+0
+10
+3.0
+1
+1
+NIL
+HORIZONTAL
+
+SLIDER
+750
+178
+922
+211
+brachiate-cost
+brachiate-cost
+0
+10
+2.0
+1
+1
+NIL
+HORIZONTAL
 
 @#$#@#$#@
 # OUmove: OrangUtan Movement Agent-based Model
@@ -627,7 +694,7 @@ false
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 @#$#@#$#@
-NetLogo 6.1.0
+NetLogo 6.1.1
 @#$#@#$#@
 random-seed 2
 setup
