@@ -89,46 +89,12 @@ end
 
 to go
   ask orangutans [
-    select-locomotion-mode
-    let new-location one-of [link-neighbors] of location ; move to the selected tree
+    let new-location one-of [link-neighbors] of location
     face new-location
     move-to new-location
     set location new-location
   ]
   tick
-end
-
-to select-locomotion-mode
-  let conn-opt link-set my-links
-  ;check if destination tree is higher, same, or lower than my tree
-  ;if (this neighboring node) is higher than me
-  ;[
-    ;if (liana)
-    ;sway
-    ;climb
-
-    ;if (canopy)
-    ;walk / brachiate
-    ;climb
-  ;]
-  ;if (this neighboring node) is lower than me
-  ;[
-    ;if (liana)
-    ;descent
-    ;sway
-
-    ;if (canopy)
-    ;descent
-    ;walk / brachiate
-  ;]
-  ;if (this neighboring node) has same height to me
-  ;[
-    ;if (liana)
-    ;sway
-    ;if (canopy)
-    ;walk / brachiate
-  ;]
-  ;check the connection type
 end
 
 to-report check-hunger
@@ -137,9 +103,9 @@ to-report check-hunger
 end
 @#$#@#$#@
 GRAPHICS-WINDOW
-255
+318
 17
-720
+783
 483
 -1
 -1
@@ -328,11 +294,9 @@ TEXTBOX
 1
 
 @#$#@#$#@
-# OUmove: OrangUtan Movement Agent-based Model
+## WHAT IS IT?
 
-## Purpose and Patterns
-
-The purpose of this model is to simulate the effect of forest structure variation on orangutan energy cost for locomotion
+This example shows how to make turtles "walk" from node to node on a network, by following links.
 
 ## EXTENDING THE MODEL
 
