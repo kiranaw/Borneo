@@ -4,7 +4,7 @@ breed [orangutans orangutan]
 
 connections-own [conn-type]
 trees-own [height dbh stiffness tree-type]
-orangutans-own [location energy category hungry? fatigue? selected-conn selected-link destination-tree]
+orangutans-own [location energy category hungry? fatigue?]
 
 globals [
 
@@ -38,7 +38,6 @@ to setup
 
 
   ask trees [
-    set height random 3
     let neighbor-nodes turtle-set [trees-here] of neighbors4
 
     create-connections-with neighbor-nodes
@@ -78,8 +77,8 @@ to setup
           (ycor * (max-pycor - 1) / (5 / 2 - 0.5))
   ]
   create-orangutans 1 [
-    set color orange
-    set shape "person"
+    set color white
+    set shape ""
     set size 2
     set energy 100
     set location one-of trees with [count my-links > 0 and any? orangutans-here = false] ; still error if not enough connected trees available
@@ -100,42 +99,36 @@ to go
 end
 
 to select-locomotion-mode
-  ;let conn-opt link-set my-links
-
-  ;set priority of selection based on height difference
-  ;set selected-conn link-set my-links with [[height] of other-end = [height] of self]
-  set selected-conn link-set my-links with [[height] of other-end < 3]
-  if selected-conn = nobody
-  [set selected-conn link-set my-links with [[height] of other-end < [height] of self]]
-  if selected-conn = nobody
-  ;[set selected-conn link-set my-links with [[height] of other-end > [height] of self]]
-
-  ;set priority of selection based on connection type
-  set selected-link one-of selected-conn with [conn-type = "canopy + liana"]
-  if selected-link = nobody
-  [set selected-link one-of selected-conn with [conn-type = "liana"]]
-  if selected-link = nobody
-  [set selected-link one-of selected-conn with [conn-type = "canopy"]]
-
-  ;move to the other end of the selected tree
-  set destination-tree [other-end] of selected-link
-  move-to destination-tree
-
-  if [conn-type] of selected-link = "canopy + liana"
-  [
+  let conn-opt link-set my-links
+  ;check if destination tree is higher, same, or lower than my tree
+  ;if (this neighboring node) is higher than me
+  ;[
+    ;if (liana)
     ;sway
-    set energy energy - sway-cost
-  ]
-  if [conn-type] of selected-link = "liana"
-  [
-    ;sway
-    set energy energy - sway-cost
-  ]
-  if [conn-type] of selected-link = "canopy"
-  [
     ;climb
-    set energy energy - climb-cost
-  ]
+
+    ;if (canopy)
+    ;walk / brachiate
+    ;climb
+  ;]
+  ;if (this neighboring node) is lower than me
+  ;[
+    ;if (liana)
+    ;descent
+    ;sway
+
+    ;if (canopy)
+    ;descent
+    ;walk / brachiate
+  ;]
+  ;if (this neighboring node) has same height to me
+  ;[
+    ;if (liana)
+    ;sway
+    ;if (canopy)
+    ;walk / brachiate
+  ;]
+  ;check the connection type
 end
 
 to-report check-hunger
@@ -334,66 +327,6 @@ TEXTBOX
 0.0
 1
 
-SLIDER
-744
-17
-916
-50
-sway-cost
-sway-cost
-0
-10
-2.0
-1
-1
-NIL
-HORIZONTAL
-
-SLIDER
-746
-71
-918
-104
-climb-cost
-climb-cost
-0
-10
-3.0
-1
-1
-NIL
-HORIZONTAL
-
-SLIDER
-748
-123
-920
-156
-walk-cost
-walk-cost
-0
-10
-3.0
-1
-1
-NIL
-HORIZONTAL
-
-SLIDER
-750
-178
-922
-211
-brachiate-cost
-brachiate-cost
-0
-10
-2.0
-1
-1
-NIL
-HORIZONTAL
-
 @#$#@#$#@
 # OUmove: OrangUtan Movement Agent-based Model
 
@@ -577,6 +510,14 @@ line half
 true
 0
 Line -7500403 true 150 0 150 150
+
+ou
+true
+0
+Polygon -955883 true false 60 105 75 75 180 90 225 120 285 150 285 195 270 225 180 210 90 165 75 120
+Circle -955883 true false 11 71 67
+Polygon -955883 true false 90 135 45 255 75 225 105 165
+Polygon -955883 true false 285 195 180 180 135 225 105 285 165 255 180 225 240 210
 
 pentagon
 false
