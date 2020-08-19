@@ -97,6 +97,42 @@ to go
   tick
 end
 
+<<<<<<< HEAD
+=======
+to select-locomotion-mode
+  let conn-opt link-set my-links
+  ;check if destination tree is higher, same, or lower than my tree
+  ;if (this neighboring node) is higher than me
+  ;[
+    ;if (liana)
+    ;sway
+    ;climb
+
+    ;if (canopy)
+    ;walk / brachiate
+    ;climb
+  ;]
+  ;if (this neighboring node) is lower than me
+  ;[
+    ;if (liana)
+    ;descent
+    ;sway
+
+    ;if (canopy)
+    ;descent
+    ;walk / brachiate
+  ;]
+  ;if (this neighboring node) has same height to me
+  ;[
+    ;if (liana)
+    ;sway
+    ;if (canopy)
+    ;walk / brachiate
+  ;]
+  ;check the connection type
+end
+
+>>>>>>> parent of bba7eb4... add link movement
 to-report check-hunger
   ifelse energy < hunger-threshold
   [report true][report false]
@@ -599,7 +635,7 @@ false
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 @#$#@#$#@
-NetLogo 6.1.1
+NetLogo 6.1.0
 @#$#@#$#@
 random-seed 2
 setup
