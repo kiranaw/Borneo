@@ -4,7 +4,7 @@ breed [orangutans orangutan]
 
 connections-own [conn-type]
 trees-own [height dbh stiffness tree-type]
-orangutans-own [location energy category hungry? fatigue?]
+orangutans-own [location energy category hungry? fatigue? selected-conn selected-link destination-tree]
 
 globals [
 
@@ -38,6 +38,7 @@ to setup
 
 
   ask trees [
+    set height random 3
     let neighbor-nodes turtle-set [trees-here] of neighbors4
 
     create-connections-with neighbor-nodes
@@ -77,8 +78,8 @@ to setup
           (ycor * (max-pycor - 1) / (5 / 2 - 0.5))
   ]
   create-orangutans 1 [
-    set color white
-    set shape "OU"
+    set color orange
+    set shape "person"
     set size 2
     set energy 100
     set location one-of trees with [count my-links > 0 and any? orangutans-here = false] ; still error if not enough connected trees available
@@ -89,7 +90,8 @@ end
 
 to go
   ask orangutans [
-    let new-location one-of [link-neighbors] of location
+    select-locomotion-mode
+    let new-location one-of [link-neighbors] of location ; move to the selected tree
     face new-location
     move-to new-location
     set location new-location
@@ -97,51 +99,54 @@ to go
   tick
 end
 
-<<<<<<< HEAD
-=======
 to select-locomotion-mode
-  let conn-opt link-set my-links
-  ;check if destination tree is higher, same, or lower than my tree
-  ;if (this neighboring node) is higher than me
-  ;[
-    ;if (liana)
-    ;sway
-    ;climb
+  ;let conn-opt link-set my-links
 
-    ;if (canopy)
-    ;walk / brachiate
-    ;climb
-  ;]
-  ;if (this neighboring node) is lower than me
-  ;[
-    ;if (liana)
-    ;descent
-    ;sway
+  ;set priority of selection based on height difference
+  ;set selected-conn link-set my-links with [[height] of other-end = [height] of self]
+  set selected-conn link-set my-links with [[height] of other-end < 3]
+  if selected-conn = nobody
+  [set selected-conn link-set my-links with [[height] of other-end < [height] of self]]
+  if selected-conn = nobody
+  ;[set selected-conn link-set my-links with [[height] of other-end > [height] of self]]
 
-    ;if (canopy)
-    ;descent
-    ;walk / brachiate
-  ;]
-  ;if (this neighboring node) has same height to me
-  ;[
-    ;if (liana)
+  ;set priority of selection based on connection type
+  set selected-link one-of selected-conn with [conn-type = "canopy + liana"]
+  if selected-link = nobody
+  [set selected-link one-of selected-conn with [conn-type = "liana"]]
+  if selected-link = nobody
+  [set selected-link one-of selected-conn with [conn-type = "canopy"]]
+
+  ;move to the other end of the selected tree
+  set destination-tree [other-end] of selected-link
+  move-to destination-tree
+
+  if [conn-type] of selected-link = "canopy + liana"
+  [
     ;sway
-    ;if (canopy)
-    ;walk / brachiate
-  ;]
-  ;check the connection type
+    set energy energy - sway-cost
+  ]
+  if [conn-type] of selected-link = "liana"
+  [
+    ;sway
+    set energy energy - sway-cost
+  ]
+  if [conn-type] of selected-link = "canopy"
+  [
+    ;climb
+    set energy energy - climb-cost
+  ]
 end
 
->>>>>>> parent of bba7eb4... add link movement
 to-report check-hunger
   ifelse energy < hunger-threshold
   [report true][report false]
 end
 @#$#@#$#@
 GRAPHICS-WINDOW
-318
+255
 17
-783
+720
 483
 -1
 -1
@@ -329,10 +334,72 @@ TEXTBOX
 0.0
 1
 
-@#$#@#$#@
-## WHAT IS IT?
+SLIDER
+744
+17
+916
+50
+sway-cost
+sway-cost
+0
+10
+2.0
+1
+1
+NIL
+HORIZONTAL
 
-This example shows how to make turtles "walk" from node to node on a network, by following links.
+SLIDER
+746
+71
+918
+104
+climb-cost
+climb-cost
+0
+10
+3.0
+1
+1
+NIL
+HORIZONTAL
+
+SLIDER
+748
+123
+920
+156
+walk-cost
+walk-cost
+0
+10
+3.0
+1
+1
+NIL
+HORIZONTAL
+
+SLIDER
+750
+178
+922
+211
+brachiate-cost
+brachiate-cost
+0
+10
+2.0
+1
+1
+NIL
+HORIZONTAL
+
+@#$#@#$#@
+# OUmove: OrangUtan Movement Agent-based Model
+
+## Purpose and Patterns
+
+The purpose of this model is to simulate the effect of forest structure variation on orangutan energy cost for locomotion
 
 ## EXTENDING THE MODEL
 
@@ -511,14 +578,6 @@ true
 0
 Line -7500403 true 150 0 150 150
 
-ou
-true
-0
-Polygon -955883 true false 60 105 75 75 180 90 225 120 285 150 285 195 270 225 180 210 90 165 75 120
-Circle -955883 true false 11 71 67
-Polygon -955883 true false 90 135 45 255 75 225 105 165
-Polygon -955883 true false 285 195 180 180 135 225 105 285 165 255 180 225 240 210
-
 pentagon
 false
 0
@@ -635,7 +694,7 @@ false
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 @#$#@#$#@
-NetLogo 6.1.0
+NetLogo 6.1.1
 @#$#@#$#@
 random-seed 2
 setup
