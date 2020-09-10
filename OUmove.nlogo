@@ -1,13 +1,15 @@
 undirected-link-breed [connections connection]
 breed [trees tree]
 breed [orangutans orangutan]
+breed [banners banner]
 
 connections-own [conn-type]
-trees-own [height dbh stiffness tree-type]
-orangutans-own [location energy category hungry? fatigue? selected-conn selected-link destination-tree]
+trees-own [height dbh stiffness tree-type selected-conn ]
+orangutans-own [location energy category hungry? fatigue? selected-conn last-movement target-tree]
 
 globals [
-
+destination-tree
+  selected-link
 ]
 
 to setup
@@ -20,10 +22,19 @@ to setup
     [
       set color green + 20
       set size 3
+      attach-banner who
       if random-float 1 < fruiting-trees
       [
         set tree-type "fruiting"
         set color blue
+      ]
+      if random-float 1 < flowering
+      [
+        if tree-type = "fruiting"
+        [
+          set tree-type "flowering"
+          set color red
+        ]
       ]
       if random-float 1 < nesting-trees
       [
@@ -36,16 +47,15 @@ to setup
     ]
   ]
 
-
   ask trees [
     set height random 3
-    let neighbor-nodes turtle-set [trees-here] of neighbors4
+    let neighbor-nodes turtle-set [trees-here] of neighbors
 
     create-connections-with neighbor-nodes
     [
       if random-float 1 > (canopy-connections + liana-connections) / 2
       [
-        die
+        set hidden? true
       ]
       ask links with[hidden? = false]
       [
@@ -88,13 +98,24 @@ to setup
   reset-ticks
 end
 
+to attach-banner [x]  ;; circle procedure
+  hatch-banners 1 [
+    set size 0
+    set label x
+  ]
+end
+
 to go
-  ask orangutans [
-    select-locomotion-mode
-    let new-location one-of [link-neighbors] of location ; move to the selected tree
-    face new-location
-    move-to new-location
-    set location new-location
+  repeat 3
+  [
+    ask orangutans [
+      ask trees-here[
+        select-locomotion-mode
+      ]
+      move
+      output-print selected-link
+      output-print last-movement
+    ]
   ]
   tick
 end
@@ -108,34 +129,57 @@ to select-locomotion-mode
   if selected-conn = nobody
   [set selected-conn link-set my-links with [[height] of other-end < [height] of self]]
   if selected-conn = nobody
-  ;[set selected-conn link-set my-links with [[height] of other-end > [height] of self]]
+  [set selected-conn link-set my-links with [[height] of other-end > [height] of self]]
+
 
   ;set priority of selection based on connection type
   set selected-link one-of selected-conn with [conn-type = "canopy + liana"]
+
   if selected-link = nobody
-  [set selected-link one-of selected-conn with [conn-type = "liana"]]
+  [set selected-link one-of selected-conn with [conn-type = "liana"]
+  ]
   if selected-link = nobody
-  [set selected-link one-of selected-conn with [conn-type = "canopy"]]
+  [set selected-link one-of selected-conn with [conn-type = "canopy"]
+  ]
 
   ;move to the other end of the selected tree
-  set destination-tree [other-end] of selected-link
-  move-to destination-tree
+  set destination-tree [out-link-neighbors] of self
+
+end
+
+to move
+  move-to one-of destination-tree
 
   if [conn-type] of selected-link = "canopy + liana"
   [
     ;sway
     set energy energy - sway-cost
+     set last-movement "sway + brachiate"
   ]
   if [conn-type] of selected-link = "liana"
   [
     ;sway
     set energy energy - sway-cost
+    set last-movement "sway"
   ]
   if [conn-type] of selected-link = "canopy"
   [
     ;climb
     set energy energy - climb-cost
+    set last-movement "brachiate"
   ]
+end
+
+to sway
+end
+
+to brachiate
+end
+
+to walk
+end
+
+to climb
 end
 
 to-report check-hunger
@@ -213,7 +257,7 @@ canopy-connections
 canopy-connections
 0
 1
-0.4
+0.6
 0.1
 1
 NIL
@@ -228,7 +272,7 @@ liana-connections
 liana-connections
 0
 1
-0.6
+0.4
 0.1
 1
 NIL
@@ -250,25 +294,25 @@ NIL
 HORIZONTAL
 
 SLIDER
-16
-287
-214
-320
+18
+356
+216
+389
 nesting-trees
 nesting-trees
 0
 1
-0.7
+0.3
 0.1
 1
 NIL
 HORIZONTAL
 
 SLIDER
-19
-370
-191
-403
+18
+446
+190
+479
 hunger-threshold
 hunger-threshold
 0
@@ -280,10 +324,10 @@ NIL
 HORIZONTAL
 
 SLIDER
-17
-419
-189
-452
+16
+495
+188
+528
 fatigue-threshold
 fatigue-threshold
 0
@@ -305,10 +349,10 @@ TEXTBOX
 1
 
 TEXTBOX
-18
-270
-250
-298
+20
+339
+252
+367
 % of nesting trees from all non-fruiting trees:
 11
 0.0
@@ -335,64 +379,136 @@ TEXTBOX
 1
 
 SLIDER
-744
+1070
+18
+1242
+51
+sway-cost
+sway-cost
+0
+10
+2.0
+1
+1
+NIL
+HORIZONTAL
+
+SLIDER
+1072
+72
+1244
+105
+climb-cost
+climb-cost
+0
+10
+3.0
+1
+1
+NIL
+HORIZONTAL
+
+SLIDER
+1074
+124
+1246
+157
+walk-cost
+walk-cost
+0
+10
+3.0
+1
+1
+NIL
+HORIZONTAL
+
+SLIDER
+1076
+179
+1248
+212
+brachiate-cost
+brachiate-cost
+0
+10
+2.0
+1
+1
+NIL
+HORIZONTAL
+
+PLOT
+762
+18
+962
+168
+energy-reserve
+NIL
+energy
+0.0
+10.0
+0.0
+10.0
+true
+false
+"" ""
+PENS
+"default" 1.0 0 -16777216 true "" "plot [energy] of one-of orangutans"
+
+OUTPUT
+758
+296
+1018
+490
+11
+
+MONITOR
+761
+176
+849
+221
+selected-conn
+[selected-conn] of one-of orangutans
 17
-916
-50
-sway-cost
-sway-cost
-0
-10
-2.0
 1
+11
+
+MONITOR
+756
+231
+862
+276
+selected-link
+[selected-link] of one-of orangutans
+17
+1
+11
+
+SLIDER
+16
+284
+217
+317
+flowering
+flowering
+0
+1
+0.5
+0.1
 1
 NIL
 HORIZONTAL
 
-SLIDER
-746
-71
-918
-104
-climb-cost
-climb-cost
-0
-10
-3.0
+TEXTBOX
+19
+267
+234
+295
+% of flowering trees from all fruiting trees
+11
+0.0
 1
-1
-NIL
-HORIZONTAL
-
-SLIDER
-748
-123
-920
-156
-walk-cost
-walk-cost
-0
-10
-3.0
-1
-1
-NIL
-HORIZONTAL
-
-SLIDER
-750
-178
-922
-211
-brachiate-cost
-brachiate-cost
-0
-10
-2.0
-1
-1
-NIL
-HORIZONTAL
 
 @#$#@#$#@
 # OUmove: OrangUtan Movement Agent-based Model
