@@ -19,6 +19,7 @@ to regular-setup
     ]
   ]
   tree-params
+
   ask turtles [
     setxy (xcor * (max-pxcor - 1) / (5 / 2 - 0.5))
           (ycor * (max-pycor - 1) / (5 / 2 - 0.5))
