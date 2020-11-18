@@ -1,128 +1,78 @@
-undirected-link-breed [connections connection]
 breed [trees tree]
-breed [orangutans orangutan]
-
-connections-own [conn-type]
-trees-own [height dbh stiffness tree-type]
-orangutans-own [location energy category hungry? fatigue?]
-
-globals [
-
-]
+breed [banners banner]
 
 to setup
   clear-all
   set-default-shape turtles "circle"
+  regular-setup
+end
 
+to regular-setup
   ask patches with [abs pxcor < (5 / 2) and abs pycor < (5 / 2)]
   [
     sprout-trees 1
     [
       set color green + 20
+
       set size 3
-      if random-float 1 < fruiting-trees
-      [
-        set tree-type "fruiting"
-        set color blue
-      ]
-      if random-float 1 < nesting-trees
-      [
-        if tree-type != "fruiting"
-        [
-          set tree-type "nesting"
-          set color grey
-        ]
-      ]
+      attach-banner who
     ]
   ]
 
-
-  ask trees [
-    let neighbor-nodes turtle-set [trees-here] of neighbors4
-
-    create-connections-with neighbor-nodes
-    [
-      if random-float 1 > (canopy-connections + liana-connections) / 2
-      [
-        die
-      ]
-      ask links with[hidden? = false]
-      [
-        if random-float 1 < canopy-connections
-        [
-          set conn-type "canopy"
-          set color brown
-          set thickness 0.25
-        ]
-        if random-float 1 < liana-connections
-        [
-          ifelse conn-type = "canopy"
-          [
-            set conn-type "canopy + liana"
-            set color green + 20
-            set thickness 0.6
-          ]
-          [
-            set conn-type "liana"
-            set color grey
-            set thickness 0.25
-          ]
-        ]
-      ]
-    ]
-  ]
-  ; spread the nodes out
+  tree-params
   ask turtles [
     setxy (xcor * (max-pxcor - 1) / (5 / 2 - 0.5))
           (ycor * (max-pycor - 1) / (5 / 2 - 0.5))
   ]
-  create-orangutans 1 [
-    set color orange
-    set shape "person"
-    set size 2
-    set energy 100
-    set location one-of trees with [count my-links > 0 and any? orangutans-here = false] ; still error if not enough connected trees available
-    move-to location
-  ]
-  reset-ticks
 end
 
-to go
-  ask orangutans [
-    let new-location one-of [link-neighbors] of location
-    face new-location
-    move-to new-location
-    set location new-location
+to tree-params
+  ask trees [
+    let neighbor-nodes turtle-set [trees-here] of neighbors
+
+    repeat 8
+    [
+      let node-connect one-of neighbor-nodes with [not link-neighbor? myself]
+      if node-connect != nobody
+      [
+        create-link-with node-connect
+      ]
+    ]
   ]
-  tick
 end
 
-to-report check-hunger
-  ifelse energy < hunger-threshold
-  [report true][report false]
+to attach-banner [x]  ;; circle procedure
+  hatch-banners 1 [
+    set size 0
+    set label x
+  ]
 end
+
+
+
+
 @#$#@#$#@
 GRAPHICS-WINDOW
-318
-17
-783
-483
+203
+10
+644
+452
 -1
 -1
-13.85
+17.32
 1
 10
 1
 1
 1
 0
+0
+0
 1
-1
-1
--16
-16
--16
-16
+-12
+12
+-12
+12
 1
 1
 1
@@ -146,157 +96,12 @@ NIL
 NIL
 1
 
-BUTTON
-108
-18
-192
-51
-go
-go
-NIL
-1
-T
-OBSERVER
-NIL
-NIL
-NIL
-NIL
-0
-
-SLIDER
-14
-98
-211
-131
-canopy-connections
-canopy-connections
-0
-1
-0.4
-0.1
-1
-NIL
-HORIZONTAL
-
-SLIDER
-14
-158
-212
-191
-liana-connections
-liana-connections
-0
-1
-0.6
-0.1
-1
-NIL
-HORIZONTAL
-
-SLIDER
-16
-221
-213
-254
-fruiting-trees
-fruiting-trees
-0
-0.8
-0.6
-0.1
-1
-NIL
-HORIZONTAL
-
-SLIDER
-16
-287
-214
-320
-nesting-trees
-nesting-trees
-0
-1
-0.7
-0.1
-1
-NIL
-HORIZONTAL
-
-SLIDER
-19
-370
-191
-403
-hunger-threshold
-hunger-threshold
-0
-200
-50.0
-1
-1
-NIL
-HORIZONTAL
-
-SLIDER
-17
-419
-189
-452
-fatigue-threshold
-fatigue-threshold
-0
-100
-50.0
-1
-1
-NIL
-HORIZONTAL
-
-TEXTBOX
-18
-205
-235
-223
-% of fruiting trees from all trees:
-11
-0.0
-1
-
-TEXTBOX
-18
-270
-250
-298
-% of nesting trees from all non-fruiting trees:
-11
-0.0
-1
-
-TEXTBOX
-15
-78
-235
-106
-% of canopy-connections between all trees:
-11
-0.0
-1
-
-TEXTBOX
-15
-141
-237
-159
-% of liana-connections between all trees:
-11
-0.0
-1
-
 @#$#@#$#@
-## WHAT IS IT?
+# OUmove: OrangUtan Movement Agent-based Model
 
-This example shows how to make turtles "walk" from node to node on a network, by following links.
+## Purpose and Patterns
+
+The purpose of this model is to simulate the effect of forest structure variation on orangutan energy cost for locomotion
 
 ## EXTENDING THE MODEL
 
