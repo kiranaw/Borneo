@@ -18,7 +18,6 @@ to regular-setup
       attach-banner who
     ]
   ]
-
   tree-params
   ask turtles [
     setxy (xcor * (max-pxcor - 1) / (5 / 2 - 0.5))
@@ -53,10 +52,10 @@ end
 
 @#$#@#$#@
 GRAPHICS-WINDOW
-203
-10
-644
-452
+133
+20
+574
+462
 -1
 -1
 17.32
