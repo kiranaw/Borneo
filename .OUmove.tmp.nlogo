@@ -17,7 +17,7 @@ to regular-setup
     [
       set color green + 20
 
-      set size 1
+      set size 3
       attach-banner who
     ]
   ]
@@ -39,7 +39,7 @@ to small-world
   [
     let factor sqrt count trees
     if factor = 0 [ set factor 1 ]
-    layout-spring trees links 0.2 5 1
+    layout-spring trees links 0.2 1 1
   ]
 end
 
@@ -120,7 +120,7 @@ CHOOSER
 tree-dist
 tree-dist
 "regular" "random"
-0
+1
 
 @#$#@#$#@
 # OUmove: OrangUtan Movement Agent-based Model
