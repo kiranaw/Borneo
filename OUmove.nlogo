@@ -11,21 +11,21 @@ to setup
 end
 
 to regular-setup
-  ask patches with [abs pxcor < (5 / 2) and abs pycor < (5 / 2)]
+  ask patches with [abs pxcor < (ceiling (number-of-trees / 2)) and abs pycor < (ceiling (number-of-trees / 2))]
   [
     sprout-trees 1
     [
       set color green + 20
 
       set size 1
-      attach-banner who
+      ;attach-banner who
     ]
   ]
   tree-params
 
   ask turtles [
-    setxy (xcor * (max-pxcor - 1) / (5 / 2 - 0.5))
-          (ycor * (max-pycor - 1) / (5 / 2 - 0.5))
+    setxy (xcor * (max-pxcor - 1) / (number-of-trees / 2 - 0.5))
+          (ycor * (max-pycor - 1) / (number-of-trees / 2 - 0.5))
   ]
 end
 
@@ -34,7 +34,7 @@ to random-setup
 end
 
 to small-world
-  nw:generate-small-world trees links 5 5 1.0 false [set color green]
+  nw:generate-small-world trees links number-of-trees number-of-trees 1.0 false [set color green + 20]
   repeat 200
   [
     let factor sqrt count trees
@@ -58,21 +58,20 @@ to tree-params
   ]
 end
 
-to attach-banner [x]  ;; circle procedure
-  hatch-banners 1 [
-    set size 0
-    set label x
-  ]
-end
-
+;to attach-banner [x]  ;; circle procedure
+;  hatch-banners 1 [
+;    set size 0
+;    set label x
+;  ]
+;end
 
 
 @#$#@#$#@
 GRAPHICS-WINDOW
-161
-18
-602
-460
+248
+14
+723
+490
 -1
 -1
 17.32
@@ -85,10 +84,10 @@ GRAPHICS-WINDOW
 0
 0
 1
--12
-12
--12
-12
+-13
+13
+-13
+13
 1
 1
 1
@@ -121,6 +120,36 @@ tree-dist
 tree-dist
 "regular" "random"
 0
+
+SLIDER
+12
+121
+184
+154
+number-of-trees
+number-of-trees
+0
+100
+8.0
+1
+1
+NIL
+HORIZONTAL
+
+SLIDER
+12
+169
+184
+202
+connectivity
+connectivity
+0
+1
+0.5
+0.1
+1
+NIL
+HORIZONTAL
 
 @#$#@#$#@
 # OUmove: OrangUtan Movement Agent-based Model
