@@ -1,6 +1,7 @@
 extensions [nw]
 breed [trees tree]
 breed [banners banner]
+globals [trees-in-row trees-in-col max-rows max-cols tree-counter row-counter col-counter]
 
 to setup
   clear-all
@@ -8,28 +9,81 @@ to setup
   ifelse tree-dist = "regular"
   [regular-setup]
   [random-setup]
+  ask patches with [pycor mod 2 = 0]
+  [set pcolor blue]
+  ask patches with [pxcor mod 2 = 0]
+  [set pcolor blue]
+end
+
+to set-world-size
+  ;calculate world size
+  ; - take number of trees
+  ; - define trees-in-row & trees-in-col
+  ; - max pxcor = trees-in-row + (reg-dist-between-trees * (trees-in-row - 1)) + 2opsional
+  ; - max pycor = trees-in-col + (reg-dist-between-trees * (trees-in-row - 1)) + 2opsional
+  let temp-factor-x floor(sqrt(number-of-trees))
+  while [number-of-trees mod temp-factor-x != 0]
+    [set temp-factor-x temp-factor-x - 1]
+    set trees-in-row temp-factor-x
+    set trees-in-col number-of-trees / temp-factor-x
+
+  set max-rows trees-in-row + (reg-dist-between-trees * (trees-in-row - 1)) + 2
+  set max-cols trees-in-col + (reg-dist-between-trees * (trees-in-col - 1)) + 2
+
+  ;setup the world
+
 end
 
 to regular-setup
-  ask patches with [abs pxcor < (ceiling (number-of-trees / 2)) and abs pycor < (ceiling (number-of-trees / 2))]
-  [
-    sprout-trees 1
-    [
-      set color green + 20
+  set-world-size
+  resize-world 0 max-rows - 1 0 max-cols - 1
+  ;generate trees
+  ; - always start from patch (1,1)
+  let next-patch reg-dist-between-trees + 1
 
-      set size 1
-      ;attach-banner who
+  ;case with only 1 distance
+  ifelse reg-dist-between-trees = 1
+  [
+    ask patches with[(pxcor mod 2 != 0 and pycor mod 2 != 0 and pxcor <= max-pxcor - 1 and pycor <= max-pycor - 1)]
+    [
+      sprout-trees 1
+      [
+        set color green + 20
+
+        set size 1
+      ]
     ]
   ]
-  tree-params
+  [
+    ;what about case with >1 distance?
+    ; - still start with patch (1,1)
+    ; ...unsolved..HELP!
+    set col-counter 1
+    set row-counter 1
+    set tree-counter 0
 
-  ask turtles [
-    setxy (xcor * (max-pxcor - 1) / (number-of-trees / 2 - 0.5))
-          (ycor * (max-pycor - 1) / (number-of-trees / 2 - 0.5))
+    while [tree-counter < number-of-trees]
+    [
+      ask patches with [pxcor = col-counter and pycor = row-counter]
+      [
+        sprout-trees 1
+        [
+          set color green + 20
+          set size 1
+        ]
+      ]
+      set col-counter col-counter + reg-dist-between-trees + 1
+      set row-counter row-counter + reg-dist-between-trees + 1
+      set tree-counter tree-counter + 1
+    ]
   ]
+  ;tree-params
 end
 
+
 to random-setup
+  set-world-size
+  resize-world 0 max-rows - 1 0 max-cols - 1
   small-world
 end
 
@@ -45,12 +99,12 @@ end
 
 to tree-params
   ask trees [
-    let neighbor-nodes turtle-set [trees-here] of neighbors
+    let neighbor-nodes turtle-set [trees-here] of patches in-radius 3 ;applicable only for distance = 1
 
     repeat 8
     [
       let node-connect one-of neighbor-nodes with [not link-neighbor? myself]
-      if node-connect != nobody
+      if node-connect != nobody and node-connect != self
       [
         create-link-with node-connect
       ]
@@ -64,14 +118,12 @@ end
 ;    set label x
 ;  ]
 ;end
-
-
 @#$#@#$#@
 GRAPHICS-WINDOW
 248
 14
-723
-490
+515
+282
 -1
 -1
 17.32
@@ -84,10 +136,10 @@ GRAPHICS-WINDOW
 0
 0
 1
--13
-13
--13
-13
+0
+14
+0
+14
 1
 1
 1
@@ -128,28 +180,87 @@ SLIDER
 154
 number-of-trees
 number-of-trees
-0
+10
 100
-8.0
+25.0
+5
 1
+NIL
+HORIZONTAL
+
+SLIDER
+771
+464
+943
+497
+connectivity
+connectivity
+0
+1
+1.0
+0.1
 1
 NIL
 HORIZONTAL
 
 SLIDER
 12
-169
-184
-202
-connectivity
-connectivity
-0
+167
+191
+200
+reg-dist-between-trees
+reg-dist-between-trees
 1
-0.5
-0.1
+5
+2.0
+1
 1
 NIL
 HORIZONTAL
+
+MONITOR
+758
+20
+833
+65
+NIL
+trees-in-col
+17
+1
+11
+
+MONITOR
+759
+86
+840
+131
+NIL
+trees-in-row
+17
+1
+11
+
+MONITOR
+867
+87
+934
+132
+NIL
+max-rows
+17
+1
+11
+
+MONITOR
+866
+20
+928
+65
+NIL
+max-cols
+17
+1
+11
 
 @#$#@#$#@
 # OUmove: OrangUtan Movement Agent-based Model
