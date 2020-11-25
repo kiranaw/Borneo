@@ -9,10 +9,14 @@ to setup
   ifelse tree-dist = "regular"
   [regular-setup]
   [random-setup]
-  ask patches with [pycor mod 2 = 0]
-  [set pcolor blue]
-  ask patches with [pxcor mod 2 = 0]
-  [set pcolor blue]
+  ;ask patches [set pcolor one-of base-colors]
+  ask patches with [(pycor mod 2 = 0 and pxcor mod 2 != 0) or (pxcor mod 2 = 0 and pycor mod 2 != 0)]
+  [set pcolor black + 2]
+
+  ;ask patches with [pycor mod 2 = 0 and pxcor mod 2 != 0]
+  ;[set pcolor black + 2]
+  ;ask patches with [pxcor mod 2 = 0 and pycor mod 2 != 0]
+  ;[set pcolor black + 2]
 end
 
 to set-world-size
@@ -34,6 +38,15 @@ to set-world-size
 
 end
 
+to set-world-size-random
+  let temp-factor-x ceiling(sqrt(number-of-trees))
+    set trees-in-row temp-factor-x
+    set trees-in-col temp-factor-x
+
+  set max-rows trees-in-row + (reg-dist-between-trees * (trees-in-row - 1)) + 2
+  set max-cols trees-in-col + (reg-dist-between-trees * (trees-in-col - 1)) + 2
+end
+
 to regular-setup
   set-world-size
   resize-world 0 max-rows - 1 0 max-cols - 1
@@ -41,54 +54,47 @@ to regular-setup
   ; - always start from patch (1,1)
   let next-patch reg-dist-between-trees + 1
 
-  ;case with only 1 distance
-  ifelse reg-dist-between-trees = 1
-  [
-    ask patches with[(pxcor mod 2 != 0 and pycor mod 2 != 0 and pxcor <= max-pxcor - 1 and pycor <= max-pycor - 1)]
-    [
-      sprout-trees 1
-      [
-        set color green + 20
-
-        set size 1
-      ]
-    ]
-  ]
-  [
-    ;what about case with >1 distance?
+  ;what about case with >1 distance?
     ; - still start with patch (1,1)
     ; ...unsolved..HELP!
     set col-counter 1
     set row-counter 1
     set tree-counter 0
 
-    while [tree-counter < number-of-trees]
-    [
-      ask patches with [pxcor = col-counter and pycor = row-counter]
-      [
-        sprout-trees 1
-        [
-          set color green + 20
-          set size 1
+
+  ;;nested loop perhaps not efficient but 100% works :p
+  while [tree-counter < number-of-trees][
+    while [col-counter < max-pxcor][
+      set row-counter 1
+      while [row-counter < max-pycor][
+        ask patches with [pxcor = col-counter and pycor = row-counter][
+          sprout-trees 1[
+            set color green + 20
+            set size 1
+          ]
         ]
+        set row-counter row-counter + reg-dist-between-trees + 1
       ]
-      set col-counter col-counter + reg-dist-between-trees + 1
-      set row-counter row-counter + reg-dist-between-trees + 1
-      set tree-counter tree-counter + 1
+    set col-counter col-counter + reg-dist-between-trees + 1
     ]
+
+    set tree-counter tree-counter + 1
+
   ]
-  ;tree-params
+
+  tree-params
 end
 
 
 to random-setup
-  set-world-size
-  resize-world 0 max-rows - 1 0 max-cols - 1
+  set-world-size-random
+  resize-world 0 max-rows / 2 0 max-cols / 2
   small-world
+  ;wheel
 end
 
 to small-world
-  nw:generate-small-world trees links number-of-trees number-of-trees 1.0 false [set color green + 20]
+  nw:generate-small-world trees links trees-in-col trees-in-row 1.0 false [set color green + 20]
   repeat 200
   [
     let factor sqrt count trees
@@ -97,9 +103,18 @@ to small-world
   ]
 end
 
+to small-world-test
+  nw:generate-small-world trees links world-width world-height 2.0 false
+(foreach (sort turtles) (sort patches) [ [t p] -> ask t [ move-to p ] ])
+end
+
+to wheel
+  nw:generate-star turtles links 100
+end
+
 to tree-params
   ask trees [
-    let neighbor-nodes turtle-set [trees-here] of patches in-radius 3 ;applicable only for distance = 1
+    let neighbor-nodes turtle-set [trees-here] of patches in-radius (reg-dist-between-trees * 2 + 1) ;applicable only for distance = 1
 
     repeat 8
     [
@@ -120,13 +135,13 @@ end
 ;end
 @#$#@#$#@
 GRAPHICS-WINDOW
-248
-14
-515
-282
+211
+16
+309
+295
 -1
 -1
-17.32
+10.0
 1
 10
 1
@@ -137,9 +152,9 @@ GRAPHICS-WINDOW
 0
 1
 0
-14
+8
 0
-14
+26
 1
 1
 1
@@ -182,8 +197,8 @@ number-of-trees
 number-of-trees
 10
 100
-25.0
-5
+10.0
+10
 1
 NIL
 HORIZONTAL
@@ -212,55 +227,11 @@ reg-dist-between-trees
 reg-dist-between-trees
 1
 5
-2.0
+5.0
 1
 1
 NIL
 HORIZONTAL
-
-MONITOR
-758
-20
-833
-65
-NIL
-trees-in-col
-17
-1
-11
-
-MONITOR
-759
-86
-840
-131
-NIL
-trees-in-row
-17
-1
-11
-
-MONITOR
-867
-87
-934
-132
-NIL
-max-rows
-17
-1
-11
-
-MONITOR
-866
-20
-928
-65
-NIL
-max-cols
-17
-1
-11
 
 @#$#@#$#@
 # OUmove: OrangUtan Movement Agent-based Model
