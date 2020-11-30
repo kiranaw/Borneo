@@ -1,18 +1,20 @@
 extensions [nw]
 breed [trees tree]
 breed [banners banner]
-globals [trees-in-row trees-in-col max-rows max-cols tree-counter row-counter col-counter starting-col starting-row]
-trees-own[crown-diameter height ]
+globals [ trees-in-row trees-in-col max-rows max-cols tree-counter row-counter col-counter starting-col starting-row]
+trees-own[neighbor-nodes crown-diameter height dbh]
+patches-own[affecting-tree]
+links-own[link-type]
 
 to setup
   clear-all
+  ask patches with [(pycor mod 2 = 0 and pxcor mod 2 != 0) or (pxcor mod 2 = 0 and pycor mod 2 != 0)]
+  [set pcolor black + 2]
+  ask patches [set affecting-tree turtle-set no-turtles]
   calculate-row-col
   set-default-shape turtles "circle"
   ifelse tree-dist = "regular"
-  [regular-setup]
-  [random-2]
-  ask patches with [(pycor mod 2 = 0 and pxcor mod 2 != 0) or (pxcor mod 2 = 0 and pycor mod 2 != 0)]
-  [set pcolor black + 2]
+  [regular-setup][random-2]
 end
 
 to calculate-row-col
@@ -52,9 +54,20 @@ to regular-setup
       [
         ask patches with [pxcor = col-counter and pycor = row-counter]
         [
-          sprout-trees 1[
+          sprout-trees 1
+          [
+            set neighbor-nodes turtle-set no-turtles
+            set dbh abs(random-normal avg-dbh 1)
+            set height abs(random-normal avg-tree-height 1)
+            set crown-diameter abs(random-normal avg-crown-diameter 1)
             set color green + 20
             set size 1
+            ask patches in-radius floor(crown-diameter / 2) [
+              if show-crown = true
+              [set pcolor green + [who] of myself]
+              let newset turtle-set myself
+              set affecting-tree (turtle-set newset affecting-tree)
+            ]
           ]
         ]
         set row-counter row-counter + reg-dist-between-trees
@@ -63,32 +76,78 @@ to regular-setup
     ]
     set tree-counter tree-counter + 1
   ]
-  tree-params
+  link-trees
 end
 
 to random-2
   ask n-of tree-density patches [
     if one-of other trees-here = nobody
     [
-    sprout-trees 1[
-    set color green + 20
-      set size 1]
+      sprout-trees 1
+      [
+        set neighbor-nodes turtle-set no-turtles
+        set dbh abs(random-normal avg-dbh 1)
+        set height abs(random-normal avg-tree-height 1)
+        set crown-diameter abs(random-normal avg-crown-diameter 1)
+        set color green + 20
+        set size 1
+        ask patches in-radius floor(crown-diameter / 2) [
+          if show-crown = true
+          [set pcolor green + [who] of myself]
+          let newset turtle-set myself
+          set affecting-tree (turtle-set newset affecting-tree)
+        ]
+      ]
     ]
   ]
-
-  tree-params
+  link-trees
 end
 
-to tree-params
-  ask trees [
-    let neighbor-nodes turtle-set [trees-here] of patches in-radius (reg-dist-between-trees * 2 + 1) ;applicable only for distance = 1
+to link-trees
+  ask trees
+  [
+    ;get the affecting-trees from the patches in-radius of my crown
+    ;set neighbor-nodes (turtle-set no-turtles)
+    set neighbor-nodes (turtle-set neighbor-nodes ([affecting-tree] of patches in-radius floor(crown-diameter / 2)))
 
-    repeat floor (8 * connectivity)
+    ;check trees within radius of my crown
+    repeat count neighbor-nodes
     [
-      let node-connect one-of neighbor-nodes with [not link-neighbor? myself]
+      let node-connect one-of neighbor-nodes with[not link-neighbor? myself and who != [who] of myself]
+      if node-connect != nobody ;and node-connect != myself
+      [
+        create-link-with node-connect
+      ]
+    ]
+  ]
+end
+
+
+
+to link-trees-loop
+  ask trees
+  [
+    set neighbor-nodes turtle-set [trees-here] of patches in-radius floor(crown-diameter / 2)
+
+    while [count my-links < count neighbor-nodes - 1]
+    [
+      let node-connect one-of neighbor-nodes with[not link-neighbor? myself]
       if node-connect != nobody and node-connect != self
       [
         create-link-with node-connect
+        [
+          ifelse [height] of node-connect < [height] of myself
+          [
+            ifelse link-length <= 1 [set link-type "sway"][die]
+          ]
+          [
+            ifelse [dbh] of myself < 20
+            [set link-type "sway"]
+            [
+              ifelse [dbh] of node-connect < 20 [set link-type "sway"] [set link-type "brachiation"]
+            ]
+          ]
+        ]
       ]
     ]
   ]
@@ -97,11 +156,11 @@ end
 GRAPHICS-WINDOW
 212
 13
-611
-413
+648
+450
 -1
 -1
-3.911
+4.28
 1
 10
 1
@@ -172,17 +231,17 @@ reg-dist-between-trees
 reg-dist-between-trees
 1
 5
-3.0
+1.0
 1
 1
 NIL
 HORIZONTAL
 
 MONITOR
-655
-16
-771
-61
+748
+10
+864
+55
 Avg. Node Degree
 mean [count my-links] of trees
 2
@@ -198,7 +257,7 @@ tree-density
 tree-density
 0
 10000
-20.0
+4.0
 20
 1
 ind / Ha
@@ -222,10 +281,10 @@ NIL
 1
 
 MONITOR
-656
-90
-737
-135
+749
+64
+830
+109
 NIL
 trees-in-row
 17
@@ -233,10 +292,10 @@ trees-in-row
 11
 
 MONITOR
-657
-151
-732
-196
+749
+119
+824
+164
 NIL
 trees-in-col
 17
@@ -244,10 +303,10 @@ trees-in-col
 11
 
 MONITOR
-770
-151
-832
-196
+862
+119
+924
+164
 NIL
 max-cols
 17
@@ -255,10 +314,10 @@ max-cols
 11
 
 MONITOR
-770
-89
-837
-134
+863
+63
+930
+108
 NIL
 max-rows
 17
@@ -266,10 +325,10 @@ max-rows
 11
 
 MONITOR
-656
-212
-737
-257
+750
+172
+831
+217
 NIL
 starting-row
 17
@@ -277,15 +336,104 @@ starting-row
 11
 
 MONITOR
-766
-213
-841
-258
+860
+173
+935
+218
 NIL
 starting-col
 17
 1
 11
+
+SLIDER
+9
+255
+181
+288
+avg-tree-height
+avg-tree-height
+15
+50
+25.0
+5
+1
+NIL
+HORIZONTAL
+
+SLIDER
+10
+299
+182
+332
+avg-crown-diameter
+avg-crown-diameter
+1
+10
+9.0
+1
+1
+NIL
+HORIZONTAL
+
+SLIDER
+10
+345
+182
+378
+avg-dbh
+avg-dbh
+5
+50
+25.0
+1
+1
+cm
+HORIZONTAL
+
+MONITOR
+747
+227
+871
+272
+NIL
+mean [dbh] of trees
+3
+1
+11
+
+MONITOR
+747
+280
+919
+325
+NIL
+mean [crown-diameter] of trees
+3
+1
+11
+
+MONITOR
+747
+333
+885
+378
+NIL
+mean [height] of trees
+3
+1
+11
+
+SWITCH
+23
+409
+146
+442
+show-crown
+show-crown
+1
+1
+-1000
 
 @#$#@#$#@
 # OUmove: OrangUtan Movement Agent-based Model
