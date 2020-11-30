@@ -47,10 +47,10 @@ to regular-setup
 
   while [tree-counter < tree-density]
   [
-    while [col-counter < starting-row + max-rows]
+    while [col-counter < starting-col + max-cols]
     [
       set row-counter starting-row
-      while [row-counter < starting-col + max-cols]
+      while [row-counter < starting-row + max-rows]
       [
         ask patches with [pxcor = col-counter and pycor = row-counter]
         [
@@ -205,7 +205,7 @@ CHOOSER
 tree-dist
 tree-dist
 "regular" "random"
-0
+1
 
 SLIDER
 10
@@ -231,7 +231,7 @@ reg-dist-between-trees
 reg-dist-between-trees
 1
 5
-1.0
+3.0
 1
 1
 NIL
@@ -257,7 +257,7 @@ tree-density
 tree-density
 0
 10000
-4.0
+40.0
 20
 1
 ind / Ha
@@ -431,7 +431,7 @@ SWITCH
 442
 show-crown
 show-crown
-1
+0
 1
 -1000
 
