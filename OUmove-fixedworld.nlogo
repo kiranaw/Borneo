@@ -8,10 +8,25 @@ links-own [link-type]
 
 to setup
   clear-all
+  set-simulation-size
   set-patches
   setup-forest
   set-fruiting-trees
   set-orangutans
+end
+
+to go
+end
+
+to set-simulation-size
+  if simulation-size = "100 x 100"
+  [resize-world 0 99 0 99 set-patch-size 4.25]
+  if simulation-size = "75 x 75"
+  [resize-world 0 74 0 74 set-patch-size 5.5]
+  if simulation-size = "50 x 50"
+  [resize-world 0 49 0 49 set-patch-size 8.5]
+  if simulation-size = "25 x 25"
+  [resize-world 0 24 0 24 set-patch-size 16.5]
 end
 
 to set-patches
@@ -28,7 +43,7 @@ to setup-forest
 end
 
 to set-fruiting-trees
-  ask n-of floor(fruiting-tree-proportion / 100 * count trees) trees
+  ask n-of floor(fruiting-tree / 100 * count trees) trees
   [
     set color red
   ]
@@ -40,7 +55,7 @@ to set-orangutans
     sprout-orangutans 1
     [
       set shape "person"
-      set size 3
+      set size 2
       set color orange
     ]
   ]
@@ -135,7 +150,7 @@ to link-trees
       [
         create-link-with node-connect
         [
-          ifelse link-length <= 2 [set link-type "sway"] [set link-type "brachiation"]
+          ifelse link-length <= 2 [set link-type "sway" set color red] [set link-type "brachiation" set color blue]
         ]
       ]
     ]
@@ -143,13 +158,13 @@ to link-trees
 end
 @#$#@#$#@
 GRAPHICS-WINDOW
-193
+324
 10
-668
-486
+751
+438
 -1
 -1
-4.67
+4.25
 1
 10
 1
@@ -171,9 +186,9 @@ ticks
 
 BUTTON
 9
-11
+10
 93
-44
+43
 NIL
 setup
 NIL
@@ -188,34 +203,34 @@ NIL
 
 CHOOSER
 8
-56
-146
-101
+70
+155
+115
 tree-dist
 tree-dist
 "regular" "random"
-0
+1
 
 SLIDER
 8
-110
-185
-143
+181
+159
+214
 reg-dist-between-trees
 reg-dist-between-trees
 1
 5
-4.0
+2.0
 1
 1
-NIL
+m
 HORIZONTAL
 
 MONITOR
-679
-13
-795
-58
+776
+11
+892
+56
 Avg. Node Degree
 mean [count my-links] of trees
 2
@@ -224,14 +239,14 @@ mean [count my-links] of trees
 
 SLIDER
 6
-153
-178
-186
+224
+158
+257
 tree-density
 tree-density
 0
 10000
-200.0
+100.0
 20
 1
 ind / Ha
@@ -255,10 +270,10 @@ NIL
 1
 
 MONITOR
-680
-67
-761
-112
+777
+65
+858
+110
 NIL
 trees-in-row
 17
@@ -266,10 +281,10 @@ trees-in-row
 11
 
 MONITOR
-680
-122
-755
-167
+777
+120
+852
+165
 NIL
 trees-in-col
 17
@@ -277,10 +292,10 @@ trees-in-col
 11
 
 MONITOR
-793
-122
-855
-167
+890
+120
+952
+165
 NIL
 max-cols
 17
@@ -288,10 +303,10 @@ max-cols
 11
 
 MONITOR
-794
-66
-861
-111
+891
+64
+958
+109
 NIL
 max-rows
 17
@@ -299,10 +314,10 @@ max-rows
 11
 
 MONITOR
-681
-175
-762
-220
+778
+173
+859
+218
 NIL
 starting-row
 17
@@ -310,10 +325,10 @@ starting-row
 11
 
 MONITOR
-791
-176
-866
-221
+888
+174
+963
+219
 NIL
 starting-col
 17
@@ -322,39 +337,39 @@ starting-col
 
 SLIDER
 7
-200
-179
-233
+271
+158
+304
 avg-tree-height
 avg-tree-height
 15
 50
-35.0
+30.0
 5
 1
-NIL
+m
 HORIZONTAL
 
 SLIDER
-8
-244
-180
-277
+171
+181
+306
+214
 avg-crown-diameter
 avg-crown-diameter
 1
 10
-8.0
+4.0
 1
 1
-NIL
+m
 HORIZONTAL
 
 SLIDER
-8
-290
-180
-323
+171
+227
+304
+260
 avg-dbh
 avg-dbh
 5
@@ -366,10 +381,10 @@ cm
 HORIZONTAL
 
 MONITOR
-678
-230
-802
-275
+775
+228
+899
+273
 NIL
 mean [dbh] of trees
 2
@@ -377,10 +392,10 @@ mean [dbh] of trees
 11
 
 MONITOR
-678
-283
-850
-328
+775
+281
+947
+326
 NIL
 mean [crown-diameter] of trees
 2
@@ -388,10 +403,10 @@ mean [crown-diameter] of trees
 11
 
 MONITOR
-678
-336
-816
-381
+775
+334
+913
+379
 NIL
 mean [height] of trees
 2
@@ -399,10 +414,10 @@ mean [height] of trees
 11
 
 SWITCH
-9
-399
-132
-432
+171
+125
+286
+158
 show-crown
 show-crown
 0
@@ -410,10 +425,10 @@ show-crown
 -1000
 
 SWITCH
-10
-444
-120
-477
+172
+71
+282
+104
 show-grid
 show-grid
 0
@@ -421,12 +436,12 @@ show-grid
 -1000
 
 SLIDER
-8
-342
-182
-375
-fruiting-tree-proportion
-fruiting-tree-proportion
+170
+271
+306
+304
+fruiting-tree
+fruiting-tree
 0
 100
 10.0
@@ -434,6 +449,55 @@ fruiting-tree-proportion
 1
 %
 HORIZONTAL
+
+MONITOR
+1005
+10
+1075
+55
+sway-links
+count links with [link-type = \"sway\"]
+17
+1
+11
+
+MONITOR
+1007
+80
+1109
+125
+brachiation-links
+count links with [link-type = \"brachiation\"]
+17
+1
+11
+
+CHOOSER
+8
+121
+154
+166
+simulation-size
+simulation-size
+"100 x 100" "75 x 75" "50 x 50" "25 x 25"
+0
+
+BUTTON
+112
+11
+175
+44
+NIL
+go
+NIL
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
 
 @#$#@#$#@
 # OUmove: OrangUtan Movement Agent-based Model
