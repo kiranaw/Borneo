@@ -1,147 +1,186 @@
-extensions [nw]
 breed [trees tree]
-breed [banners banner]
-globals [trees-in-row trees-in-col max-rows max-cols tree-counter row-counter col-counter]
+breed [orangutans orangutan]
+globals [trees-in-row trees-in-col max-rows max-cols tree-counter row-counter col-counter starting-col starting-row]
+trees-own [neighbor-nodes crown-diameter height dbh]
+orangutans-own [body-mass age-sex-class energy-reserve location]
+patches-own [affecting-tree]
+links-own [link-type]
 
 to setup
   clear-all
-  set-default-shape turtles "circle"
-  ifelse tree-dist = "regular"
-  [regular-setup]
-  [random-setup]
-  ;ask patches [set pcolor one-of base-colors]
-  ask patches with [(pycor mod 2 = 0 and pxcor mod 2 != 0) or (pxcor mod 2 = 0 and pycor mod 2 != 0)]
-  [set pcolor black + 2]
-
-  ;ask patches with [pycor mod 2 = 0 and pxcor mod 2 != 0]
-  ;[set pcolor black + 2]
-  ;ask patches with [pxcor mod 2 = 0 and pycor mod 2 != 0]
-  ;[set pcolor black + 2]
+  set-simulation-size
+  set-patches
+  setup-forest
+  set-fruiting-trees
+  set-orangutans
+  reset-ticks
 end
 
-to set-world-size
-  ;calculate world size
+to go
+  ask orangutans
+  [
+    let new-location one-of [link-neighbors] of location
+    move-to new-location
+  ]
+  tick
+end
+
+to update-view
+  ask trees
+  [
+    ask patches in-radius floor(crown-diameter / 2) [
+      if show-crown = true
+      [set pcolor (green - 2) + [who] of myself mod 5]
+    ]
+  ]
+end
+
+to set-simulation-size
+  if simulation-size = "100 x 100"
+  [resize-world 0 99 0 99 set-patch-size 4.25]
+  if simulation-size = "75 x 75"
+  [resize-world 0 74 0 74 set-patch-size 5.5]
+  if simulation-size = "50 x 50"
+  [resize-world 0 49 0 49 set-patch-size 8.5]
+  if simulation-size = "25 x 25"
+  [resize-world 0 24 0 24 set-patch-size 16.5]
+end
+
+to set-patches
+  if show-grid = true
+  [ask patches with [(pycor mod 2 = 0 and pxcor mod 2 != 0) or (pxcor mod 2 = 0 and pycor mod 2 != 0)]
+    [set pcolor black + 1]]
+  ask patches [set affecting-tree turtle-set no-turtles]
+end
+
+to setup-forest
+  ifelse tree-dist = "regular"
+  [regular-setup][random-setup]
+  link-trees
+end
+
+to set-fruiting-trees
+  ask n-of floor(fruiting-tree / 100 * count trees) trees
+  [
+    set color red
+  ]
+end
+
+to set-orangutans
+  create-orangutans 1
+  [
+    set shape "person"
+    set size 2
+    set color orange
+    set location one-of trees with [count my-links > 0 and any? orangutans-here = false]
+    move-to location
+  ]
+end
+
+to calculate-row-col
+  ;calculate plot size
   ; - take number of trees
   ; - define trees-in-row & trees-in-col
   ; - max pxcor = trees-in-row + (reg-dist-between-trees * (trees-in-row - 1)) + 2opsional
   ; - max pycor = trees-in-col + (reg-dist-between-trees * (trees-in-row - 1)) + 2opsional
-  let temp-factor-x floor(sqrt(number-of-trees))
-  while [number-of-trees mod temp-factor-x != 0]
+  let temp-factor-x floor(sqrt(tree-density))
+  while [tree-density mod temp-factor-x != 0]
     [set temp-factor-x temp-factor-x - 1]
     set trees-in-row temp-factor-x
-    set trees-in-col number-of-trees / temp-factor-x
+    set trees-in-col tree-density / temp-factor-x
 
-  set max-rows trees-in-row + (reg-dist-between-trees * (trees-in-row - 1)) + 2
-  set max-cols trees-in-col + (reg-dist-between-trees * (trees-in-col - 1)) + 2
-
-  ;setup the world
-
+  set max-rows trees-in-row + ((reg-dist-between-trees - 1) * (trees-in-row - 1)) ;+ 2
+  set max-cols trees-in-col + ((reg-dist-between-trees - 1) * (trees-in-col - 1)) ;+ 2
 end
 
-to set-world-size-random
-  let temp-factor-x ceiling(sqrt(number-of-trees))
-    set trees-in-row temp-factor-x
-    set trees-in-col temp-factor-x
-
-  set max-rows trees-in-row + (reg-dist-between-trees * (trees-in-row - 1)) + 2
-  set max-cols trees-in-col + (reg-dist-between-trees * (trees-in-col - 1)) + 2
+to set-starting-patch
+  set starting-col ceiling(max-pxcor / 2) - ceiling(max-cols / 2) + 1
+  set starting-row ceiling(max-pycor / 2) - ceiling(max-rows / 2)
 end
 
 to regular-setup
-  set-world-size
-  resize-world 0 max-rows - 1 0 max-cols - 1
-  ;generate trees
-  ; - always start from patch (1,1)
-  let next-patch reg-dist-between-trees + 1
+  calculate-row-col
+  set-starting-patch
 
-  ;what about case with >1 distance?
-    ; - still start with patch (1,1)
-    ; ...unsolved..HELP!
-    set col-counter 1
-    set row-counter 1
-    set tree-counter 0
+  set row-counter starting-row
+  set col-counter starting-col
+  set tree-counter 0
 
-
-  ;;nested loop perhaps not efficient but 100% works :p
-  while [tree-counter < number-of-trees][
-    while [col-counter < max-pxcor][
-      set row-counter 1
-      while [row-counter < max-pycor][
-        ask patches with [pxcor = col-counter and pycor = row-counter][
-          sprout-trees 1[
-            set color green + 20
-            set size 1
-          ]
+  while [tree-counter < tree-density]
+  [
+    while [col-counter < starting-col + max-cols]
+    [
+      set row-counter starting-row
+      while [row-counter < starting-row + max-rows]
+      [
+        ask patches with [pxcor = col-counter and pycor = row-counter]
+        [
+          establish-tree
         ]
-        set row-counter row-counter + reg-dist-between-trees + 1
+        set row-counter row-counter + reg-dist-between-trees
       ]
-    set col-counter col-counter + reg-dist-between-trees + 1
+    set col-counter col-counter + reg-dist-between-trees
     ]
-
     set tree-counter tree-counter + 1
-
   ]
-
-  tree-params
 end
 
+to establish-tree
+  sprout-trees 1
+  [
+    set neighbor-nodes turtle-set no-turtles
+    set dbh abs(random-normal avg-dbh 1)
+    set height abs(random-normal avg-tree-height 1)
+    set crown-diameter abs(random-normal avg-crown-diameter 1)
+    set color green + 20
+    set size 1
+    set shape "circle"
+    ask patches in-radius floor(crown-diameter / 2) [
+      if show-crown = true
+      [set pcolor (green - 2) + [who] of myself mod 5]
+      let newset turtle-set myself
+      set affecting-tree (turtle-set newset affecting-tree)
+    ]
+  ]
+end
 
 to random-setup
-  set-world-size-random
-  resize-world 0 max-rows / 2 0 max-cols / 2
-  small-world
-  ;wheel
-end
-
-to small-world
-  nw:generate-small-world trees links trees-in-col trees-in-row 1.0 false [set color green + 20]
-  repeat 200
-  [
-    let factor sqrt count trees
-    if factor = 0 [ set factor 1 ]
-    layout-spring trees links 0.2 5 1
-  ]
-end
-
-to small-world-test
-  nw:generate-small-world trees links world-width world-height 2.0 false
-(foreach (sort turtles) (sort patches) [ [t p] -> ask t [ move-to p ] ])
-end
-
-to wheel
-  nw:generate-star turtles links 100
-end
-
-to tree-params
-  ask trees [
-    let neighbor-nodes turtle-set [trees-here] of patches in-radius (reg-dist-between-trees * 2 + 1) ;applicable only for distance = 1
-
-    repeat 8
+  ask n-of tree-density patches [
+    if one-of other trees-here = nobody
     [
-      let node-connect one-of neighbor-nodes with [not link-neighbor? myself]
-      if node-connect != nobody and node-connect != self
-      [
-        create-link-with node-connect
-      ]
+      establish-tree
     ]
   ]
 end
 
-;to attach-banner [x]  ;; circle procedure
-;  hatch-banners 1 [
-;    set size 0
-;    set label x
-;  ]
-;end
+to link-trees
+  ask trees
+  [
+    ;get the affecting-trees from the patches in-radius of my crown
+    set neighbor-nodes (turtle-set neighbor-nodes ([affecting-tree] of patches in-radius floor(crown-diameter / 2)))
+
+    repeat count neighbor-nodes
+    [
+      let node-connect one-of neighbor-nodes with[not link-neighbor? myself and who != [who] of myself]
+      if node-connect != nobody ;and node-connect != myself
+      [
+        create-link-with node-connect
+        [
+          ifelse link-length <= 2 [set link-type "sway" set color red] [set link-type "brachiation" set color blue]
+        ]
+      ]
+    ]
+  ]
+end
 @#$#@#$#@
 GRAPHICS-WINDOW
-211
-16
-369
-265
+324
+10
+734
+421
 -1
 -1
-2.0
+16.5
 1
 10
 1
@@ -152,9 +191,9 @@ GRAPHICS-WINDOW
 0
 1
 0
-74
+24
 0
-119
+24
 1
 1
 1
@@ -162,10 +201,10 @@ ticks
 30.0
 
 BUTTON
-15
-18
-99
-51
+9
+10
+93
+43
 NIL
 setup
 NIL
@@ -179,50 +218,20 @@ NIL
 1
 
 CHOOSER
-10
-64
-148
-109
+9
+62
+156
+107
 tree-dist
 tree-dist
 "regular" "random"
-0
+1
 
 SLIDER
-12
-121
-184
-154
-number-of-trees
-number-of-trees
-1000
-40000
-1000.0
-10
-1
-NIL
-HORIZONTAL
-
-SLIDER
-10
-217
-189
-250
-connectivity
-connectivity
-0
-1
-1.0
-0.1
-1
-NIL
-HORIZONTAL
-
-SLIDER
-10
-170
-187
-203
+8
+181
+159
+214
 reg-dist-between-trees
 reg-dist-between-trees
 1
@@ -230,8 +239,298 @@ reg-dist-between-trees
 2.0
 1
 1
-NIL
+m
 HORIZONTAL
+
+MONITOR
+754
+11
+870
+56
+Avg. Node Degree
+mean [count my-links] of trees
+2
+1
+11
+
+SLIDER
+6
+224
+158
+257
+tree-density
+tree-density
+0
+10000
+20.0
+20
+1
+ind / Ha
+HORIZONTAL
+
+BUTTON
+1167
+524
+1273
+557
+NIL
+regular-setup
+NIL
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
+
+MONITOR
+755
+65
+836
+110
+NIL
+trees-in-row
+17
+1
+11
+
+MONITOR
+755
+120
+830
+165
+NIL
+trees-in-col
+17
+1
+11
+
+MONITOR
+868
+120
+930
+165
+NIL
+max-cols
+17
+1
+11
+
+MONITOR
+869
+64
+936
+109
+NIL
+max-rows
+17
+1
+11
+
+MONITOR
+756
+173
+837
+218
+NIL
+starting-row
+17
+1
+11
+
+MONITOR
+866
+174
+941
+219
+NIL
+starting-col
+17
+1
+11
+
+SLIDER
+7
+271
+158
+304
+avg-tree-height
+avg-tree-height
+15
+50
+30.0
+5
+1
+m
+HORIZONTAL
+
+SLIDER
+171
+181
+306
+214
+avg-crown-diameter
+avg-crown-diameter
+1
+10
+7.0
+1
+1
+m
+HORIZONTAL
+
+SLIDER
+171
+227
+304
+260
+avg-dbh
+avg-dbh
+5
+50
+26.0
+1
+1
+cm
+HORIZONTAL
+
+MONITOR
+753
+228
+877
+273
+NIL
+mean [dbh] of trees
+2
+1
+11
+
+MONITOR
+753
+281
+925
+326
+NIL
+mean [crown-diameter] of trees
+2
+1
+11
+
+MONITOR
+753
+334
+891
+379
+NIL
+mean [height] of trees
+2
+1
+11
+
+SWITCH
+174
+100
+289
+133
+show-crown
+show-crown
+0
+1
+-1000
+
+SWITCH
+175
+63
+285
+96
+show-grid
+show-grid
+0
+1
+-1000
+
+SLIDER
+170
+271
+306
+304
+fruiting-tree
+fruiting-tree
+0
+100
+10.0
+5
+1
+%
+HORIZONTAL
+
+MONITOR
+983
+10
+1053
+55
+sway-links
+count links with [link-type = \"sway\"]
+17
+1
+11
+
+MONITOR
+985
+80
+1087
+125
+brachiation-links
+count links with [link-type = \"brachiation\"]
+17
+1
+11
+
+CHOOSER
+9
+113
+155
+158
+simulation-size
+simulation-size
+"100 x 100" "75 x 75" "50 x 50" "25 x 25"
+3
+
+BUTTON
+112
+11
+175
+44
+NIL
+go
+NIL
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
+
+BUTTON
+174
+137
+275
+170
+NIL
+update-view
+NIL
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
 
 @#$#@#$#@
 # OUmove: OrangUtan Movement Agent-based Model
