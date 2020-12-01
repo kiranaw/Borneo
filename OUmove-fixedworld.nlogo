@@ -26,6 +26,10 @@ to setup-forest
 end
 
 to set-fruiting-trees
+  ask n-of floor(fruiting-tree-proportion / 100 * count trees) trees
+  [
+    set color red
+  ]
 end
 
 to set-orangutans
@@ -224,7 +228,7 @@ tree-density
 tree-density
 0
 10000
-180.0
+60.0
 20
 1
 ind / Ha
@@ -393,9 +397,9 @@ mean [height] of trees
 
 SWITCH
 9
-335
+399
 132
-368
+432
 show-crown
 show-crown
 0
@@ -404,14 +408,29 @@ show-crown
 
 SWITCH
 10
-380
+444
 120
-413
+477
 show-grid
 show-grid
 0
 1
 -1000
+
+SLIDER
+8
+342
+182
+375
+fruiting-tree-proportion
+fruiting-tree-proportion
+0
+100
+10.0
+5
+1
+%
+HORIZONTAL
 
 @#$#@#$#@
 # OUmove: OrangUtan Movement Agent-based Model
