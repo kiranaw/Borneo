@@ -4,6 +4,7 @@ globals [trees-in-row trees-in-col max-rows max-cols tree-counter row-counter co
 trees-own [neighbor-nodes crown-diameter height dbh]
 orangutans-own [body-mass age-sex-class energy-reserve]
 patches-own [affecting-tree]
+links-own [link-type]
 
 to setup
   clear-all
@@ -23,6 +24,7 @@ end
 to setup-forest
   ifelse tree-dist = "regular"
   [regular-setup][random-setup]
+  link-trees
 end
 
 to set-fruiting-trees
@@ -90,7 +92,6 @@ to regular-setup
     ]
     set tree-counter tree-counter + 1
   ]
-  link-trees
 end
 
 to establish-tree
@@ -119,7 +120,6 @@ to random-setup
       establish-tree
     ]
   ]
-  link-trees
 end
 
 to link-trees
@@ -134,6 +134,9 @@ to link-trees
       if node-connect != nobody ;and node-connect != myself
       [
         create-link-with node-connect
+        [
+          ifelse link-length <= 2 [set link-type "sway"] [set link-type "brachiation"]
+        ]
       ]
     ]
   ]
@@ -228,7 +231,7 @@ tree-density
 tree-density
 0
 10000
-60.0
+200.0
 20
 1
 ind / Ha
