@@ -1,20 +1,43 @@
-extensions [nw]
 breed [trees tree]
-breed [banners banner]
-globals [ trees-in-row trees-in-col max-rows max-cols tree-counter row-counter col-counter starting-col starting-row]
-trees-own[neighbor-nodes crown-diameter height dbh]
-patches-own[affecting-tree]
-links-own[link-type]
+breed [orangutans orangutan]
+globals [trees-in-row trees-in-col max-rows max-cols tree-counter row-counter col-counter starting-col starting-row]
+trees-own [neighbor-nodes crown-diameter height dbh]
+orangutans-own [body-mass age-sex-class energy-reserve]
+patches-own [affecting-tree]
 
 to setup
   clear-all
-  ask patches with [(pycor mod 2 = 0 and pxcor mod 2 != 0) or (pxcor mod 2 = 0 and pycor mod 2 != 0)]
-  [set pcolor black + 2]
+  set-patches
+  setup-forest
+  set-fruiting-trees
+  set-orangutans
+end
+
+to set-patches
+  if show-grid = true
+  [ask patches with [(pycor mod 2 = 0 and pxcor mod 2 != 0) or (pxcor mod 2 = 0 and pycor mod 2 != 0)]
+    [set pcolor black + 1]]
   ask patches [set affecting-tree turtle-set no-turtles]
-  calculate-row-col
-  set-default-shape turtles "circle"
+end
+
+to setup-forest
   ifelse tree-dist = "regular"
-  [regular-setup][random-2]
+  [regular-setup][random-setup]
+end
+
+to set-fruiting-trees
+end
+
+to set-orangutans
+  ask one-of patches with [any? trees-here = true]
+  [
+    sprout-orangutans 1
+    [
+      set shape "person"
+      set size 3
+      set color orange
+    ]
+  ]
 end
 
 to calculate-row-col
@@ -34,11 +57,12 @@ to calculate-row-col
 end
 
 to set-starting-patch
-  set starting-col ceiling(max-pxcor / 2) - ceiling(max-cols / 2)
+  set starting-col ceiling(max-pxcor / 2) - ceiling(max-cols / 2) + 1
   set starting-row ceiling(max-pycor / 2) - ceiling(max-rows / 2)
 end
 
 to regular-setup
+  calculate-row-col
   set-starting-patch
 
   set row-counter starting-row
@@ -54,21 +78,7 @@ to regular-setup
       [
         ask patches with [pxcor = col-counter and pycor = row-counter]
         [
-          sprout-trees 1
-          [
-            set neighbor-nodes turtle-set no-turtles
-            set dbh abs(random-normal avg-dbh 1)
-            set height abs(random-normal avg-tree-height 1)
-            set crown-diameter abs(random-normal avg-crown-diameter 1)
-            set color green + 20
-            set size 1
-            ask patches in-radius floor(crown-diameter / 2) [
-              if show-crown = true
-              [set pcolor green + [who] of myself]
-              let newset turtle-set myself
-              set affecting-tree (turtle-set newset affecting-tree)
-            ]
-          ]
+          establish-tree
         ]
         set row-counter row-counter + reg-dist-between-trees
       ]
@@ -79,25 +89,30 @@ to regular-setup
   link-trees
 end
 
-to random-2
+to establish-tree
+  sprout-trees 1
+  [
+    set neighbor-nodes turtle-set no-turtles
+    set dbh abs(random-normal avg-dbh 1)
+    set height abs(random-normal avg-tree-height 1)
+    set crown-diameter abs(random-normal avg-crown-diameter 1)
+    set color green + 20
+    set size 1
+    set shape "circle"
+    ask patches in-radius floor(crown-diameter / 2) [
+      if show-crown = true
+      [set pcolor (green - 2) + [who] of myself mod 5]
+      let newset turtle-set myself
+      set affecting-tree (turtle-set newset affecting-tree)
+    ]
+  ]
+end
+
+to random-setup
   ask n-of tree-density patches [
     if one-of other trees-here = nobody
     [
-      sprout-trees 1
-      [
-        set neighbor-nodes turtle-set no-turtles
-        set dbh abs(random-normal avg-dbh 1)
-        set height abs(random-normal avg-tree-height 1)
-        set crown-diameter abs(random-normal avg-crown-diameter 1)
-        set color green + 20
-        set size 1
-        ask patches in-radius floor(crown-diameter / 2) [
-          if show-crown = true
-          [set pcolor green + [who] of myself]
-          let newset turtle-set myself
-          set affecting-tree (turtle-set newset affecting-tree)
-        ]
-      ]
+      establish-tree
     ]
   ]
   link-trees
@@ -107,10 +122,8 @@ to link-trees
   ask trees
   [
     ;get the affecting-trees from the patches in-radius of my crown
-    ;set neighbor-nodes (turtle-set no-turtles)
     set neighbor-nodes (turtle-set neighbor-nodes ([affecting-tree] of patches in-radius floor(crown-diameter / 2)))
 
-    ;check trees within radius of my crown
     repeat count neighbor-nodes
     [
       let node-connect one-of neighbor-nodes with[not link-neighbor? myself and who != [who] of myself]
@@ -121,46 +134,15 @@ to link-trees
     ]
   ]
 end
-
-
-
-to link-trees-loop
-  ask trees
-  [
-    set neighbor-nodes turtle-set [trees-here] of patches in-radius floor(crown-diameter / 2)
-
-    while [count my-links < count neighbor-nodes - 1]
-    [
-      let node-connect one-of neighbor-nodes with[not link-neighbor? myself]
-      if node-connect != nobody and node-connect != self
-      [
-        create-link-with node-connect
-        [
-          ifelse [height] of node-connect < [height] of myself
-          [
-            ifelse link-length <= 1 [set link-type "sway"][die]
-          ]
-          [
-            ifelse [dbh] of myself < 20
-            [set link-type "sway"]
-            [
-              ifelse [dbh] of node-connect < 20 [set link-type "sway"] [set link-type "brachiation"]
-            ]
-          ]
-        ]
-      ]
-    ]
-  ]
-end
 @#$#@#$#@
 GRAPHICS-WINDOW
-212
-13
-648
-450
+193
+10
+668
+486
 -1
 -1
-4.28
+4.67
 1
 10
 1
@@ -181,10 +163,10 @@ ticks
 30.0
 
 BUTTON
-15
-18
-99
-51
+9
+11
+93
+44
 NIL
 setup
 NIL
@@ -198,50 +180,35 @@ NIL
 1
 
 CHOOSER
-10
-64
-148
-109
+8
+56
+146
+101
 tree-dist
 tree-dist
 "regular" "random"
-1
-
-SLIDER
-10
-165
-189
-198
-connectivity
-connectivity
 0
-1
-0.4
-0.1
-1
-NIL
-HORIZONTAL
 
 SLIDER
-10
-118
-187
-151
+8
+110
+185
+143
 reg-dist-between-trees
 reg-dist-between-trees
 1
 5
-3.0
+4.0
 1
 1
 NIL
 HORIZONTAL
 
 MONITOR
-748
-10
-864
-55
+679
+13
+795
+58
 Avg. Node Degree
 mean [count my-links] of trees
 2
@@ -249,15 +216,15 @@ mean [count my-links] of trees
 11
 
 SLIDER
-8
-208
-180
-241
+6
+153
+178
+186
 tree-density
 tree-density
 0
 10000
-40.0
+180.0
 20
 1
 ind / Ha
@@ -281,10 +248,10 @@ NIL
 1
 
 MONITOR
-749
-64
-830
-109
+680
+67
+761
+112
 NIL
 trees-in-row
 17
@@ -292,10 +259,10 @@ trees-in-row
 11
 
 MONITOR
-749
-119
-824
-164
+680
+122
+755
+167
 NIL
 trees-in-col
 17
@@ -303,10 +270,10 @@ trees-in-col
 11
 
 MONITOR
-862
-119
-924
-164
+793
+122
+855
+167
 NIL
 max-cols
 17
@@ -314,10 +281,10 @@ max-cols
 11
 
 MONITOR
-863
-63
-930
-108
+794
+66
+861
+111
 NIL
 max-rows
 17
@@ -325,10 +292,10 @@ max-rows
 11
 
 MONITOR
-750
-172
-831
-217
+681
+175
+762
+220
 NIL
 starting-row
 17
@@ -336,10 +303,10 @@ starting-row
 11
 
 MONITOR
-860
-173
-935
-218
+791
+176
+866
+221
 NIL
 starting-col
 17
@@ -347,40 +314,40 @@ starting-col
 11
 
 SLIDER
-9
-255
-181
-288
+7
+200
+179
+233
 avg-tree-height
 avg-tree-height
 15
 50
-25.0
+35.0
 5
 1
 NIL
 HORIZONTAL
 
 SLIDER
-10
-299
-182
-332
+8
+244
+180
+277
 avg-crown-diameter
 avg-crown-diameter
 1
 10
-9.0
+8.0
 1
 1
 NIL
 HORIZONTAL
 
 SLIDER
-10
-345
-182
-378
+8
+290
+180
+323
 avg-dbh
 avg-dbh
 5
@@ -392,45 +359,56 @@ cm
 HORIZONTAL
 
 MONITOR
-747
-227
-871
-272
+678
+230
+802
+275
 NIL
 mean [dbh] of trees
-3
+2
 1
 11
 
 MONITOR
-747
-280
-919
-325
+678
+283
+850
+328
 NIL
 mean [crown-diameter] of trees
-3
+2
 1
 11
 
 MONITOR
-747
-333
-885
-378
+678
+336
+816
+381
 NIL
 mean [height] of trees
-3
+2
 1
 11
 
 SWITCH
-23
-409
-146
-442
+9
+335
+132
+368
 show-crown
 show-crown
+0
+1
+-1000
+
+SWITCH
+10
+380
+120
+413
+show-grid
+show-grid
 0
 1
 -1000
