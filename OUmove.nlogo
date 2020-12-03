@@ -1,10 +1,11 @@
+extensions [nw]
 breed [trees tree]
 breed [orangutans orangutan]
 globals [trees-in-row trees-in-col max-rows max-cols tree-counter row-counter col-counter starting-col starting-row]
-trees-own [neighbor-nodes crown-diameter height dbh]
-orangutans-own [body-mass age-sex-class energy-reserve location]
+trees-own [neighbor-nodes crown-diameter height dbh temp-path]
+orangutans-own [last-sway body-mass age-sex-class energy-reserve location path-route destination]
 patches-own [affecting-tree]
-links-own [link-type]
+links-own [link-type dist]
 
 to setup
   clear-all
@@ -16,7 +17,7 @@ to setup
   reset-ticks
 end
 
-to go
+to go-2
   ask orangutans
   [
     let new-location one-of [link-neighbors] of location
@@ -25,14 +26,60 @@ to go
   tick
 end
 
+to go
+ ask orangutans
+ [
+    move
+    ifelse length path-route > 0
+    [ set path-route remove-item 0 path-route ]
+    [ print "at destination" ]
+  ]
+  tick
+end
+
+to move
+  ifelse length path-route > 0
+  [let next-tree item 0 path-route
+  let linknya nobody
+  let d 0
+  ask trees-here
+  [set linknya link-with next-tree]
+
+  move-to next-tree
+
+  if linknya != nobody
+  [set d [link-length] of linknya]
+    set last-sway sway d]
+  []
+end
+
+to-report sway [x]
+  ;pi^2 * d^2 * m
+  report pi ^ 2 * x ^ 2 * body-mass
+end
+
+
 to update-view
-  ask trees
+  ifelse show-crown = true
   [
-    ask patches in-radius floor(crown-diameter / 2) [
-      if show-crown = true
-      [set pcolor (green - 2) + [who] of myself mod 5]
+    ask trees
+    [
+      ask patches in-radius floor(crown-diameter / 2) [
+      if [dbh] of myself > 20
+      [set pcolor (green) + [height] of myself mod 10]
+      ]
     ]
   ]
+  [
+    ifelse show-grid = true
+    [
+      ask patches [set pcolor black]
+      ask patches with [(pycor mod 2 = 0 and pxcor mod 2 != 0) or (pxcor mod 2 = 0 and pycor mod 2 != 0)]
+      [set pcolor black + 1]
+    ]
+    [ ask patches [set pcolor black] ]
+  ]
+
 end
 
 to set-simulation-size
@@ -47,6 +94,7 @@ to set-simulation-size
 end
 
 to set-patches
+  ask patches [set pcolor black]
   if show-grid = true
   [ask patches with [(pycor mod 2 = 0 and pxcor mod 2 != 0) or (pxcor mod 2 = 0 and pycor mod 2 != 0)]
     [set pcolor black + 1]]
@@ -74,7 +122,18 @@ to set-orangutans
     set color orange
     set location one-of trees with [count my-links > 0 and any? orangutans-here = false]
     move-to location
+    set destination one-of trees with [color = red]
+    ask trees-here
+    [
+      get-path-to-fruit
+    ]
+    set path-route [temp-path] of trees-here
+    set path-route item 0 path-route
   ]
+end
+
+to get-path-to-fruit
+  set temp-path nw:turtles-on-weighted-path-to [destination] of myself dist
 end
 
 to calculate-row-col
@@ -131,13 +190,16 @@ to establish-tree
     set neighbor-nodes turtle-set no-turtles
     set dbh abs(random-normal avg-dbh 1)
     set height abs(random-normal avg-tree-height 1)
-    set crown-diameter abs(random-normal avg-crown-diameter 1)
+
+    ifelse dbh <= 20 [set crown-diameter 0 set size 0.5]
+    [set crown-diameter abs(random-normal avg-crown-diameter 1) set size 1]
+
     set color green + 20
-    set size 1
+
     set shape "circle"
     ask patches in-radius floor(crown-diameter / 2) [
-      if show-crown = true
-      [set pcolor (green - 2) + [who] of myself mod 5]
+      if show-crown = true and [dbh] of myself > 20
+      [set pcolor (green) + [height] of myself mod 10]
       let newset turtle-set myself
       set affecting-tree (turtle-set newset affecting-tree)
     ]
@@ -158,6 +220,7 @@ to link-trees
   [
     ;get the affecting-trees from the patches in-radius of my crown
     set neighbor-nodes (turtle-set neighbor-nodes ([affecting-tree] of patches in-radius floor(crown-diameter / 2)))
+    set neighbor-nodes (turtle-set neighbor-nodes turtles-on neighbors)
 
     repeat count neighbor-nodes
     [
@@ -166,7 +229,9 @@ to link-trees
       [
         create-link-with node-connect
         [
-          ifelse link-length <= 2 [set link-type "sway" set color red] [set link-type "brachiation" set color blue]
+          ifelse link-length <= 2 [set link-type "sway" set color red]
+          [set link-type "brachiation" set color blue]
+          set dist link-length
         ]
       ]
     ]
@@ -174,10 +239,10 @@ to link-trees
 end
 @#$#@#$#@
 GRAPHICS-WINDOW
-324
+309
 10
-734
-421
+729
+431
 -1
 -1
 16.5
@@ -225,7 +290,7 @@ CHOOSER
 tree-dist
 tree-dist
 "regular" "random"
-1
+0
 
 SLIDER
 8
@@ -243,9 +308,9 @@ m
 HORIZONTAL
 
 MONITOR
-754
+748
 11
-870
+864
 56
 Avg. Node Degree
 mean [count my-links] of trees
@@ -262,7 +327,7 @@ tree-density
 tree-density
 0
 10000
-20.0
+40.0
 20
 1
 ind / Ha
@@ -286,10 +351,10 @@ NIL
 1
 
 MONITOR
-755
-65
-836
-110
+1177
+432
+1258
+477
 NIL
 trees-in-row
 17
@@ -297,10 +362,10 @@ trees-in-row
 11
 
 MONITOR
-755
-120
-830
-165
+1177
+487
+1252
+532
 NIL
 trees-in-col
 17
@@ -308,10 +373,10 @@ trees-in-col
 11
 
 MONITOR
-868
-120
-930
-165
+1271
+487
+1333
+532
 NIL
 max-cols
 17
@@ -319,10 +384,10 @@ max-cols
 11
 
 MONITOR
-869
-64
-936
-109
+1272
+431
+1339
+476
 NIL
 max-rows
 17
@@ -330,10 +395,10 @@ max-rows
 11
 
 MONITOR
-756
-173
-837
-218
+1178
+540
+1259
+585
 NIL
 starting-row
 17
@@ -341,10 +406,10 @@ starting-row
 11
 
 MONITOR
-866
-174
-941
-219
+1269
+541
+1344
+586
 NIL
 starting-col
 17
@@ -375,7 +440,7 @@ avg-crown-diameter
 avg-crown-diameter
 1
 10
-7.0
+6.0
 1
 1
 m
@@ -390,17 +455,17 @@ avg-dbh
 avg-dbh
 5
 50
-26.0
+19.0
 1
 1
 cm
 HORIZONTAL
 
 MONITOR
-753
-228
-877
-273
+747
+63
+871
+108
 NIL
 mean [dbh] of trees
 2
@@ -408,10 +473,10 @@ mean [dbh] of trees
 11
 
 MONITOR
-753
-281
-925
-326
+747
+116
+919
+161
 NIL
 mean [crown-diameter] of trees
 2
@@ -419,10 +484,10 @@ mean [crown-diameter] of trees
 11
 
 MONITOR
-753
-334
-891
-379
+747
+169
+885
+214
 NIL
 mean [height] of trees
 2
@@ -436,7 +501,7 @@ SWITCH
 133
 show-crown
 show-crown
-0
+1
 1
 -1000
 
@@ -460,16 +525,16 @@ fruiting-tree
 fruiting-tree
 0
 100
-10.0
+5.0
 5
 1
 %
 HORIZONTAL
 
 MONITOR
-983
+977
 10
-1053
+1047
 55
 sway-links
 count links with [link-type = \"sway\"]
@@ -478,10 +543,10 @@ count links with [link-type = \"sway\"]
 11
 
 MONITOR
-985
-80
-1087
-125
+976
+61
+1078
+106
 brachiation-links
 count links with [link-type = \"brachiation\"]
 17
@@ -516,10 +581,10 @@ NIL
 1
 
 BUTTON
-174
-137
-275
-170
+180
+144
+281
+177
 NIL
 update-view
 NIL
