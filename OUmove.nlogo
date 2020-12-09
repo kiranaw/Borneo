@@ -122,18 +122,39 @@ to set-orangutans
     set color orange
     set location one-of trees with [count my-links > 0 and any? orangutans-here = false]
     move-to location
-    set destination one-of trees with [color = red]
+    ;select destination
+    ;1. select the nearest fruiting tree from all other fruiting trees
+    let a min [distance myself] of trees with [color = red]
+    set destination one-of trees with [color = red and distance myself = a]
+    ; show the destination (make the tree look bigger)
+    ask destination
+    [
+      set size 5
+    ]
+
+    ;however, the selected destination might not be connected to my place
+    ;check whether the selected destination is connected to my place
     ask trees-here
     [
       get-path-to-fruit
     ]
+
+    ;pass the route to orangutans-own variable
     set path-route [temp-path] of trees-here
+    ;need to extract the list from list
     set path-route item 0 path-route
+
+
   ]
 end
 
+to find-alternative
+  print "i need alternative route / destination"
+end
+
 to get-path-to-fruit
-  set temp-path nw:turtles-on-weighted-path-to [destination] of myself dist
+  ;set temp-path nw:turtles-on-weighted-path-to [destination] of myself dist
+  set temp-path nw:turtles-on-path-to [destination] of myself
 end
 
 to calculate-row-col
@@ -245,7 +266,7 @@ GRAPHICS-WINDOW
 431
 -1
 -1
-16.5
+5.5
 1
 10
 1
@@ -256,9 +277,9 @@ GRAPHICS-WINDOW
 0
 1
 0
-24
+74
 0
-24
+74
 1
 1
 1
@@ -301,7 +322,7 @@ reg-dist-between-trees
 reg-dist-between-trees
 1
 5
-2.0
+4.0
 1
 1
 m
@@ -327,7 +348,7 @@ tree-density
 tree-density
 0
 10000
-40.0
+300.0
 20
 1
 ind / Ha
@@ -440,7 +461,7 @@ avg-crown-diameter
 avg-crown-diameter
 1
 10
-6.0
+10.0
 1
 1
 m
@@ -455,7 +476,7 @@ avg-dbh
 avg-dbh
 5
 50
-19.0
+20.0
 1
 1
 cm
@@ -501,7 +522,7 @@ SWITCH
 133
 show-crown
 show-crown
-1
+0
 1
 -1000
 
@@ -561,7 +582,7 @@ CHOOSER
 simulation-size
 simulation-size
 "100 x 100" "75 x 75" "50 x 50" "25 x 25"
-3
+1
 
 BUTTON
 112
@@ -581,10 +602,10 @@ NIL
 1
 
 BUTTON
-180
-144
-281
-177
+174
+137
+275
+170
 NIL
 update-view
 NIL
@@ -596,6 +617,28 @@ NIL
 NIL
 NIL
 1
+
+MONITOR
+749
+221
+954
+266
+NIL
+[destination] of one-of orangutans
+17
+1
+11
+
+MONITOR
+750
+276
+954
+321
+NIL
+[path-route] of one-of orangutans
+17
+1
+11
 
 @#$#@#$#@
 # OUmove: OrangUtan Movement Agent-based Model
