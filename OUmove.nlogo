@@ -29,27 +29,37 @@ end
 to go
  ask orangutans
  [
-    move
-    ifelse length path-route > 0
-    [ set path-route remove-item 0 path-route ]
-    [ print "at destination" ]
+    ifelse path-route = 0
+    [print "no connected route to destination!"]
+    [
+      move
+      ifelse length path-route > 0
+      [ set path-route remove-item 0 path-route ]
+      [ print "at destination" ]
+    ]
+
   ]
   tick
 end
 
 to move
   ifelse length path-route > 0
-  [let next-tree item 0 path-route
-  let linknya nobody
-  let d 0
-  ask trees-here
-  [set linknya link-with next-tree]
+  [
+    let next-tree item 0 path-route
+    let linknya nobody
+    let d 0
+    ask trees-here
+    [
+      set linknya link-with next-tree
+    ]
+    move-to next-tree
 
-  move-to next-tree
-
-  if linknya != nobody
-  [set d [link-length] of linknya]
-    set last-sway sway d]
+    if linknya != nobody
+    [
+      set d [link-length] of linknya
+    ]
+    set last-sway sway d
+  ]
   []
 end
 
@@ -129,22 +139,28 @@ to set-orangutans
     ; show the destination (make the tree look bigger)
     ask destination
     [
-      set size 5
+      set size 3
     ]
 
     ;however, the selected destination might not be connected to my place
     ;check whether the selected destination is connected to my place
     ask trees-here
     [
-      get-path-to-fruit
+      set temp-path get-path-route [destination] of myself
     ]
 
-    ;pass the route to orangutans-own variable
-    set path-route [temp-path] of trees-here
-    ;need to extract the list from list
-    set path-route item 0 path-route
-
-
+    ;what if there is no path?
+    ifelse [temp-path] of trees-here != [FALSE]
+    [
+      ;pass the route to orangutans-own variable
+      set path-route [temp-path] of trees-here
+      ;need to extract the list from list
+      set path-route item 0 path-route
+    ]
+    [
+      ;when there is no path
+      print "not connected to fruiting tree...need to walk on ground!"
+    ]
   ]
 end
 
@@ -152,10 +168,14 @@ to find-alternative
   print "i need alternative route / destination"
 end
 
-to get-path-to-fruit
-  ;set temp-path nw:turtles-on-weighted-path-to [destination] of myself dist
-  set temp-path nw:turtles-on-path-to [destination] of myself
+to-report get-path-route [desti]
+  report nw:turtles-on-path-to desti
 end
+
+;to get-path-to-fruit
+  ;set temp-path nw:turtles-on-weighted-path-to [destination] of myself dist
+;  set temp-path nw:turtles-on-path-to [destination] of myself
+;end
 
 to calculate-row-col
   ;calculate plot size
@@ -461,7 +481,7 @@ avg-crown-diameter
 avg-crown-diameter
 1
 10
-10.0
+6.0
 1
 1
 m
@@ -636,6 +656,17 @@ MONITOR
 321
 NIL
 [path-route] of one-of orangutans
+17
+1
+11
+
+MONITOR
+750
+335
+1038
+380
+NIL
+[temp-path] of [trees-here] of one-of orangutans
 17
 1
 11
