@@ -3,7 +3,7 @@ breed [trees tree]
 breed [orangutans orangutan]
 globals [trees-in-row trees-in-col max-rows max-cols tree-counter row-counter col-counter starting-col starting-row]
 trees-own [neighbor-nodes crown-diameter height dbh temp-path]
-orangutans-own [last-sway body-mass age-sex-class energy-reserve location path-route destination]
+orangutans-own [last-sway body-mass age-sex-class energy-reserve location path-route destination pre-destination]
 patches-own [affecting-tree]
 links-own [link-type dist]
 
@@ -160,12 +160,35 @@ to set-orangutans
     [
       ;when there is no path
       print "not connected to fruiting tree...need to walk on ground!"
+      ;find a route that can get me as close as possible to the fruiting tree
+      ;called by orangutan agent
+      get-alternative-route
     ]
   ]
 end
 
-to find-alternative
+to get-alternative-route
   print "i need alternative route / destination"
+  ;identify the tree that is the nearest to destination tree, but still connected to me
+  ;from the destination tree, examine the immediate neighbors (use radius)
+  ;how to determine maximum radius? (that is still feasible / desirable for the orangutans to walk through)
+  ask destination ;tree agent
+  [
+    print one-of [trees-here] of myself
+    ;still need min distance...
+    let nearest-connected-tree one-of other trees in-radius 50 with [nw:path-to one-of [trees-here] of one-of orangutans != false]
+
+    ask nearest-connected-tree
+    [
+      print nw:path-to one-of [trees-here] of one-of orangutans
+      ;print [who] of myself
+      ;print [who] of self
+      set color yellow
+      set size 2
+    ]
+  ]
+
+
 end
 
 to-report get-path-route [desti]
@@ -282,11 +305,11 @@ end
 GRAPHICS-WINDOW
 309
 10
-729
-431
+742
+444
 -1
 -1
-5.5
+8.5
 1
 10
 1
@@ -297,9 +320,9 @@ GRAPHICS-WINDOW
 0
 1
 0
-74
+49
 0
-74
+49
 1
 1
 1
@@ -342,7 +365,7 @@ reg-dist-between-trees
 reg-dist-between-trees
 1
 5
-4.0
+3.0
 1
 1
 m
@@ -368,7 +391,7 @@ tree-density
 tree-density
 0
 10000
-300.0
+80.0
 20
 1
 ind / Ha
@@ -602,7 +625,7 @@ CHOOSER
 simulation-size
 simulation-size
 "100 x 100" "75 x 75" "50 x 50" "25 x 25"
-1
+2
 
 BUTTON
 112
