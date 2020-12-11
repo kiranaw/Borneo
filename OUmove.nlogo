@@ -1,7 +1,7 @@
 extensions [nw]
 breed [trees tree]
 breed [orangutans orangutan]
-globals [trees-in-row trees-in-col max-rows max-cols tree-counter row-counter col-counter starting-col starting-row]
+globals [trees-in-row trees-in-col max-rows max-cols tree-counter row-counter col-counter starting-col starting-row isolated-trees]
 trees-own [neighbor-nodes crown-diameter height dbh temp-path]
 orangutans-own [last-sway body-mass age-sex-class energy-reserve location path-route destination pre-destination]
 patches-own [affecting-tree]
@@ -264,6 +264,8 @@ to establish-tree
     ask patches in-radius floor(crown-diameter / 2) [
       if show-crown = true and [dbh] of myself > 20
       [set pcolor (green) + [height] of myself mod 10]
+
+      ;each patch will record the id of tree which crown shadows the patch, it is saved in a "turtle-set" named "affecting-tree"
       let newset turtle-set myself
       set affecting-tree (turtle-set newset affecting-tree)
     ]
@@ -284,8 +286,9 @@ to link-trees
   [
     ;get the affecting-trees from the patches in-radius of my crown
     set neighbor-nodes (turtle-set neighbor-nodes ([affecting-tree] of patches in-radius floor(crown-diameter / 2)))
-    set neighbor-nodes (turtle-set neighbor-nodes turtles-on neighbors)
+    ;set neighbor-nodes (turtle-set neighbor-nodes turtles-on neighbors) <-- what is this for?
 
+    ;NOTE: the patches within 2 meters (which crown dont overlap) are not detected!
     repeat count neighbor-nodes
     [
       let node-connect one-of neighbor-nodes with[not link-neighbor? myself and who != [who] of myself]
@@ -299,6 +302,17 @@ to link-trees
         ]
       ]
     ]
+  ]
+  ;NEXT: add link to all other trees to represent walking path
+  ; 1. identify isolated trees (how?) - or, find a tree which has node-degree = 0
+  ; 2. create a "walking-link" to surrounding tree (how much? only one?) - start with only one link
+  set isolated-trees (turtle-set trees with [count my-links = 0])
+  ask isolated-trees
+  [
+    ;from the isolated tree, find one other tree which is within radius (gradually increase the radius, if possible? eg. 5, 10, 30, etc)
+    let walking-distance-tree one-of other trees in-radius 20
+    if walking-distance-tree != nobody
+    create-link-with walking-distance-tree
   ]
 end
 @#$#@#$#@
@@ -504,7 +518,7 @@ avg-crown-diameter
 avg-crown-diameter
 1
 10
-6.0
+5.0
 1
 1
 m
