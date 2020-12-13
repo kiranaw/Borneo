@@ -3,7 +3,7 @@ breed [trees tree]
 breed [orangutans orangutan]
 globals [trees-in-row trees-in-col max-rows max-cols tree-counter row-counter col-counter starting-col starting-row isolated-trees]
 trees-own [neighbor-nodes crown-diameter height dbh temp-path]
-orangutans-own [last-sway body-mass age-sex-class energy-reserve location path-route destination pre-destination]
+orangutans-own [last-sway body-mass age-sex-class energy-reserve location path-route destination pre-destination temp-path-me]
 patches-own [affecting-tree]
 links-own [link-type dist]
 
@@ -35,7 +35,11 @@ to go
       move
       ifelse length path-route > 0
       [ set path-route remove-item 0 path-route ]
-      [ print "at destination" ]
+      [
+        ifelse [color] of one-of trees-here = yellow
+        [walk-on-ground]
+        [print "at destination"]
+      ]
     ]
 
   ]
@@ -152,43 +156,49 @@ to set-orangutans
     ]
 
     ;what if there is no path?
-    ifelse [temp-path] of trees-here != [FALSE]
-    [
-      ;pass the route to orangutans-own variable
-      set path-route [temp-path] of trees-here
-      ;need to extract the list from list
-      set path-route item 0 path-route
-    ]
+    if [temp-path] of trees-here = [FALSE]
     [
       ;when there is no path
       print "not connected to fruiting tree...need to walk on ground!"
       ;find a route that can get me as close as possible to the fruiting tree
       ;called by orangutan agent
-      get-alternative-route
+      set pre-destination get-alternative-route
+      ask trees-here
+      [
+        set temp-path get-path-route [pre-destination] of myself
+      ]
     ]
+
+      ;pass the route to orangutans-own variable
+      set path-route [temp-path] of trees-here
+      ;need to extract the list from list
+      set path-route item 0 path-route
   ]
 end
 
-to get-alternative-route
+to walk-on-ground
+  move-to destination
+end
+
+to-report get-alternative-route
   print "i need alternative route / destination"
   ;identify the tree that is the nearest to destination tree, but still connected to me
   ;from the destination tree, examine the immediate neighbors (use radius)
   ;how to determine maximum radius? (that is still feasible / desirable for the orangutans to walk through)
+  let nearest-connected-tree nobody
   ask destination ;tree agent
   [
     let origin one-of [trees-here] of myself
     print one-of [trees-here] of myself
     ;find a nearest tree from the destination tree which is still connected to my tree
-    let nearest-connected-tree one-of other trees with [nw:path-to one-of [trees-here] of one-of orangutans != false] with-min [distance one-of [trees-here] of myself]
-
+    set nearest-connected-tree one-of other trees with [nw:path-to one-of [trees-here] of one-of orangutans != false] with-min [distance one-of [trees-here] of myself]
     ;what if there is no nearest connected tree (both are isolated)
+
     ifelse nearest-connected-tree != nobody
     [
       ask nearest-connected-tree
       [
         print nw:path-to one-of [trees-here] of one-of orangutans
-        ;print [who] of myself
-        ;print [who] of self
         set color yellow
         set size 2
       ]
@@ -197,8 +207,7 @@ to get-alternative-route
       ;I am not connected to any other tree
     ]
   ]
-
-
+  report nearest-connected-tree
 end
 
 to-report get-path-route [desti]
