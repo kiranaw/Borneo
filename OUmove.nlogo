@@ -131,7 +131,9 @@ to set-orangutans
     set size 2
     set color orange
     set location one-of trees with [count my-links > 0 and any? orangutans-here = false]
-    move-to location
+    ifelse location != nobody
+    [move-to location]
+    [move-to one-of trees]
     ;select destination
     ;1. select the nearest fruiting tree from all other fruiting trees
     let a min [distance myself] of trees with [color = red]
@@ -139,7 +141,7 @@ to set-orangutans
     ; show the destination (make the tree look bigger)
     ask destination
     [
-      set size 3
+      set size 2
     ]
 
     ;however, the selected destination might not be connected to my place
@@ -174,17 +176,25 @@ to get-alternative-route
   ;how to determine maximum radius? (that is still feasible / desirable for the orangutans to walk through)
   ask destination ;tree agent
   [
+    let origin one-of [trees-here] of myself
     print one-of [trees-here] of myself
-    ;still need min distance...
-    let nearest-connected-tree one-of other trees in-radius 50 with [nw:path-to one-of [trees-here] of one-of orangutans != false]
+    ;find a nearest tree from the destination tree which is still connected to my tree
+    let nearest-connected-tree one-of other trees with [nw:path-to one-of [trees-here] of one-of orangutans != false] with-min [distance one-of [trees-here] of myself]
 
-    ask nearest-connected-tree
+    ;what if there is no nearest connected tree (both are isolated)
+    ifelse nearest-connected-tree != nobody
     [
-      print nw:path-to one-of [trees-here] of one-of orangutans
-      ;print [who] of myself
-      ;print [who] of self
-      set color yellow
-      set size 2
+      ask nearest-connected-tree
+      [
+        print nw:path-to one-of [trees-here] of one-of orangutans
+        ;print [who] of myself
+        ;print [who] of self
+        set color yellow
+        set size 2
+      ]
+    ]
+    [
+      ;I am not connected to any other tree
     ]
   ]
 
@@ -303,16 +313,26 @@ to link-trees
       ]
     ]
   ]
+  ;add-walking-links
+end
+
+to add-walking-links
   ;NEXT: add link to all other trees to represent walking path
-  ; 1. identify isolated trees (how?) - or, find a tree which has node-degree = 0
+  ; 1. identify isolated trees (how?) / find a tree which has node-degree = 0
   ; 2. create a "walking-link" to surrounding tree (how much? only one?) - start with only one link
   set isolated-trees (turtle-set trees with [count my-links = 0])
   ask isolated-trees
   [
     ;from the isolated tree, find one other tree which is within radius (gradually increase the radius, if possible? eg. 5, 10, 30, etc)
-    let walking-distance-tree one-of other trees in-radius 20
+    let walking-distance-tree one-of other trees in-radius 5
     if walking-distance-tree != nobody
-    create-link-with walking-distance-tree
+    [
+      create-link-with walking-distance-tree
+      [
+        set color brown
+        set thickness 0.5
+      ]
+    ]
   ]
 end
 @#$#@#$#@
@@ -379,7 +399,7 @@ reg-dist-between-trees
 reg-dist-between-trees
 1
 5
-3.0
+4.0
 1
 1
 m
