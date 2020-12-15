@@ -3,7 +3,7 @@ breed [trees tree]
 breed [orangutans orangutan]
 globals [trees-in-row trees-in-col max-rows max-cols tree-counter row-counter col-counter starting-col starting-row isolated-trees]
 trees-own [neighbor-nodes crown-diameter height dbh temp-path]
-orangutans-own [last-sway body-mass age-sex-class energy-reserve location path-route destination pre-destination temp-path-me]
+orangutans-own [last-sway body-mass age-sex-class energy-reserve location path-route destination pre-destination temp-path-me arm-length upcoming-link move-cost arm-length next-tree]
 patches-own [affecting-tree]
 links-own [link-type dist]
 
@@ -17,45 +17,46 @@ to setup
   reset-ticks
 end
 
-to go-2
-  ask orangutans
-  [
-    let new-location one-of [link-neighbors] of location
-    move-to new-location
-  ]
-  tick
-end
-
 to go
  ask orangutans
  [
-    ifelse path-route = 0
-    [print "no connected route to destination!"]
+    ;check if an arboreal route to destination exists
+    ifelse path-route = 0 or length path-route = 0
     [
-      move
+      if [color] of one-of trees-here = red
+      [print "at destination"]
+      if [color] of one-of trees-here = yellow
+      [
+        print "no arboreal route to destination! proceed with terrestrial move.."
+        set upcoming-link nobody
+        move-terrestrial
+      ]
+    ]
+    [
+      move-arboreal
       ifelse length path-route > 0
       [ set path-route remove-item 0 path-route ]
-      [
-        ifelse [color] of one-of trees-here = yellow
-        [walk-on-ground]
-        [print "at destination"]
-      ]
+      []
     ]
 
   ]
   tick
 end
 
-to move
-  ifelse length path-route > 0
-  [
-    let next-tree item 0 path-route
+to move-arboreal
+    set next-tree item 0 path-route
     let linknya nobody
     let d 0
     ask trees-here
     [
-      set linknya link-with next-tree
+       set linknya link-with [next-tree] of myself
     ]
+
+    set upcoming-link item 0 [linknya] of trees-here
+
+    ;here, calculate the energy cost to reach the next tree
+    calculate-arboreal-cost
+
     move-to next-tree
 
     if linknya != nobody
@@ -63,15 +64,77 @@ to move
       set d [link-length] of linknya
     ]
     set last-sway sway d
+end
+
+to calculate-climb-cost
+  ifelse [dbh] of next-tree < 20 and [dbh] of one-of trees-here < 20 ; if both trees are small (swaying trees), then no need for climbing
+  [ print "=> no climb" ]
+  [
+    ifelse [height] of next-tree > [height] of one-of trees-here
+    [
+      let height-dif [height] of next-tree - [height] of one-of trees-here
+      set move-cost climb abs(height-dif)
+      print (word "=> descent, energy cost: " move-cost "J")
+    ]
+    [
+      let height-dif [height] of next-tree - [height] of one-of trees-here
+      set move-cost climb abs(height-dif)
+      print (word "=> climb, energy cost: " move-cost "J")
+    ]
   ]
-  []
 end
 
-to-report sway [x]
+to calculate-arboreal-cost
+  if upcoming-link != nobody and upcoming-link != 0
+  [
+    calculate-climb-cost
+    if [link-type] of upcoming-link = "sway"
+    [
+      set move-cost sway [link-length] of upcoming-link
+      print (word "locomotor type: " [link-type] of upcoming-link ", energy cost: " move-cost "J")
+      ;print [link-length] of upcoming-link
+    ]
+    if [link-type] of upcoming-link = "brachiation"
+    [
+      set move-cost brachiate [link-length] of upcoming-link
+      print (word "locomotor type: " [link-type] of upcoming-link ", energy cost: " move-cost "J")
+    ]
+  ]
+end
+
+to calculate-terrestrial-cost
+  set move-cost walk distance destination
+  print (word "locomotor type: walk on ground, energy cost: " move-cost "J")
+end
+
+to move-terrestrial
+  calculate-terrestrial-cost
+  move-to destination
+end
+
+to-report sway [d]
   ;pi^2 * d^2 * m
-  report pi ^ 2 * x ^ 2 * body-mass
+  report ceiling (pi ^ 2 * d ^ 2 * body-mass)
 end
 
+to-report brachiate [d]
+  ;m.g.L
+  ;number of swing -> distance / 2 * arm-length
+  ;assume intermediate-distance = 2 * arm-length
+  let number-of-swing abs(d / 2 * arm-length)
+  let energy-cost body-mass * 9.8 * 2 * arm-length ;* ((cos 45) - 1)
+  report ceiling (number-of-swing * energy-cost)
+end
+
+to-report walk [d]
+  ;m.a.d
+  report ceiling (body-mass * 1.2 * d)
+end
+
+to-report climb [d]
+  ;m.g.h
+  report ceiling (body-mass * 9.8 * d)
+end
 
 to update-view
   ifelse show-crown = true
@@ -122,7 +185,7 @@ to setup-forest
 end
 
 to set-fruiting-trees
-  ask n-of floor(fruiting-tree / 100 * count trees) trees
+  ask n-of floor(fruiting-tree / 100 * count trees) trees with [dbh > 20]
   [
     set color red
   ]
@@ -134,6 +197,8 @@ to set-orangutans
     set shape "person"
     set size 2
     set color orange
+    set body-mass 50
+    set arm-length 1
     set location one-of trees with [count my-links > 0 and any? orangutans-here = false]
     ifelse location != nobody
     [move-to location]
@@ -176,9 +241,7 @@ to set-orangutans
   ]
 end
 
-to walk-on-ground
-  move-to destination
-end
+
 
 to-report get-alternative-route
   print "i need alternative route / destination"
@@ -213,11 +276,6 @@ end
 to-report get-path-route [desti]
   report nw:turtles-on-path-to desti
 end
-
-;to get-path-to-fruit
-  ;set temp-path nw:turtles-on-weighted-path-to [destination] of myself dist
-;  set temp-path nw:turtles-on-path-to [destination] of myself
-;end
 
 to calculate-row-col
   ;calculate plot size
@@ -346,9 +404,9 @@ to add-walking-links
 end
 @#$#@#$#@
 GRAPHICS-WINDOW
-309
+313
 10
-742
+746
 444
 -1
 -1
@@ -397,7 +455,7 @@ CHOOSER
 tree-dist
 tree-dist
 "regular" "random"
-0
+1
 
 SLIDER
 8
@@ -408,17 +466,17 @@ reg-dist-between-trees
 reg-dist-between-trees
 1
 5
-4.0
+2.0
 1
 1
 m
 HORIZONTAL
 
 MONITOR
-748
-11
-864
-56
+745
+13
+861
+58
 Avg. Node Degree
 mean [count my-links] of trees
 2
@@ -434,7 +492,7 @@ tree-density
 tree-density
 0
 10000
-80.0
+380.0
 20
 1
 ind / Ha
@@ -539,9 +597,9 @@ m
 HORIZONTAL
 
 SLIDER
-171
+165
 181
-306
+300
 214
 avg-crown-diameter
 avg-crown-diameter
@@ -554,10 +612,10 @@ m
 HORIZONTAL
 
 SLIDER
-171
-227
-304
-260
+165
+224
+298
+257
 avg-dbh
 avg-dbh
 5
@@ -569,10 +627,10 @@ cm
 HORIZONTAL
 
 MONITOR
-747
-63
-871
-108
+746
+64
+870
+109
 NIL
 mean [dbh] of trees
 2
@@ -581,9 +639,9 @@ mean [dbh] of trees
 
 MONITOR
 747
-116
+118
 919
-161
+163
 NIL
 mean [crown-diameter] of trees
 2
@@ -592,9 +650,9 @@ mean [crown-diameter] of trees
 
 MONITOR
 747
-169
+166
 885
-214
+211
 NIL
 mean [height] of trees
 2
@@ -624,10 +682,10 @@ show-grid
 -1000
 
 SLIDER
-170
-271
-306
-304
+163
+272
+299
+305
 fruiting-tree
 fruiting-tree
 0
@@ -705,10 +763,10 @@ NIL
 1
 
 MONITOR
-749
-221
-954
-266
+747
+216
+952
+261
 NIL
 [destination] of one-of orangutans
 17
@@ -716,10 +774,10 @@ NIL
 11
 
 MONITOR
-750
-276
-954
-321
+748
+271
+952
+316
 NIL
 [path-route] of one-of orangutans
 17
@@ -733,6 +791,28 @@ MONITOR
 380
 NIL
 [temp-path] of [trees-here] of one-of orangutans
+17
+1
+11
+
+MONITOR
+974
+121
+1176
+166
+NIL
+[move-cost] of one-of orangutans
+17
+1
+11
+
+MONITOR
+1001
+198
+1219
+243
+NIL
+[upcoming-link] of one-of orangutans
 17
 1
 11
