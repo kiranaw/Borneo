@@ -66,28 +66,45 @@ to move-arboreal
     set last-sway sway d
 end
 
-to calculate-climb-cost
-  ifelse [dbh] of next-tree < 20 and [dbh] of one-of trees-here < 20 ; if both trees are small (swaying trees), then no need for climbing
-  [ print "=> no climb" ]
+to calculate-climb-cost [move-category]
+  if move-category = "arboreal"
   [
-    ifelse [height] of next-tree > [height] of one-of trees-here
+    ifelse [dbh] of next-tree < 20 and [dbh] of one-of trees-here < 20 ; if both trees are small (swaying trees), then no need for climbing
+    [ print "=> no climb" ]
     [
-      let height-dif [height] of next-tree - [height] of one-of trees-here
-      set move-cost climb abs(height-dif)
-      print (word "=> descent, energy cost: " move-cost "J")
+      ifelse [height] of next-tree > [height] of one-of trees-here
+      [
+        let height-dif [height] of next-tree - [height] of one-of trees-here
+        set move-cost climb abs(height-dif)
+        print (word "=> descent, energy cost: " move-cost "J")
+      ]
+      [
+        let height-dif [height] of next-tree - [height] of one-of trees-here
+        set move-cost climb abs(height-dif)
+        print (word "=> climb, energy cost: " move-cost "J")
+      ]
     ]
-    [
-      let height-dif [height] of next-tree - [height] of one-of trees-here
-      set move-cost climb abs(height-dif)
-      print (word "=> climb, energy cost: " move-cost "J")
-    ]
+  ]
+  if move-category = "terrestrial"
+  [
+    ;remember: terrestrial movement costs 2x climbing bouts (descent and climb)
+    ;take the height of my tree, then plug into energy formula
+    ;then, take the height of the destination tree, plug into the energy formula
+    ;add both calculation (cost for descent and climb)
+    let descent-cost climb [height] of one-of trees-here
+    set move-cost descent-cost
+    print (word "=> descent, energy cost: " move-cost "J")
+
+    let climb-cost climb [height] of destination
+    set move-cost climb-cost
+    print (word "=> climb, energy cost: " move-cost "J")
   ]
 end
 
 to calculate-arboreal-cost
   if upcoming-link != nobody and upcoming-link != 0
   [
-    calculate-climb-cost
+    calculate-climb-cost "arboreal"
     if [link-type] of upcoming-link = "sway"
     [
       set move-cost sway [link-length] of upcoming-link
@@ -103,13 +120,15 @@ to calculate-arboreal-cost
 end
 
 to calculate-terrestrial-cost
+  calculate-climb-cost "terrestrial"
   set move-cost walk distance destination
   print (word "locomotor type: walk on ground, energy cost: " move-cost "J")
 end
 
 to move-terrestrial
+  set next-tree destination
   calculate-terrestrial-cost
-  move-to destination
+  move-to next-tree
 end
 
 to-report sway [d]
@@ -410,7 +429,7 @@ GRAPHICS-WINDOW
 444
 -1
 -1
-8.5
+4.25
 1
 10
 1
@@ -421,9 +440,9 @@ GRAPHICS-WINDOW
 0
 1
 0
-49
+99
 0
-49
+99
 1
 1
 1
@@ -473,10 +492,10 @@ m
 HORIZONTAL
 
 MONITOR
-745
-13
-861
-58
+770
+14
+886
+59
 Avg. Node Degree
 mean [count my-links] of trees
 2
@@ -492,7 +511,7 @@ tree-density
 tree-density
 0
 10000
-380.0
+2920.0
 20
 1
 ind / Ha
@@ -605,7 +624,7 @@ avg-crown-diameter
 avg-crown-diameter
 1
 10
-5.0
+3.0
 1
 1
 m
@@ -627,10 +646,10 @@ cm
 HORIZONTAL
 
 MONITOR
-746
-64
-870
-109
+771
+65
+895
+110
 NIL
 mean [dbh] of trees
 2
@@ -638,10 +657,10 @@ mean [dbh] of trees
 11
 
 MONITOR
-747
-118
-919
-163
+772
+119
+944
+164
 NIL
 mean [crown-diameter] of trees
 2
@@ -649,10 +668,10 @@ mean [crown-diameter] of trees
 11
 
 MONITOR
-747
-166
-885
-211
+772
+167
+910
+212
 NIL
 mean [height] of trees
 2
@@ -690,17 +709,17 @@ fruiting-tree
 fruiting-tree
 0
 100
-5.0
-5
+0.1
+0.1
 1
 %
 HORIZONTAL
 
 MONITOR
-977
-10
-1047
-55
+1002
+11
+1072
+56
 sway-links
 count links with [link-type = \"sway\"]
 17
@@ -708,10 +727,10 @@ count links with [link-type = \"sway\"]
 11
 
 MONITOR
-976
-61
-1078
-106
+1001
+62
+1103
+107
 brachiation-links
 count links with [link-type = \"brachiation\"]
 17
@@ -726,7 +745,7 @@ CHOOSER
 simulation-size
 simulation-size
 "100 x 100" "75 x 75" "50 x 50" "25 x 25"
-2
+0
 
 BUTTON
 112
@@ -763,10 +782,10 @@ NIL
 1
 
 MONITOR
-747
-216
-952
-261
+772
+217
+977
+262
 NIL
 [destination] of one-of orangutans
 17
@@ -774,10 +793,10 @@ NIL
 11
 
 MONITOR
-748
-271
-952
-316
+773
+272
+977
+317
 NIL
 [path-route] of one-of orangutans
 17
@@ -785,10 +804,10 @@ NIL
 11
 
 MONITOR
-750
-335
-1038
-380
+775
+336
+1063
+381
 NIL
 [temp-path] of [trees-here] of one-of orangutans
 17
@@ -796,10 +815,10 @@ NIL
 11
 
 MONITOR
-974
-121
-1176
-166
+999
+122
+1201
+167
 NIL
 [move-cost] of one-of orangutans
 17
@@ -807,10 +826,10 @@ NIL
 11
 
 MONITOR
-1001
-198
-1219
-243
+1026
+199
+1244
+244
 NIL
 [upcoming-link] of one-of orangutans
 17
