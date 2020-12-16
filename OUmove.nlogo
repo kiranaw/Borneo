@@ -1,9 +1,9 @@
 extensions [nw]
 breed [trees tree]
 breed [orangutans orangutan]
-globals [trees-in-row trees-in-col max-rows max-cols tree-counter row-counter col-counter starting-col starting-row isolated-trees]
+globals [trees-in-row trees-in-col max-rows max-cols tree-counter row-counter col-counter starting-col starting-row isolated-trees number-of-trees]
 trees-own [neighbor-nodes crown-diameter height dbh temp-path]
-orangutans-own [last-sway body-mass age-sex-class energy-reserve location path-route destination pre-destination temp-path-me arm-length upcoming-link move-cost arm-length next-tree]
+orangutans-own [last-sway body-mass age-sex-class energy-reserve location path-route destination pre-destination temp-path-me arm-length upcoming-link move-cost arm-length next-tree cumulative-movement-cost]
 patches-own [affecting-tree]
 links-own [link-type dist]
 
@@ -66,6 +66,7 @@ to move-arboreal
     set last-sway sway d
 end
 
+;important: do not forget to add the calculation to the cumulative energy cost
 to calculate-climb-cost [move-category]
   if move-category = "arboreal"
   [
@@ -85,16 +86,18 @@ to calculate-climb-cost [move-category]
       ]
     ]
   ]
-  if move-category = "terrestrial"
-  [
-    ;remember: terrestrial movement costs 2x climbing bouts (descent and climb)
+  ;remember: terrestrial movement costs 2x climbing bouts (descent and climb)
     ;take the height of my tree, then plug into energy formula
     ;then, take the height of the destination tree, plug into the energy formula
     ;add both calculation (cost for descent and climb)
+  if move-category = "descent to ground"
+  [
     let descent-cost climb [height] of one-of trees-here
     set move-cost descent-cost
     print (word "=> descent, energy cost: " move-cost "J")
-
+  ]
+  if move-category = "climb from ground"
+  [
     let climb-cost climb [height] of destination
     set move-cost climb-cost
     print (word "=> climb, energy cost: " move-cost "J")
@@ -105,6 +108,8 @@ to calculate-arboreal-cost
   if upcoming-link != nobody and upcoming-link != 0
   [
     calculate-climb-cost "arboreal"
+    set cumulative-movement-cost cumulative-movement-cost + move-cost ;add the descent / climb cost
+
     if [link-type] of upcoming-link = "sway"
     [
       set move-cost sway [link-length] of upcoming-link
@@ -116,13 +121,21 @@ to calculate-arboreal-cost
       set move-cost brachiate [link-length] of upcoming-link
       print (word "locomotor type: " [link-type] of upcoming-link ", energy cost: " move-cost "J")
     ]
+    set cumulative-movement-cost cumulative-movement-cost + move-cost ;add the sway / brachiate cost
   ]
 end
 
+;gimana biar bisa urut? jadi orangutan turun dulu (descent), terus jalan (walk-on-ground), habis itu baru naik ke pohon (climb)
 to calculate-terrestrial-cost
-  calculate-climb-cost "terrestrial"
+  calculate-climb-cost "descent to ground"
+  set cumulative-movement-cost cumulative-movement-cost + move-cost ; add the descent cost
+
   set move-cost walk distance destination
   print (word "locomotor type: walk on ground, energy cost: " move-cost "J")
+  set cumulative-movement-cost cumulative-movement-cost + move-cost ; add the walking cost
+
+  calculate-climb-cost "climb from ground"
+  set cumulative-movement-cost cumulative-movement-cost + move-cost ; add the climbing cost
 end
 
 to move-terrestrial
@@ -317,6 +330,7 @@ to set-starting-patch
   set starting-row ceiling(max-pycor / 2) - ceiling(max-rows / 2)
 end
 
+;remember: the tree density parameter should be adjustable so that it gives number of trees / Hectares
 to regular-setup
   calculate-row-col
   set-starting-patch
@@ -368,8 +382,15 @@ to establish-tree
   ]
 end
 
+;remember: the tree density parameter should be adjustable so that it gives number of trees / Hectares
 to random-setup
-  ask n-of tree-density patches [
+  ;check the size of world
+  ;if there are 10000 patches, then trees-density =* 1
+  ;make it proportional to the number of count patches
+
+  set number-of-trees tree-density * (count patches / 10000)
+
+  ask n-of number-of-trees patches [
     if one-of other trees-here = nobody
     [
       establish-tree
@@ -425,11 +446,11 @@ end
 GRAPHICS-WINDOW
 313
 10
-746
-444
+745
+443
 -1
 -1
-4.25
+8.5
 1
 10
 1
@@ -440,9 +461,9 @@ GRAPHICS-WINDOW
 0
 1
 0
-99
+49
 0
-99
+49
 1
 1
 1
@@ -474,7 +495,7 @@ CHOOSER
 tree-dist
 tree-dist
 "regular" "random"
-1
+0
 
 SLIDER
 8
@@ -492,10 +513,10 @@ m
 HORIZONTAL
 
 MONITOR
-770
-14
-886
-59
+1080
+11
+1196
+56
 Avg. Node Degree
 mean [count my-links] of trees
 2
@@ -511,7 +532,7 @@ tree-density
 tree-density
 0
 10000
-2920.0
+300.0
 20
 1
 ind / Ha
@@ -624,7 +645,7 @@ avg-crown-diameter
 avg-crown-diameter
 1
 10
-3.0
+4.0
 1
 1
 m
@@ -646,10 +667,10 @@ cm
 HORIZONTAL
 
 MONITOR
-771
-65
-895
-110
+1040
+64
+1164
+109
 NIL
 mean [dbh] of trees
 2
@@ -657,10 +678,10 @@ mean [dbh] of trees
 11
 
 MONITOR
-772
-119
-944
-164
+1041
+118
+1213
+163
 NIL
 mean [crown-diameter] of trees
 2
@@ -668,10 +689,10 @@ mean [crown-diameter] of trees
 11
 
 MONITOR
-772
-167
-910
-212
+1041
+166
+1179
+211
 NIL
 mean [height] of trees
 2
@@ -709,17 +730,17 @@ fruiting-tree
 fruiting-tree
 0
 100
-0.1
+2.4
 0.1
 1
 %
 HORIZONTAL
 
 MONITOR
-1002
-11
-1072
-56
+1271
+10
+1341
+55
 sway-links
 count links with [link-type = \"sway\"]
 17
@@ -727,10 +748,10 @@ count links with [link-type = \"sway\"]
 11
 
 MONITOR
-1001
-62
-1103
-107
+1270
+61
+1372
+106
 brachiation-links
 count links with [link-type = \"brachiation\"]
 17
@@ -745,7 +766,7 @@ CHOOSER
 simulation-size
 simulation-size
 "100 x 100" "75 x 75" "50 x 50" "25 x 25"
-0
+2
 
 BUTTON
 112
@@ -782,10 +803,10 @@ NIL
 1
 
 MONITOR
-772
-217
-977
-262
+1041
+216
+1246
+261
 NIL
 [destination] of one-of orangutans
 17
@@ -793,10 +814,10 @@ NIL
 11
 
 MONITOR
-773
-272
-977
-317
+1042
+271
+1246
+316
 NIL
 [path-route] of one-of orangutans
 17
@@ -804,10 +825,10 @@ NIL
 11
 
 MONITOR
-775
-336
-1063
-381
+1044
+335
+1332
+380
 NIL
 [temp-path] of [trees-here] of one-of orangutans
 17
@@ -815,10 +836,10 @@ NIL
 11
 
 MONITOR
-999
-122
-1201
-167
+1268
+121
+1470
+166
 NIL
 [move-cost] of one-of orangutans
 17
@@ -826,12 +847,34 @@ NIL
 11
 
 MONITOR
-1026
-199
-1244
-244
+1295
+198
+1513
+243
 NIL
 [upcoming-link] of one-of orangutans
+17
+1
+11
+
+MONITOR
+762
+15
+1055
+60
+NIL
+[cumulative-movement-cost] of one-of orangutans
+17
+1
+11
+
+MONITOR
+763
+88
+1017
+133
+NIL
+[move-cost] of one-of orangutans
 17
 1
 11
