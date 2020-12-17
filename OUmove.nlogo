@@ -3,7 +3,7 @@ breed [trees tree]
 breed [orangutans orangutan]
 globals [trees-in-row trees-in-col max-rows max-cols tree-counter row-counter col-counter starting-col starting-row isolated-trees number-of-trees]
 trees-own [neighbor-nodes crown-diameter height dbh temp-path]
-orangutans-own [last-sway body-mass age-sex-class energy-reserve location path-route destination pre-destination temp-path-me arm-length upcoming-link move-cost arm-length next-tree cumulative-movement-cost]
+orangutans-own [last-sway body-mass age-sex-class energy-reserve location path-route destination pre-destination temp-path-me arm-length upcoming-link move-cost arm-length next-tree cumulative-movement-cost visited-fruiting-tree last-fruiting-tree]
 patches-own [affecting-tree]
 links-own [link-type dist]
 
@@ -23,8 +23,18 @@ to go
     ;check if an arboreal route to destination exists
     ifelse path-route = 0 or length path-route = 0
     [
-      if [color] of one-of trees-here = red
-      [print "at destination"]
+      ;if the orangutan has reach a destination tree which has not been visited before, set another target tree for the next locomotion bout
+      ;not necessarily, only see the last visited tree; maybe even only save the last visited tree!
+      if [color] of one-of trees-here = red and one-of trees-here != last-fruiting-tree
+      [
+        print "at destination"
+        ;idea: keep a list of visited fruiting trees <- ingat, ini diisinya pas udah di visit ya, bukan pas sebelumya
+        set last-fruiting-tree destination
+        set visited-fruiting-tree lput destination visited-fruiting-tree
+
+        select-destination
+        find-route
+      ]
       if [color] of one-of trees-here = yellow
       [
         print "no arboreal route to destination! proceed with terrestrial move.."
@@ -232,19 +242,18 @@ to set-orangutans
     set body-mass 50
     set arm-length 1
     set location one-of trees with [count my-links > 0 and any? orangutans-here = false]
+    set visited-fruiting-tree []
     ifelse location != nobody
     [move-to location]
     [move-to one-of trees]
     ;select destination
-    ;1. select the nearest fruiting tree from all other fruiting trees
-    let a min [distance myself] of trees with [color = red]
-    set destination one-of trees with [color = red and distance myself = a]
-    ; show the destination (make the tree look bigger)
-    ask destination
-    [
-      set size 2
-    ]
+    select-destination
+    find-route
+]
+end
 
+to find-route
+  ;move this to go procedure, or first take it out of this procedure
     ;however, the selected destination might not be connected to my place
     ;check whether the selected destination is connected to my place
     ask trees-here
@@ -270,10 +279,25 @@ to set-orangutans
       set path-route [temp-path] of trees-here
       ;need to extract the list from list
       set path-route item 0 path-route
-  ]
 end
 
+to select-destination
+  ;select the nearest fruiting tree from all other fruiting trees
+  print "select destination"
+  ;find a minimum distance from my position to a fruiting tree
+  let a min [distance myself] of trees with [color = red and self != [last-fruiting-tree] of myself ]
+  set destination one-of other trees with [color = red and distance myself = a]
+  ; show the destination (make the tree look bigger)
 
+  ask trees-here
+  [
+    set size 1
+  ]
+  ask destination
+  [
+    set size 2
+  ]
+end
 
 to-report get-alternative-route
   print "i need alternative route / destination"
@@ -446,8 +470,8 @@ end
 GRAPHICS-WINDOW
 313
 10
-745
-443
+746
+444
 -1
 -1
 8.5
@@ -495,7 +519,7 @@ CHOOSER
 tree-dist
 tree-dist
 "regular" "random"
-0
+1
 
 SLIDER
 8
@@ -532,7 +556,7 @@ tree-density
 tree-density
 0
 10000
-300.0
+2340.0
 20
 1
 ind / Ha
@@ -730,7 +754,7 @@ fruiting-tree
 fruiting-tree
 0
 100
-2.4
+1.0
 0.1
 1
 %
@@ -803,10 +827,10 @@ NIL
 1
 
 MONITOR
-1041
-216
-1246
-261
+759
+125
+964
+170
 NIL
 [destination] of one-of orangutans
 17
@@ -860,9 +884,9 @@ NIL
 MONITOR
 762
 15
-1055
+911
 60
-NIL
+cumulative movement cost
 [cumulative-movement-cost] of one-of orangutans
 17
 1
@@ -870,11 +894,33 @@ NIL
 
 MONITOR
 763
-88
-1017
-133
-NIL
+69
+835
+114
+move cost
 [move-cost] of one-of orangutans
+17
+1
+11
+
+MONITOR
+759
+197
+963
+242
+visited-fruiting-tree
+[visited-fruiting-tree] of one-of orangutans
+17
+1
+11
+
+MONITOR
+766
+282
+1001
+327
+NIL
+[last-fruiting-tree] of one-of orangutans
 17
 1
 11
