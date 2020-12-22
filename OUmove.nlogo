@@ -3,7 +3,7 @@ breed [trees tree]
 breed [orangutans orangutan]
 globals [trees-in-row trees-in-col max-rows max-cols tree-counter row-counter col-counter starting-col starting-row isolated-trees number-of-trees]
 trees-own [neighbor-nodes crown-diameter height dbh temp-path]
-orangutans-own [last-sway body-mass age-sex-class energy-reserve location path-route destination pre-destination temp-path-me arm-length upcoming-link move-cost arm-length next-tree cumulative-movement-cost visited-fruiting-tree last-fruiting-tree]
+orangutans-own [last-sway body-mass age-sex-class energy-reserve location path-route destination pre-destination temp-path-me arm-length upcoming-link move-cost arm-length next-tree cumulative-movement-cost visited-fruiting-tree last-visited-fruiting-tree]
 patches-own [affecting-tree]
 links-own [link-type dist]
 
@@ -21,19 +21,19 @@ to go
  ask orangutans
  [
     ;check if an arboreal route to destination exists
-    ifelse path-route = 0 or length path-route = 0
+    ifelse path-route = 0 or length path-route = 0 ;if orangutan reached destination or there is no arboreal link
     [
       ;if the orangutan has reach a destination tree which has not been visited before, set another target tree for the next locomotion bout
       ;not necessarily, only see the last visited tree; maybe even only save the last visited tree!
-      if [color] of one-of trees-here = red and one-of trees-here != last-fruiting-tree
+      if [color] of one-of trees-here = red ;and one-of trees-here != last-visited-fruiting-tree
       [
         print "at destination"
-        ;idea: keep a list of visited fruiting trees <- ingat, ini diisinya pas udah di visit ya, bukan pas sebelumya
-        set last-fruiting-tree destination
+        select-destination ;dibalik select destinationnya di atas sebelum ganti ini last-visited-fruiting-tree
+        find-route
+        set last-visited-fruiting-tree destination ; <- ini harus dicek dulu sebelum ganti isinya, supaya orangutannya nggak bolak balik
         set visited-fruiting-tree lput destination visited-fruiting-tree
 
-        select-destination
-        find-route
+
       ]
       if [color] of one-of trees-here = yellow
       [
@@ -42,11 +42,18 @@ to go
         move-terrestrial
       ]
     ]
+    ;if orangutan have not reached destination or there is no arboreal link
     [
       move-arboreal
-      ifelse length path-route > 0
-      [ set path-route remove-item 0 path-route ]
-      []
+;      ifelse length path-route > 0
+;      [
+      set path-route remove-item 0 path-route
+    ;]
+;      [
+;        ;idea: keep a list of visited fruiting trees <- ingat, ini diisinya pas udah di visit ya, bukan pas sebelumya: hati-hati ini ngesetnya nanti dulu!
+;        set last-visited-fruiting-tree destination ; <- ini harus dicek dulu sebelum ganti isinya, supaya orangutannya nggak bolak balik
+;        set visited-fruiting-tree lput destination visited-fruiting-tree
+;      ]
     ]
 
   ]
@@ -87,12 +94,12 @@ to calculate-climb-cost [move-category]
       [
         let height-dif [height] of next-tree - [height] of one-of trees-here
         set move-cost climb abs(height-dif)
-        print (word "=> descent, energy cost: " move-cost "J")
+        output-print (word "=> descent, energy cost: " move-cost "J")
       ]
       [
         let height-dif [height] of next-tree - [height] of one-of trees-here
         set move-cost climb abs(height-dif)
-        print (word "=> climb, energy cost: " move-cost "J")
+        output-print (word "=> climb, energy cost: " move-cost "J")
       ]
     ]
   ]
@@ -104,13 +111,13 @@ to calculate-climb-cost [move-category]
   [
     let descent-cost climb [height] of one-of trees-here
     set move-cost descent-cost
-    print (word "=> descent, energy cost: " move-cost "J")
+    output-print (word "=> descent to ground, energy cost: " move-cost "J")
   ]
   if move-category = "climb from ground"
   [
     let climb-cost climb [height] of destination
     set move-cost climb-cost
-    print (word "=> climb, energy cost: " move-cost "J")
+    output-print (word "=> climb from ground, energy cost: " move-cost "J")
   ]
 end
 
@@ -123,13 +130,13 @@ to calculate-arboreal-cost
     if [link-type] of upcoming-link = "sway"
     [
       set move-cost sway [link-length] of upcoming-link
-      print (word "locomotor type: " [link-type] of upcoming-link ", energy cost: " move-cost "J")
+      output-print (word "locomotor type: " [link-type] of upcoming-link ", energy cost: " move-cost "J")
       ;print [link-length] of upcoming-link
     ]
     if [link-type] of upcoming-link = "brachiation"
     [
       set move-cost brachiate [link-length] of upcoming-link
-      print (word "locomotor type: " [link-type] of upcoming-link ", energy cost: " move-cost "J")
+      output-print (word "locomotor type: " [link-type] of upcoming-link ", energy cost: " move-cost "J")
     ]
     set cumulative-movement-cost cumulative-movement-cost + move-cost ;add the sway / brachiate cost
   ]
@@ -141,7 +148,7 @@ to calculate-terrestrial-cost
   set cumulative-movement-cost cumulative-movement-cost + move-cost ; add the descent cost
 
   set move-cost walk distance destination
-  print (word "locomotor type: walk on ground, energy cost: " move-cost "J")
+  output-print (word "locomotor type: walk on ground, energy cost: " move-cost "J")
   set cumulative-movement-cost cumulative-movement-cost + move-cost ; add the walking cost
 
   calculate-climb-cost "climb from ground"
@@ -285,8 +292,9 @@ to select-destination
   ;select the nearest fruiting tree from all other fruiting trees
   print "select destination"
   ;find a minimum distance from my position to a fruiting tree
-  let a min [distance myself] of trees with [color = red and self != [last-fruiting-tree] of myself ]
-  set destination one-of other trees with [color = red and distance myself = a]
+  ;let a min [distance myself] of trees with [color = red and self != [last-visited-fruiting-tree] of myself and self != [one-of trees-here] of myself ]
+  ;set destination one-of other trees with [color = red and distance myself = a]
+  set destination one-of other trees with [color = red and self != [last-visited-fruiting-tree] of myself and self != [one-of trees-here] of myself]
   ; show the destination (make the tree look bigger)
 
   ask trees-here
@@ -319,7 +327,7 @@ to-report get-alternative-route
       [
         print nw:path-to one-of [trees-here] of one-of orangutans
         set color yellow
-        set size 2
+        ;set size 2
       ]
     ]
     [
@@ -537,10 +545,10 @@ m
 HORIZONTAL
 
 MONITOR
-1080
-11
-1196
-56
+1454
+10
+1570
+55
 Avg. Node Degree
 mean [count my-links] of trees
 2
@@ -691,10 +699,10 @@ cm
 HORIZONTAL
 
 MONITOR
-1040
-64
-1164
-109
+1414
+63
+1538
+108
 NIL
 mean [dbh] of trees
 2
@@ -702,10 +710,10 @@ mean [dbh] of trees
 11
 
 MONITOR
-1041
-118
-1213
-163
+1415
+117
+1587
+162
 NIL
 mean [crown-diameter] of trees
 2
@@ -713,10 +721,10 @@ mean [crown-diameter] of trees
 11
 
 MONITOR
-1041
-166
-1179
-211
+1415
+165
+1553
+210
 NIL
 mean [height] of trees
 2
@@ -827,10 +835,10 @@ NIL
 1
 
 MONITOR
-759
-125
-964
-170
+1133
+124
+1338
+169
 NIL
 [destination] of one-of orangutans
 17
@@ -838,10 +846,10 @@ NIL
 11
 
 MONITOR
-1042
-271
-1246
-316
+1512
+256
+1716
+301
 NIL
 [path-route] of one-of orangutans
 17
@@ -849,10 +857,10 @@ NIL
 11
 
 MONITOR
-1044
-335
-1332
-380
+1140
+321
+1428
+366
 NIL
 [temp-path] of [trees-here] of one-of orangutans
 17
@@ -882,10 +890,10 @@ NIL
 11
 
 MONITOR
-762
-15
-911
-60
+1136
+14
+1285
+59
 cumulative movement cost
 [cumulative-movement-cost] of one-of orangutans
 17
@@ -893,10 +901,10 @@ cumulative movement cost
 11
 
 MONITOR
-763
-69
-835
-114
+1137
+68
+1209
+113
 move cost
 [move-cost] of one-of orangutans
 17
@@ -904,10 +912,10 @@ move cost
 11
 
 MONITOR
-759
-197
-963
-242
+1132
+179
+1336
+224
 visited-fruiting-tree
 [visited-fruiting-tree] of one-of orangutans
 17
@@ -915,14 +923,21 @@ visited-fruiting-tree
 11
 
 MONITOR
-766
-282
-1001
-327
+1132
+236
+1408
+281
 NIL
-[last-fruiting-tree] of one-of orangutans
+[last-visited-fruiting-tree] of one-of orangutans
 17
 1
+11
+
+OUTPUT
+752
+11
+1123
+444
 11
 
 @#$#@#$#@
