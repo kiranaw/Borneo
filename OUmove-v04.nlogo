@@ -1,11 +1,16 @@
-extensions [nw]
+extensions [nw csv]
 breed [trees tree]
 breed [orangutans orangutan]
 globals [cumulative-energy-gain trees-in-row trees-in-col max-rows max-cols tree-counter row-counter col-counter starting-col starting-row isolated-trees number-of-trees]
-trees-own [transit-tree? targeted? neighbor-nodes crown-diameter height dbh temp-path visiting-orangutans]
-orangutans-own [move-wait-time time-to-reach-next-tree travel-time-required cumulative-travel-length travel-length move-duration time-budget count-walk count-descent count-climb count-brachiation count-sway total-expended-energy energy-reserve last-sway body-mass age-sex-class energy-reserve location path-route destination pre-destination temp-path-me arm-length upcoming-link move-cost arm-length next-tree cumulative-movement-cost visited-fruiting-tree last-visited-fruiting-tree]
+trees-own [fruiting-tree? transit-tree? targeted? neighbor-nodes crown-diameter height dbh temp-path visiting-orangutans]
+orangutans-own [energy-acquired? body-mass feed-wait-time move-wait-time time-to-reach-next-tree travel-time-required cumulative-travel-length travel-length move-duration time-budget count-walk count-descent count-climb count-brachiation count-sway total-expended-energy energy-reserve last-sway energy-reserve location path-route destination pre-destination temp-path-me arm-length upcoming-link move-cost arm-length next-tree cumulative-movement-cost visited-fruiting-tree last-visited-fruiting-tree]
 patches-own [affecting-tree]
 links-own [link-type dist]
+
+to save-network-simple
+  csv:to-file "linksou.csv" [(list end1 end2 dist)] of links
+  csv:to-file "nodesou.csv" [(list who xcor ycor dbh crown-diameter height)] of trees
+end
 
 to setup
   clear-all
@@ -17,16 +22,30 @@ to setup
   reset-ticks
 end
 
-to go-check-hunger
-
+to go
+  if ticks >= 43200
+  [stop]
+  if check-hunger = TRUE
+  [orangutan-move]
+  expend-basal-energy
+ tick
 end
 
-to go
- if ticks >= 8640
- [stop]
+to-report check-hunger
+  ifelse [energy-reserve] of one-of orangutans < 0
+  [
+    ask orangutans [set color yellow]
+    report TRUE
+  ]
+  [ ask orangutans [set color red]
+    report FALSE
+  ]
+end
 
- orangutan-move
- tick
+to expend-basal-energy
+  ;basal energy unit: kcal / BW / hour
+  ask orangutans
+  [set energy-reserve energy-reserve - (1 / 3600 * (basal-energy * body-mass))] ;1/3600 - convert hour to second
 end
 
 to clear-transit-flags
@@ -34,7 +53,6 @@ to clear-transit-flags
   [
     set color green + 20
           set transit-tree? FALSE
-          print "reset ulang pohonnya"
   ]
 end
 
@@ -45,90 +63,83 @@ to orangutan-move
     ;check if an arboreal route to destination exists
     ifelse path-route = [] ;or length path-route = 0;if orangutan reached destination or there is no arboreal link
     [
-       ;if this is a fruiting tree
+      ;if this is a fruiting tree
       if [color] of one-of trees-here = red ;and one-of trees-here != last-visited-fruiting-tree
       [
-        clear-transit-flags
-        set time-budget 0
-        leave-visiting-stamp
+        clear-transit-flags ;clear the transit tree markers from previous trip (transit tree: tree from which I had no more arboreal route to my destination)
+        leave-visiting-stamp ;add myself to the tree's visitor list
         gain-energy
-        print "at destination"
-        select-destination ;dibalik select destinationnya di atas sebelum ganti ini last-visited-fruiting-tree
-        find-route
 
-        set last-visited-fruiting-tree destination ; <- ini harus dicek dulu sebelum ganti isinya, supaya orangutannya nggak bolak balik
-        set visited-fruiting-tree lput destination visited-fruiting-tree
+        ;proceed to this block only if energy acquiring process completed
+        if energy-acquired? = TRUE
+        [
+          select-destination
+          find-route
+          set last-visited-fruiting-tree destination
+          set visited-fruiting-tree lput destination visited-fruiting-tree
+        ]
       ]
-      ;if this is a transit tree (nearest connected neighbor to fruiting tree)
+      ;if this is a transit tree, switch to terrestrial move
       if [color] of one-of trees-here = yellow
       [
-        print "no arboreal route to destination! proceed with terrestrial move.."
+        ;print "no arboreal route to destination! proceed with terrestrial move.."
         set upcoming-link nobody
-
-        ;sebelum dia pindah ke pohon selanjutnya, flag transit-tree diubah jadi FALSE
-;        ask trees-here
-;        [
-;          set color green + 20
-;          set transit-tree? FALSE
-;          print "reset ulang pohonnya"
-;        ]
-
         move-terrestrial
       ]
-      ;if this is a non fruiting tree destination
+      ;if this is a non fruiting tree, find a target tree
       if [color] of one-of trees-here = green + 20
       [
         clear-transit-flags
-        ;set destination one-of other trees with [color != red]
         select-destination
         find-route
-       ; random-move
       ]
     ]
+    ;if i have selected a route to traverse
     [
       ;remove the first & current tree from list --> make sure it doesn't waste a timestep staying on the same tree
       if [who] of item 0 path-route = [who] of one-of trees-here
       [set path-route remove-item 0 path-route]
 
-      ;let next-tr item 0 path-route ;what if there is no more element??
-      ;move-arboreal
-
+      ;if there is no connected tree from here
       ifelse path-route = []
       [
-        let dstn destination ;REMEMBER: langkah ini diambil hanya kalau path route nya sekarang empty!!, kalo engga empty, ya proceed langsung arboreal
-        ;before deciding to move arboreally, check if there is any link to the next tree?
-        ;otherwise, proceed with terrestrial move!
+        let dstn destination
+        ;is there REALLY no connection with the target tree? recheck
         ifelse one-of [link-with dstn] of trees-here != nobody
         [
           move-arboreal
         ]
         [
           move-terrestrial
-          print "terrestrial move now..."
+          ;print "terrestrial move now..."
         ]
       ]
       [
         move-arboreal
       ]
     ]
-
-
-
-      ;move-arboreal
-      ; idea: if the item 0 equals the tree i am at, then remove item 0
-      ;set path-route remove-item 0 path-route ;only remove element after reaching the previous tree!!!! ;move it to the move-arboreal procedure
-
-    ;if orangutan have not reached destination or there is no arboreal link
+    ;sum up the travel length
     set cumulative-travel-length cumulative-travel-length + travel-length
   ]
 end
 
-;assume an orangutan gain 300 kCal per fruiting tree
+;process of food acquiring, this involve timer for the energy intake rate
 to gain-energy
-  set energy-reserve energy-reserve + energy-gain
-  set cumulative-energy-gain cumulative-energy-gain + energy-gain
+  ;based on the energy intake rate, I will stay in this tree for xxx more timesteps to handle my food, before I acquire energy
+  set energy-acquired? FALSE
+  let time-to-acquire-energy round(energy-gain / energy-intake)
+  set feed-wait-time feed-wait-time + 1
+
+  if feed-wait-time = time-to-acquire-energy
+  [
+    set energy-reserve energy-reserve + energy-gain
+    set cumulative-energy-gain cumulative-energy-gain + energy-gain
+    set energy-acquired? TRUE
+    set feed-wait-time 0
+  ]
 end
 
+;give the tree a record of attendance (which orangutan has visited me?)
 to leave-visiting-stamp
   ask trees-here
   [
@@ -139,7 +150,6 @@ end
 to move-arboreal
     ;disini, sebelum orangutan move, hitung dulu jarak yang bisa dia tempuh dalam satu detik
     ;selain itu hitung juga jarak dia dari pohon yang mau dia visit
-    ;if length path-route > 0
     set next-tree item 0 path-route
     let linknya nobody
     let d 0
@@ -161,8 +171,7 @@ to move-arboreal
       let ltyp [link-type] of upcoming-link
       let mvspeed 0
 
-      ;setelah tahu tipe link nya, baru bisa diambil speed sesuai dengan pergerakannya (take the brachiation / sway / walking speed)
-      ;temporary variable
+      ;take the brachiation / sway / walking speed
       if ltyp = "brachiation"
       [set mvspeed brachiation-speed]
       if ltyp = "sway"
@@ -184,7 +193,6 @@ to move-arboreal
           ;also, reset the counter!
           set move-wait-time 0
         ]
-        ;[set move-wait-time move-wait-time + 1] ;add waiting-time++
       ]
     ]
 
@@ -208,23 +216,21 @@ to calculate-climb-cost [move-category]
   if move-category = "arboreal"
   [
     ifelse [dbh] of next-tree < 20 and [dbh] of one-of trees-here < 20 ; if both trees are small (swaying trees), then no need for climbing
-    [ print "=> no climb" ]
+    [] ;print "=> no climb" ]
     [
       ifelse [height] of next-tree > [height] of one-of trees-here
       [
         let height-dif [height] of next-tree - [height] of one-of trees-here
         set move-cost climb abs(height-dif)
         set move-duration climb-time abs(height-dif)
-        set time-budget precision (time-budget - move-duration) 2
-        output-print (word "=> descent, energy cost: " move-cost " kCal")
+        ;output-print (word "=> descent, energy cost: " move-cost " kCal")
         set count-descent count-descent + 1
       ]
       [
         let height-dif [height] of next-tree - [height] of one-of trees-here
         set move-cost climb abs(height-dif)
         set move-duration climb-time abs(height-dif)
-        set time-budget precision (time-budget - move-duration) 2
-        output-print (word "=> climb, energy cost: " move-cost " kCal")
+        ;output-print (word "=> climb, energy cost: " move-cost " kCal")
         set count-climb count-climb + 1
       ]
     ]
@@ -235,11 +241,10 @@ to calculate-climb-cost [move-category]
     ;add both calculation (cost for descent and climb)
   if move-category = "descent to ground"
   [
-    let descent-cost climb [height] of one-of trees-here
+    let descent-cost 1 / 3 * (climb [height] of one-of trees-here) ; added 20.4.2021 assuming descent is 1/3 costly than climbing
     set move-cost descent-cost
     set move-duration climb-time [height] of one-of trees-here
-    set time-budget precision (time-budget - move-duration) 2
-    output-print (word "=> descent to ground, energy cost: " move-cost " kCal")
+    ;output-print (word "=> descent to ground, energy cost: " move-cost " kCal")
     set count-descent count-descent + 1
   ]
   if move-category = "climb from ground"
@@ -247,8 +252,7 @@ to calculate-climb-cost [move-category]
     let climb-cost climb [height] of destination
     set move-cost climb-cost
     set move-duration climb-time [height] of one-of trees-here
-    set time-budget precision (time-budget - move-duration) 2
-    output-print (word "=> climb from ground, energy cost: " move-cost " kCal")
+    ;output-print (word "=> climb from ground, energy cost: " move-cost " kCal")
     set count-climb count-climb + 1
   ]
 end
@@ -264,16 +268,15 @@ to calculate-arboreal-cost
     [
       set move-cost sway [link-length] of upcoming-link
       set move-duration sway-time [link-length] of upcoming-link
-      output-print (word "locomotor type: " [link-type] of upcoming-link ", energy cost: " move-cost " kCal")
+      ;output-print (word "locomotor type: " [link-type] of upcoming-link ", energy cost: " move-cost " kCal")
       set count-sway count-sway + 1
-      set time-budget precision (time-budget - move-duration) 2
       ;print [link-length] of upcoming-link
     ]
     if [link-type] of upcoming-link = "brachiation"
     [
       set move-cost brachiate [link-length] of upcoming-link
       set move-duration brachiation-time [link-length] of upcoming-link
-      output-print (word "locomotor type: " [link-type] of upcoming-link ", energy cost: " move-cost " kCal")
+      ;output-print (word "locomotor type: " [link-type] of upcoming-link ", energy cost: " move-cost " kCal")
       set count-brachiation count-brachiation + 1
     ]
     set cumulative-movement-cost cumulative-movement-cost + move-cost ;add the sway / brachiate cost
@@ -288,7 +291,7 @@ to calculate-terrestrial-cost
   set energy-reserve energy-reserve - move-cost
 
   set move-cost walk distance destination
-  output-print (word "locomotor type: walk on ground, energy cost: " move-cost " kCal")
+  ;output-print (word "locomotor type: walk on ground, energy cost: " move-cost " kCal")
   set cumulative-movement-cost cumulative-movement-cost + move-cost ; add the walking cost
   set energy-reserve energy-reserve - move-cost
   set count-walk count-walk + 1
@@ -363,9 +366,11 @@ to-report brachiate [d]
   ;m.g.L
   ;number of swing -> distance / 2 * arm-length
   ;assume intermediate-distance = 2 * arm-length
-  let number-of-swing abs(d / 2 * arm-length)
-  let energy-cost body-mass * 9.8 * 2 * arm-length ;* ((cos 45) - 1)
-  report precision (ceiling (number-of-swing * energy-cost) * 0.239 / 1000) 3 ;convert to kilocalories
+;  let number-of-swing abs(d / 2 * arm-length)
+;  let energy-cost body-mass * 9.8 * 2 * arm-length ;* ((cos 45) - 1)
+  let energy-cost 1.5 * (0.91 * body-mass * d) / 1000
+  report precision (ceiling (energy-cost)) 3
+  ;report precision (ceiling (number-of-swing * energy-cost) * 0.239 / 1000) 3 ;convert to kilocalories
 end
 
 to-report walk [d]
@@ -417,6 +422,8 @@ to set-simulation-size
   [resize-world 0 49 0 49 set-patch-size 8.5]
   if simulation-size = "25 x 25"
   [resize-world 0 24 0 24 set-patch-size 16.5]
+  if simulation-size = "500 x 500"
+  [resize-world 0 499 0 499 set-patch-size 1]
 end
 
 to set-patches
@@ -428,17 +435,24 @@ to set-patches
 end
 
 to setup-forest
-  ifelse tree-dist = "regular"
-  [regular-setup][random-setup]
+  if tree-dist = "regular"
+  [regular-setup]
+  if tree-dist = "random"
+  [random-setup]
+  if tree-dist = "from-file"
+  [from-csv]
   link-trees
 end
 
 to set-fruiting-trees
+
   ask n-of floor(fruiting-tree / 100 * count trees) trees with [dbh > 20]
   [
     set color red
   ]
 end
+;which trees are orangutan food source?
+
 
 to set-orangutans
   repeat 1
@@ -446,12 +460,13 @@ to set-orangutans
   create-orangutans 1
   [
     set move-wait-time 0
+    set feed-wait-time 0
+    set energy-acquired? FALSE
     set shape "person"
     set size 4
     set color red
-    set body-mass 50
+    set body-mass body-weight
     set arm-length 1
-    set time-budget 120
     set location one-of trees with [count my-links > 0 and any? orangutans-here = false]
     set visited-fruiting-tree []
     set-energy-reserve
@@ -469,25 +484,20 @@ to set-energy-reserve
   ;from Knott et al 1999
   ;female in high fruiting period: 5892 kcal
   ;female in low fruiting period: 281 kcal
-  set energy-reserve 2000
+  set energy-reserve initial-satiation
 end
 
 to find-route
-  ;move this to go procedure, or first take it out of this procedure
-    ;however, the selected destination might not be connected to my place
-    ;check whether the selected destination is connected to my place
     ask trees-here
     [
       set temp-path get-path-route [destination] of myself
-;      if temp-path = nobody
-;      [ set temp-path lput [destination] of myself temp-path ]
     ]
 
     ;what if there is no path?
     if [temp-path] of trees-here = [FALSE] or [temp-path] of trees-here = nobody or [temp-path] of trees-here = [] or length [temp-path] of trees-here = 0
     [
       ;when there is no path
-      print "not connected to fruiting tree...need to walk on ground!"
+      ;print "not connected to fruiting tree...need to walk on ground!"
       ;find a route that can get me as close as possible to the fruiting tree
       ;called by orangutan agent
       set pre-destination get-alternative-route
@@ -503,23 +513,17 @@ to find-route
   set path-route item 0 path-route
 end
 
-;perlu juga nyatet list of destination of orangutans in one timestep
-;what happen if there is no fruiting tree that can be visited anymore?
+
 to select-destination
-  ;select the nearest fruiting tree from all other fruiting trees
-  print "select destination"
-
-  ;select a tree that I havent visited yet
-  ;let dest one-of other trees with [color = red and (member? myself ([visiting-orangutans] of self)) = false and self != [one-of trees-here] of myself]
-
-  ;select a tree that havent been visited
-  let dest one-of other trees with [color = red and ([visiting-orangutans] of self) = [] and self != [one-of trees-here] of myself]; and targeted? = false]
+  ;select a fruiting tree that havent been visited, which is the nearest from me
+  let dest min-one-of other trees with [color = red and ([visiting-orangutans] of self) = [] and self != [one-of trees-here] of myself] [distance myself]; and targeted? = false]
 
   ifelse dest != nobody
   [set destination dest]
-  [set destination one-of other trees with [color != red]]
-  ; show the destination (make the tree look bigger)
+  ;if there is no fruiting tree that can be visited, move to the nearest non-fruiting tree
+  [set destination min-one-of other trees with [color != red] [distance myself]]
 
+  ;show the destination (make the target tree look bigger)
   ask trees-here
   [
     set size 1
@@ -531,14 +535,9 @@ to select-destination
   ]
 end
 
-;select a random destination and go towards it
-;what happen after reaching the tree
-to random-move
-
-end
 
 to-report get-alternative-route
-  print "i need alternative route / destination"
+  ;print "i need alternative route / destination"
   ;identify the tree that is the nearest to destination tree, but still connected to me
   ;from the destination tree, examine the immediate neighbors (use radius)
   ;how to determine maximum radius? (that is still feasible / desirable for the orangutans to walk through)
@@ -546,7 +545,7 @@ to-report get-alternative-route
   ask destination ;tree agent
   [
     let origin one-of [trees-here] of myself
-    print one-of [trees-here] of myself
+    ;print one-of [trees-here] of myself
     ;find a nearest tree from the destination tree which is still connected to my tree
     set nearest-connected-tree one-of other trees with [nw:path-to one-of [trees-here] of one-of orangutans != false] with-min [distance one-of [trees-here] of myself]
     ;what if there is no nearest connected tree (both are isolated)
@@ -555,7 +554,7 @@ to-report get-alternative-route
     [
       ask nearest-connected-tree
       [
-        print nw:path-to one-of [trees-here] of one-of orangutans
+        ;print nw:path-to one-of [trees-here] of one-of orangutans
         set color yellow
         set transit-tree? TRUE
         ;set size 2
@@ -648,6 +647,46 @@ to establish-tree
   ]
 end
 
+;add data from csv file
+;data format: TreeID / x / y / dbh / crown / height / fruiting
+to from-csv
+  file-close-all
+  file-open "tree_data.csv"
+  let headings csv:from-row file-read-line
+
+  while [ not file-at-end? ] [
+    let data csv:from-row file-read-line
+    create-trees 1 [
+      set transit-tree? FALSE
+      set targeted? false
+      set neighbor-nodes turtle-set no-turtles
+      set visiting-orangutans []
+      set dbh item 4 data
+      set height item 6 data
+      set crown-diameter item 5 data
+      ifelse item 7 data = 1 [set fruiting-tree? TRUE][set fruiting-tree? FALSE]
+      setxy item 2 data item 3 data
+      set size 1
+
+      ifelse fruiting-tree? = TRUE
+      [set color red][set color green + 20]
+
+      set shape "circle"
+
+      ask patches in-radius ceiling(crown-diameter / 2) [
+        if show-crown = true and [dbh] of myself > 20
+        [set pcolor (green) - [height] of myself mod 5]
+
+        ;each patch will record the id of tree which crown shadows the patch, it is saved in a "turtle-set" named "affecting-tree"
+        let newset turtle-set myself
+        ;show newset
+        set affecting-tree (turtle-set newset affecting-tree);affecting-tree will always be zero at first because this is not executed sequentially
+      ]
+    ]
+  ]
+  file-close-all
+end
+
 ;remember: the tree density parameter should be adjustable so that it gives number of trees / Hectares
 to random-setup
   ;check the size of world
@@ -663,6 +702,16 @@ to random-setup
     ]
   ]
 end
+
+;ask patches in-radius floor(crown-diameter / 2) [
+;      if show-crown = true and [dbh] of myself > 20
+;      [set pcolor (green) + [height] of myself mod 10]
+;
+;      ;each patch will record the id of tree which crown shadows the patch, it is saved in a "turtle-set" named "affecting-tree"
+;      let newset turtle-set myself
+;      set affecting-tree (turtle-set newset affecting-tree)
+;    ]
+
 
 to link-trees
   ask trees
@@ -710,10 +759,10 @@ to add-walking-links
 end
 @#$#@#$#@
 GRAPHICS-WINDOW
-332
-10
-765
-444
+403
+17
+836
+451
 -1
 -1
 4.25
@@ -754,35 +803,35 @@ NIL
 1
 
 CHOOSER
-6
-48
-153
-93
+11
+85
+132
+130
 tree-dist
 tree-dist
-"regular" "random"
-1
+"regular" "random" "from-file"
+2
 
 SLIDER
-201
-683
-352
-716
+2079
+51
+2230
+84
 reg-dist-between-trees
 reg-dist-between-trees
 1
 5
-4.0
+2.0
 1
 1
 m
 HORIZONTAL
 
 MONITOR
-1860
-62
-1976
-107
+1209
+55
+1313
+100
 Avg. Node Degree
 mean [count my-links] of trees
 2
@@ -790,108 +839,25 @@ mean [count my-links] of trees
 11
 
 SLIDER
-7
-148
-159
-181
+10
+184
+162
+217
 tree-density
 tree-density
 20
 10000
-2520.0
+1520.0
 500
 1
 ind / Ha
 HORIZONTAL
 
-BUTTON
-1551
-562
-1657
-595
-NIL
-regular-setup
-NIL
-1
-T
-OBSERVER
-NIL
-NIL
-NIL
-NIL
-1
-
-MONITOR
-1543
-441
-1624
-486
-NIL
-trees-in-row
-17
-1
-11
-
-MONITOR
-1543
-496
-1618
-541
-NIL
-trees-in-col
-17
-1
-11
-
-MONITOR
-1637
-496
-1699
-541
-NIL
-max-cols
-17
-1
-11
-
-MONITOR
-1638
-440
-1705
-485
-NIL
-max-rows
-17
-1
-11
-
-MONITOR
-1562
-578
-1643
-623
-NIL
-starting-row
-17
-1
-11
-
-MONITOR
-1856
-631
-1931
-676
-NIL
-starting-col
-17
-1
-11
-
 SLIDER
-6
-185
-157
-218
+9
+221
+160
+254
 avg-tree-height
 avg-tree-height
 15
@@ -903,10 +869,10 @@ m
 HORIZONTAL
 
 SLIDER
-173
-160
-308
-193
+11
+261
+159
+294
 avg-crown-diameter
 avg-crown-diameter
 1
@@ -918,10 +884,10 @@ m
 HORIZONTAL
 
 SLIDER
-174
-199
-307
-232
+12
+300
+159
+333
 avg-dbh
 avg-dbh
 5
@@ -932,44 +898,11 @@ avg-dbh
 cm
 HORIZONTAL
 
-MONITOR
-1820
-115
-1944
-160
-NIL
-mean [dbh] of trees
-2
-1
-11
-
-MONITOR
-1821
-169
-1993
-214
-NIL
-mean [crown-diameter] of trees
-2
-1
-11
-
-MONITOR
-1821
-217
-1959
-262
-NIL
-mean [height] of trees
-2
-1
-11
-
 SWITCH
-171
-86
-286
-119
+10
+411
+122
+444
 show-crown
 show-crown
 0
@@ -977,10 +910,10 @@ show-crown
 -1000
 
 SWITCH
-172
-49
-282
-82
+11
+377
+121
+410
 show-grid
 show-grid
 0
@@ -988,10 +921,10 @@ show-grid
 -1000
 
 SLIDER
-174
-236
-310
-269
+12
+340
+160
+373
 fruiting-tree
 fruiting-tree
 0
@@ -1003,10 +936,10 @@ fruiting-tree
 HORIZONTAL
 
 MONITOR
-1677
-62
-1747
+1209
 107
+1272
+152
 sway-links
 count links with [link-type = \"sway\"]
 17
@@ -1014,10 +947,10 @@ count links with [link-type = \"sway\"]
 11
 
 MONITOR
-1676
-113
-1778
-158
+1279
+108
+1369
+153
 brachiation-links
 count links with [link-type = \"brachiation\"]
 17
@@ -1025,13 +958,13 @@ count links with [link-type = \"brachiation\"]
 11
 
 CHOOSER
-6
-99
-152
-144
+10
+135
+133
+180
 simulation-size
 simulation-size
-"100 x 100" "75 x 75" "50 x 50" "25 x 25"
+"100 x 100" "75 x 75" "50 x 50" "25 x 25" "500 x 500"
 0
 
 BUTTON
@@ -1052,10 +985,10 @@ NIL
 1
 
 BUTTON
-171
-123
-272
-156
+10
+451
+111
+484
 NIL
 update-view
 NIL
@@ -1069,10 +1002,10 @@ NIL
 1
 
 MONITOR
-1539
-176
-1744
-221
+1431
+51
+1636
+96
 NIL
 [destination] of one-of orangutans
 17
@@ -1080,10 +1013,10 @@ NIL
 11
 
 MONITOR
-91
-375
-295
-420
+1429
+103
+2104
+148
 NIL
 [path-route] of one-of orangutans
 17
@@ -1091,94 +1024,21 @@ NIL
 11
 
 MONITOR
-1289
-10
-1577
-55
-NIL
-[temp-path] of [trees-here] of one-of orangutans
-17
-1
-11
-
-MONITOR
-1674
-173
-1876
-218
-NIL
-[move-cost] of one-of orangutans
-17
-1
-11
-
-MONITOR
-1701
-250
-1919
-295
-NIL
-[upcoming-link] of one-of orangutans
-17
-1
-11
-
-MONITOR
-1542
-66
-1616
-111
-cumulative movement cost
-[cumulative-movement-cost] of one-of orangutans
-2
-1
-11
-
-MONITOR
-1543
-120
-1615
-165
-move cost
-[move-cost] of one-of orangutans
-17
-1
-11
-
-MONITOR
-1538
-231
-1742
-276
+1429
+266
+1841
+311
 visited-fruiting-tree
 [visited-fruiting-tree] of one-of orangutans
 17
 1
 11
 
-MONITOR
-1538
-288
-1814
-333
-NIL
-[last-visited-fruiting-tree] of one-of orangutans
-17
-1
-11
-
-OUTPUT
-755
-10
-1171
-121
-11
-
 PLOT
-754
-127
-954
-277
+866
+55
+1029
+186
 total energy expenditure
 NIL
 NIL
@@ -1192,40 +1052,11 @@ false
 PENS
 "default" 1.0 0 -16777216 true "" "plot [cumulative-movement-cost] of one-of orangutans"
 
-PLOT
-972
-126
-1172
-276
-energy reserve dynamics
-NIL
-NIL
-0.0
-10.0
-0.0
-10.0
-true
-false
-"" ""
-PENS
-"default" 1.0 0 -16777216 true "" "plot [energy-reserve] of one-of orangutans"
-
 MONITOR
-1161
-629
-1363
-674
-energy-reserve (kCal)
-[energy-reserve] of one-of orangutans
-2
-1
-11
-
-MONITOR
-972
-297
-1176
-342
+1045
+292
+1146
+337
 move-cost (kCal)
 round [cumulative-movement-cost] of one-of orangutans
 2
@@ -1233,10 +1064,10 @@ round [cumulative-movement-cost] of one-of orangutans
 11
 
 MONITOR
-1196
-301
-1253
-346
+1169
+239
+1226
+284
 walk
 [count-walk] of one-of orangutans
 17
@@ -1244,10 +1075,10 @@ walk
 11
 
 MONITOR
-1192
-183
-1257
-228
+1045
+239
+1102
+284
 brachiate
 [count-brachiation] of one-of orangutans
 17
@@ -1255,10 +1086,10 @@ brachiate
 11
 
 MONITOR
-1260
-183
-1317
-228
+1107
+240
+1164
+285
 sway
 [count-sway] of one-of orangutans
 17
@@ -1266,10 +1097,10 @@ sway
 11
 
 MONITOR
-1200
-360
-1257
-405
+1233
+239
+1283
+284
 descent
 [count-descent] of one-of orangutans
 17
@@ -1277,79 +1108,57 @@ descent
 11
 
 MONITOR
-1195
-242
-1252
-287
+1290
+238
+1347
+283
 climb
 [count-climb] of one-of orangutans
 17
 1
 11
 
-MONITOR
-1384
-606
-1464
-651
-moving-time
-[time-budget] of one-of orangutans
-17
-1
-11
-
-SWITCH
-173
-274
-310
-307
-discrete-timesteps
-discrete-timesteps
-0
-1
--1000
-
 SLIDER
-7
-222
-163
-255
+200
+256
+374
+289
 walking-speed
 walking-speed
 0.5
 3
 1.0
-0.1
+0.5
 1
 m/s
 HORIZONTAL
 
 SLIDER
-7
-259
-165
-292
+200
+355
+373
+388
 brachiation-speed
 brachiation-speed
 0.5
-10
+3
 2.0
-0.1
+0.5
 1
 m/s
 HORIZONTAL
 
 SLIDER
-7
-296
-166
-329
+200
+321
+373
+354
 sway-speed
 sway-speed
 0.5
-2
-2.0
-0.1
+3
+1.5
+0.5
 1
 m/s
 HORIZONTAL
@@ -1372,36 +1181,25 @@ NIL
 1
 
 SLIDER
-198
-552
-357
-585
+201
+150
+373
+183
 energy-gain
 energy-gain
-0
+100
 1000
-350.0
+300.0
 1
 1
 kCal / tree
 HORIZONTAL
 
-MONITOR
-972
-350
-1107
-395
-energy-reserve (kCal)
-round [energy-reserve] of one-of orangutans
-2
-1
-11
-
 PLOT
-755
-294
-955
-444
+865
+188
+1028
+315
 energy-gain
 NIL
 NIL
@@ -1416,10 +1214,10 @@ PENS
 "default" 1.0 0 -16777216 true "show [cumulative-energy-gain] of one-of orangutans" "plot [cumulative-energy-gain] of one-of orangutans"
 
 MONITOR
-1286
-130
-1366
-175
+1043
+343
+1123
+388
 energy-gain
 [cumulative-energy-gain] of one-of orangutans
 2
@@ -1427,10 +1225,10 @@ energy-gain
 11
 
 MONITOR
-973
-400
-1065
-445
+1153
+291
+1245
+336
 day range (m)
 [cumulative-travel-length] of one-of orangutans
 2
@@ -1438,40 +1236,25 @@ day range (m)
 11
 
 SLIDER
-200
-594
-379
-627
-hunger-threshold
-hunger-threshold
+201
+183
+373
+216
+initial-satiation
+initial-satiation
+10
 100
-2000
-2000.0
+10.0
 1
 1
-kCal
-HORIZONTAL
-
-SLIDER
-199
-639
-371
-672
-full-threshold
-full-threshold
-4500
-7000
-6500.0
-1
-1
-kCal
+kcal
 HORIZONTAL
 
 MONITOR
-95
-426
-292
-471
+1430
+156
+1627
+201
 NIL
 [next-tree] of one-of orangutans
 17
@@ -1479,67 +1262,225 @@ NIL
 11
 
 MONITOR
-1196
-70
-1465
-115
+1429
+208
+1698
+253
 NIL
 [upcoming-link] of one-of orangutans
 17
 1
 11
 
-MONITOR
-11
+SLIDER
+200
+389
+374
+422
+climb-speed
+climb-speed
+0.5
+3
+1.0
+0.5
+1
+m/s
+HORIZONTAL
+
+SLIDER
+200
+289
+373
+322
+descent-speed
+descent-speed
+0.5
+3
+1.5
+0.5
+1
+m/s
+HORIZONTAL
+
+BUTTON
+1209
+162
+1358
+195
+NIL
+save-network-simple
+NIL
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
+
+PLOT
+1041
+55
+1203
+185
+node degree
+NIL
+NIL
+0.0
+10.0
+0.0
+10.0
+true
+false
+"" ""
+PENS
+"default" 1.0 1 -16777216 true "" ";if not plot? [ stop ]\nlet max-degree max [count link-neighbors] of trees\nplot-pen-reset  ;; erase what we plotted before\nset-plot-x-range 1 (max-degree + 1)  ;; + 1 to make room for the width of the last bar\nhistogram [count link-neighbors] of trees"
+
+SLIDER
+201
+117
+374
+150
+energy-intake
+energy-intake
+0
+15
+6.0
+1
+1
+kcal / min
+HORIZONTAL
+
+SLIDER
+200
+220
 375
-68
-420
-time-tr
-[time-to-reach-next-tree] of one-of orangutans
-17
+253
+basal-energy
+basal-energy
 1
-11
+1.5
+1.3
+0.1
+1
+kcal / BW / hr
+HORIZONTAL
+
+TEXTBOX
+210
+61
+379
+79
+ORANGUTAN PROPERTIES
+13
+0.0
+1
+
+TEXTBOX
+19
+66
+169
+84
+FOREST PROPERTIES
+12
+0.0
+1
+
+TEXTBOX
+1432
+23
+1582
+41
+ROUTE TRAVERSING
+12
+0.0
+1
+
+SLIDER
+201
+84
+373
+117
+body-weight
+body-weight
+30
+100
+55.0
+1
+1
+kg
+HORIZONTAL
+
+TEXTBOX
+1151
+216
+1301
+234
+OUTPUT METRICS
+12
+0.0
+1
+
+TEXTBOX
+1120
+24
+1270
+42
+NETWORK PROPERTIES
+12
+0.0
+1
 
 MONITOR
-7
-425
-71
-470
-wait-time
-[move-wait-time] of one-of orangutans
-17
+1044
+396
+1124
+441
+satiation
+[energy-reserve] of one-of orangutans
+2
 1
 11
 
-SLIDER
-7
-334
-167
-367
-climb-speed
-climb-speed
-0
-2
-1.0
-1
-1
-m/s
-HORIZONTAL
+PLOT
+864
+315
+1028
+444
+satiation
+NIL
+NIL
+0.0
+10.0
+0.0
+10.0
+true
+false
+"" ""
+PENS
+"default" 1.0 0 -16777216 true "" "plot [energy-reserve] of one-of orangutans"
 
-SLIDER
-174
-319
-323
-352
-descent-speed
-descent-speed
-0
-2
-1.0
+TEXTBOX
+907
+24
+982
+42
+ENERGETICS
+12
+0.0
 1
+
+MONITOR
+1153
+341
+1277
+386
+visited fruiting trees
+length ([visited-fruiting-tree] of one-of orangutans)
+17
 1
-m/s
-HORIZONTAL
+11
 
 @#$#@#$#@
 # OUmove: OrangUtan Movement Agent-based Model
