@@ -3,7 +3,7 @@ breed [trees tree]
 breed [orangutans orangutan]
 globals [cumulative-energy-gain trees-in-row trees-in-col max-rows max-cols tree-counter row-counter col-counter starting-col starting-row isolated-trees number-of-trees]
 trees-own [fruiting-tree? transit-tree? targeted? neighbor-nodes crown-diameter height dbh temp-path visiting-orangutans]
-orangutans-own [energy-acquired? body-mass feed-wait-time move-wait-time time-to-reach-next-tree travel-time-required cumulative-travel-length travel-length move-duration time-budget count-walk count-descent count-climb count-brachiation count-sway total-expended-energy energy-reserve last-sway energy-reserve location path-route destination pre-destination temp-path-me arm-length upcoming-link move-cost arm-length next-tree cumulative-movement-cost visited-fruiting-tree last-visited-fruiting-tree]
+orangutans-own [current-activity feeding-count resting-count travelling-count energy-acquired? body-mass feed-wait-time move-wait-time time-to-reach-next-tree travel-time-required cumulative-travel-length travel-length move-duration time-budget count-walk count-descent count-climb count-brachiation count-sway total-expended-energy energy-reserve last-sway energy-reserve location path-route destination pre-destination temp-path-me arm-length upcoming-link move-cost arm-length next-tree cumulative-movement-cost visited-fruiting-tree last-visited-fruiting-tree]
 patches-own [affecting-tree]
 links-own [link-type dist]
 
@@ -25,10 +25,32 @@ end
 to go
   if ticks >= 43200
   [stop]
-  if check-hunger = TRUE
+  ifelse check-hunger = TRUE
   [orangutan-move]
+  [rest]
   expend-basal-energy
+  record-activity
  tick
+end
+
+;add a record to the orangutans activity list
+to record-activity
+  ask orangutans
+  [
+    if current-activity = "feeding"
+    [set feeding-count feeding-count + 1]
+    if current-activity = "resting"
+    [set resting-count resting-count + 1]
+    if current-activity = "travelling"
+    [set travelling-count travelling-count + 1]
+  ]
+end
+
+to rest
+  ask orangutans
+  [
+    set current-activity "resting"
+  ]
 end
 
 to-report check-hunger
@@ -60,7 +82,7 @@ to orangutan-move
  ask orangutans
  [
     ;pen-down
-    ;check if an arboreal route to destination exists
+    ;check if an arboreal route to destination exists, if not:
     ifelse path-route = [] ;or length path-route = 0;if orangutan reached destination or there is no arboreal link
     [
       ;if this is a fruiting tree
@@ -89,12 +111,13 @@ to orangutan-move
       ;if this is a non fruiting tree, find a target tree
       if [color] of one-of trees-here = green + 20
       [
+        print "non fruiting"
         clear-transit-flags
         select-destination
         find-route
       ]
     ]
-    ;if i have selected a route to traverse
+    ;if i have arboreal route to traverse
     [
       ;remove the first & current tree from list --> make sure it doesn't waste a timestep staying on the same tree
       if [who] of item 0 path-route = [who] of one-of trees-here
@@ -129,6 +152,7 @@ to gain-energy
   set energy-acquired? FALSE
   let time-to-acquire-energy round(energy-gain / energy-intake)
   set feed-wait-time feed-wait-time + 1
+  set current-activity "feeding"
 
   if feed-wait-time = time-to-acquire-energy
   [
@@ -181,9 +205,13 @@ to move-arboreal
       set time-to-reach-next-tree dist-to-next-tree / mvspeed
 
       ifelse dist-to-next-tree <= dist-that-i-can-travel-in-one-second
-      [move-to next-tree]
+      [
+        set current-activity "travelling"
+        move-to next-tree
+      ]
       ;wait routine
       [
+        set current-activity "travelling"
         set move-wait-time move-wait-time + 1
         if move-wait-time >= time-to-reach-next-tree ;compare waiting time (time elapsed) and time required to reach target tree
         [
@@ -339,6 +367,7 @@ to move-terrestrial
   set move-wait-time move-wait-time + 1
   if move-wait-time >= time-to-reach-next-tree ;compare waiting time (time elapsed) and time required to reach target tree
   [
+     set current-activity "travelling"
      move-to next-tree
      ;when successfully moved to the next tree, then remove the element from list
      if path-route != []
@@ -459,6 +488,9 @@ to set-orangutans
   [
   create-orangutans 1
   [
+    set feeding-count 0
+    set travelling-count 0
+    set resting-count 0
     set move-wait-time 0
     set feed-wait-time 0
     set energy-acquired? FALSE
@@ -497,7 +529,6 @@ to find-route
     if [temp-path] of trees-here = [FALSE] or [temp-path] of trees-here = nobody or [temp-path] of trees-here = [] or length [temp-path] of trees-here = 0
     [
       ;when there is no path
-      ;print "not connected to fruiting tree...need to walk on ground!"
       ;find a route that can get me as close as possible to the fruiting tree
       ;called by orangutan agent
       set pre-destination get-alternative-route
@@ -521,7 +552,7 @@ to select-destination
   ifelse dest != nobody
   [set destination dest]
   ;if there is no fruiting tree that can be visited, move to the nearest non-fruiting tree
-  [set destination min-one-of other trees with [color != red] [distance myself]]
+  [set destination min-one-of other trees with [color != red and self != [one-of trees-here] of myself] [distance myself]]
 
   ;show the destination (make the target tree look bigger)
   ask trees-here
@@ -703,16 +734,6 @@ to random-setup
   ]
 end
 
-;ask patches in-radius floor(crown-diameter / 2) [
-;      if show-crown = true and [dbh] of myself > 20
-;      [set pcolor (green) + [height] of myself mod 10]
-;
-;      ;each patch will record the id of tree which crown shadows the patch, it is saved in a "turtle-set" named "affecting-tree"
-;      let newset turtle-set myself
-;      set affecting-tree (turtle-set newset affecting-tree)
-;    ]
-
-
 to link-trees
   ask trees
   [
@@ -810,7 +831,7 @@ CHOOSER
 tree-dist
 tree-dist
 "regular" "random" "from-file"
-2
+0
 
 SLIDER
 2079
@@ -929,7 +950,7 @@ fruiting-tree
 fruiting-tree
 0
 100
-1.7
+7.5
 0.1
 1
 %
@@ -1064,57 +1085,57 @@ round [cumulative-movement-cost] of one-of orangutans
 11
 
 MONITOR
-1169
-239
-1226
-284
-walk
-[count-walk] of one-of orangutans
-17
+1195
+238
+1252
+283
+walk%
+[count-walk] of one-of orangutans / ([count-brachiation] of one-of orangutans + [count-sway] of one-of orangutans + [count-walk] of one-of orangutans + [count-descent] of one-of orangutans + [count-climb] of one-of orangutans) * 100
+2
 1
 11
 
 MONITOR
 1045
 239
-1102
+1115
 284
-brachiate
-[count-brachiation] of one-of orangutans
-17
+brachiate %
+[count-brachiation] of one-of orangutans / ([count-brachiation] of one-of orangutans + [count-sway] of one-of orangutans + [count-walk] of one-of orangutans + [count-descent] of one-of orangutans + [count-climb] of one-of orangutans) * 100
+2
 1
 11
 
 MONITOR
-1107
-240
-1164
-285
-sway
-[count-sway] of one-of orangutans
-17
-1
-11
-
-MONITOR
-1233
-239
-1283
-284
-descent
-[count-descent] of one-of orangutans
-17
-1
-11
-
-MONITOR
-1290
+1124
 238
-1347
+1181
 283
-climb
-[count-climb] of one-of orangutans
-17
+sway%
+[count-sway] of one-of orangutans / ([count-brachiation] of one-of orangutans + [count-sway] of one-of orangutans + [count-walk] of one-of orangutans + [count-descent] of one-of orangutans + [count-climb] of one-of orangutans) * 100
+2
+1
+11
+
+MONITOR
+1259
+238
+1329
+283
+descent%
+[count-descent] of one-of orangutans / ([count-brachiation] of one-of orangutans + [count-sway] of one-of orangutans + [count-walk] of one-of orangutans + [count-descent] of one-of orangutans + [count-climb] of one-of orangutans) * 100
+2
+1
+11
+
+MONITOR
+1337
+238
+1394
+283
+climb%
+[count-climb] of one-of orangutans / ([count-brachiation] of one-of orangutans + [count-sway] of one-of orangutans + [count-walk] of one-of orangutans + [count-descent] of one-of orangutans + [count-climb] of one-of orangutans) * 100
+2
 1
 11
 
@@ -1187,9 +1208,9 @@ SLIDER
 183
 energy-gain
 energy-gain
-100
+10
 1000
-300.0
+10.0
 1
 1
 kCal / tree
@@ -1242,9 +1263,9 @@ SLIDER
 216
 initial-satiation
 initial-satiation
-10
+-100
 100
-10.0
+-100.0
 1
 1
 kcal
@@ -1479,6 +1500,39 @@ MONITOR
 visited fruiting trees
 length ([visited-fruiting-tree] of one-of orangutans)
 17
+1
+11
+
+MONITOR
+866
+477
+946
+522
+travelling %
+[travelling-count] of one-of orangutans / 43200 * 100
+2
+1
+11
+
+MONITOR
+956
+476
+1027
+521
+feeding %
+[feeding-count] of one-of orangutans / 43200 * 100
+2
+1
+11
+
+MONITOR
+1036
+475
+1103
+520
+resting %
+[resting-count] of one-of orangutans / 43200 * 100
+2
 1
 11
 
