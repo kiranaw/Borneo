@@ -13,7 +13,8 @@ val walkSpeed = Val[Double]
 
 val seed = Val[Int]
 
-val moveCost = Val[Double]
+val totalEnergyIntake = Val[Double]
+val energyExpenditure = Val[Double]
 val walk = Val[Double]
 val sway = Val[Double]
 val brachiation = Val[Double]
@@ -37,16 +38,17 @@ val model =
     inputs += swaySpeed mapped "sway-speed",
     inputs += climbSpeed mapped "climb-speed",
     inputs += descentSpeed mapped "descent-speed",
-    outputs += moveCost mapped "round [cumulative-movement-cost] of one-of orangutans",
-    outputs += walk mapped "[count-walk] of one-of orangutans",
-    outputs += sway mapped "[count-sway] of one-of orangutans",
-    outputs += brachiation mapped "[count-brachiation] of one-of orangutans",
-    outputs += climb mapped "[count-climb] of one-of orangutans",
-    outputs += descent mapped "[count-descent] of one-of orangutans",
+    outputs += totalEnergyIntake mapped "[cumulative-energy-gain] of one-of orangutans",
+    outputs += energyExpenditure mapped "[cumulative-movement-cost] of one-of orangutans + [basal-metabolic-cost] of one-of orangutans",
+    outputs += walk mapped "[count-walk] of one-of orangutans / [count-move-all] of one-of orangutans * 100",
+    outputs += sway mapped "[count-sway] of one-of orangutans / [count-move-all] of one-of orangutans * 100",
+    outputs += brachiation mapped "[count-brachiation] of one-of orangutans / [count-move-all] of one-of orangutans * 100",
+    outputs += climb mapped "[count-climb] of one-of orangutans / [count-move-all] of one-of orangutans * 100" ,
+    outputs += descent mapped "[count-descent] of one-of orangutans / [count-move-all] of one-of orangutans * 100",
     outputs += travelDistance mapped "[cumulative-travel-length] of one-of orangutans",
-    outputs += feedingBudget mapped "[feeding-count] of one-of orangutans / 43200 * 100",
-    outputs += travellingBudget mapped "[travelling-count] of one-of orangutans / 43200 * 100",
-    outputs += restingBudget mapped "[resting-count] of one-of orangutans / 43200 * 100",
+    outputs += feedingBudget mapped "[feeding-count] of one-of orangutans / ticks * 100",
+    outputs += travellingBudget mapped "[travelling-count] of one-of orangutans / ticks * 100",
+    outputs += restingBudget mapped "[resting-count] of one-of orangutans / ticks * 100",
     treeDist := "from-file",
     bodyWeight := 45.0,
     energyIntake := 6.11,
@@ -73,4 +75,6 @@ val env =
   )
 
 
-model hook display 
+				   
+
+model hook display
