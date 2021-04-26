@@ -3,7 +3,7 @@ breed [trees tree]
 breed [orangutans orangutan]
 globals [cumulative-energy-gain trees-in-row trees-in-col max-rows max-cols tree-counter row-counter col-counter starting-col starting-row isolated-trees number-of-trees]
 trees-own [fruiting-tree? transit-tree? targeted? neighbor-nodes crown-diameter height dbh temp-path visiting-orangutans]
-orangutans-own [basal-metabolic-cost count-move-all current-activity feeding-count resting-count travelling-count energy-acquired? body-mass feed-wait-time move-wait-time time-to-reach-next-tree travel-time-required cumulative-travel-length travel-length move-duration time-budget count-walk count-descent count-climb count-brachiation count-sway total-expended-energy energy-reserve last-sway energy-reserve location path-route destination pre-destination temp-path-me arm-length upcoming-link move-cost arm-length next-tree cumulative-movement-cost visited-fruiting-tree last-visited-fruiting-tree]
+orangutans-own [budget-travel budget-feeding budget-resting freq-brachiate freq-sway freq-climb freq-walk freq-descent basal-metabolic-cost count-move-all current-activity feeding-count resting-count travelling-count energy-acquired? body-mass feed-wait-time move-wait-time time-to-reach-next-tree travel-time-required cumulative-travel-length travel-length move-duration time-budget count-walk count-descent count-climb count-brachiation count-sway total-expended-energy energy-reserve last-sway energy-reserve location path-route destination pre-destination temp-path-me arm-length upcoming-link move-cost arm-length next-tree cumulative-movement-cost visited-fruiting-tree last-visited-fruiting-tree]
 patches-own [affecting-tree]
 links-own [link-type dist]
 
@@ -30,6 +30,29 @@ to go
   expend-basal-energy
   record-activity
  tick
+  compute-frequencies
+end
+
+; compute frequencies of each movement type and activity budget, in percentages
+to compute-frequencies
+  ask orangutans
+  [
+    if count-move-all > 0
+    [
+      set freq-brachiate count-brachiation / count-move-all * 100
+      set freq-climb count-climb / count-move-all * 100
+      set freq-walk count-walk / count-move-all * 100
+      set freq-descent count-descent / count-move-all * 100
+      set freq-sway count-sway / count-move-all * 100
+    ]
+
+    if ticks > 0
+    [
+      set budget-travel travelling-count / ticks * 100
+      set budget-feeding feeding-count / ticks * 100
+      set budget-resting resting-count / ticks * 100
+    ]
+  ]
 end
 
 ;add a record to the orangutans activity list
@@ -493,6 +516,14 @@ to set-orangutans
   [
   create-orangutans 1
   [
+    set budget-travel 0
+    set budget-feeding 0
+    set budget-resting 0
+    set freq-brachiate 0
+    set freq-sway 0
+    set freq-climb 0
+    set freq-walk 0
+    set freq-descent 0
     set feeding-count 0
     set travelling-count 0
     set resting-count 0
@@ -931,7 +962,7 @@ SWITCH
 444
 show-crown
 show-crown
-1
+0
 1
 -1000
 
@@ -1095,7 +1126,7 @@ MONITOR
 1252
 283
 walk%
-[count-walk] of one-of orangutans / [count-move-all] of one-of orangutans * 100
+[freq-walk] of one-of orangutans
 2
 1
 11
@@ -1106,7 +1137,7 @@ MONITOR
 1115
 284
 brachiate %
-[count-brachiation] of one-of orangutans / [count-move-all] of one-of orangutans * 100
+[freq-brachiate] of one-of orangutans
 2
 1
 11
@@ -1117,7 +1148,7 @@ MONITOR
 1181
 283
 sway%
-[count-sway] of one-of orangutans / [count-move-all] of one-of orangutans * 100
+[freq-sway] of one-of orangutans
 2
 1
 11
@@ -1128,7 +1159,7 @@ MONITOR
 1329
 283
 descent%
-[count-descent] of one-of orangutans / [count-move-all] of one-of orangutans * 100
+[freq-descent] of one-of orangutans
 2
 1
 11
@@ -1139,7 +1170,7 @@ MONITOR
 1394
 283
 climb%
-;[count-climb] of one-of orangutans / ([count-brachiation] of one-of orangutans + [count-sway] of one-of orangutans + [count-walk] of one-of orangutans + [count-descent] of one-of orangutans + [count-climb] of one-of orangutans) * 100\n[count-climb] of one-of orangutans / [count-move-all] of one-of orangutans * 100
+[freq-climb] of one-of orangutans
 2
 1
 11
@@ -1153,7 +1184,7 @@ walking-speed
 walking-speed
 0.5
 3
-1.0
+0.5
 0.5
 1
 m/s
@@ -1168,7 +1199,7 @@ brachiation-speed
 brachiation-speed
 0.5
 3
-2.0
+0.5
 0.5
 1
 m/s
@@ -1183,7 +1214,7 @@ sway-speed
 sway-speed
 0.5
 3
-1.5
+0.5
 0.5
 1
 m/s
@@ -1215,7 +1246,7 @@ energy-gain
 energy-gain
 10
 1000
-149.0
+10.0
 1
 1
 kCal / tree
@@ -1269,8 +1300,8 @@ SLIDER
 initial-satiation
 initial-satiation
 -100
-100
--100.0
+500
+45.0
 1
 1
 kcal
@@ -1307,7 +1338,7 @@ climb-speed
 climb-speed
 0.5
 3
-1.0
+0.5
 0.5
 1
 m/s
@@ -1322,7 +1353,7 @@ descent-speed
 descent-speed
 0.5
 3
-1.5
+0.5
 0.5
 1
 m/s
@@ -1370,9 +1401,9 @@ SLIDER
 150
 energy-intake
 energy-intake
-0
+1
 15
-6.0
+1.0
 1
 1
 kcal / min
@@ -1432,7 +1463,7 @@ body-weight
 body-weight
 30
 100
-55.0
+30.0
 1
 1
 kg
@@ -1514,7 +1545,7 @@ MONITOR
 1215
 440
 travelling %
-[travelling-count] of one-of orangutans / ticks * 100
+[budget-travel] of one-of orangutans
 2
 1
 11
@@ -1525,7 +1556,7 @@ MONITOR
 1296
 439
 feeding %
-[feeding-count] of one-of orangutans / ticks * 100
+[budget-feeding] of one-of orangutans
 2
 1
 11
@@ -1536,7 +1567,7 @@ MONITOR
 1372
 438
 resting %
-[resting-count] of one-of orangutans / ticks * 100
+[budget-resting] of one-of orangutans
 2
 1
 11
