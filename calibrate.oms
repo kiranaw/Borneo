@@ -27,11 +27,13 @@ def frequencyOfMovePValue(d: Seq[Array[Double]]) =
     frequencyOfDescentPValue(d.map(_(4))),
   ).max
 
-def feedingBudgetFitness(d: Seq[Double]) = ksTest(d, Seq(50.6, 61.9)).getOrElse(1.0) 
-def travelingBudgetFitness(d: Seq[Double]) = ksTest(d, Seq(17.6, 16.6)).getOrElse(1.0) 
-def restingBudgetFitness(d: Seq[Double]) = ksTest(d, Seq(18.2, 31.3)).getOrElse(1.0) 
 
-def budgetPValue(d: Seq[Array[Double]]) =
+def distToBounds(v: Double, min: Double, max: Double) = if(v < min) min - v else math.max(0, v - max) 
+def feedingBudgetFitness(d: Seq[Double]) = d.map(v => distToBounds(v, 50.6, 61.9)).sum / d.size  //ksTest(d, Seq(50.6, 61.9)).getOrElse(1.0) 
+def travelingBudgetFitness(d: Seq[Double]) = d.map(v => distToBounds(v, 16.6, 17.6)).sum / d.size //ksTest(d, Seq(17.6, 16.6)).getOrElse(1.0) 
+def restingBudgetFitness(d: Seq[Double]) = d.map(v => distToBounds(v, 18.2, 31.3)).sum / d.size //ksTest(d, Seq(18.2, 31.3)).getOrElse(1.0) 
+
+def budgetDelta(d: Seq[Array[Double]]) =
   Seq(
     feedingBudgetFitness(d.map(_(6))),
     travelingBudgetFitness(d.map(_(7))),
@@ -47,7 +49,6 @@ val tupleTask = ScalaTask("""
   inputs += (walk, sway, brachiation, climb, descent, travelDistance, feedingBudget, travellingBudget, restingBudget, totalEnergyIntake, energyExpenditure), 
   outputs += (resultLine)
 )
-
 
 NSGA2Evolution(
   evaluation = model -- tupleTask,
@@ -66,7 +67,7 @@ NSGA2Evolution(
   objective = Seq(
     resultLine aggregate (energyPValue _) as "energyPValue",
     resultLine aggregate (frequencyOfMovePValue _) as "frequencyOfMovePValue",
-    resultLine aggregate (budgetPValue _) as "budgetPValue"
+    resultLine aggregate (budgetDelta _) as "budgetDelta"
   ),
   termination = 1000,
   stochastic = Stochastic(seed = seed)
