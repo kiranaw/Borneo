@@ -816,10 +816,10 @@ to add-walking-links
 end
 @#$#@#$#@
 GRAPHICS-WINDOW
-403
-17
-836
-451
+399
+52
+832
+486
 -1
 -1
 4.25
@@ -870,10 +870,10 @@ tree-dist
 2
 
 SLIDER
-2079
-51
-2230
-84
+1805
+332
+1956
+365
 reg-dist-between-trees
 reg-dist-between-trees
 1
@@ -934,7 +934,7 @@ avg-crown-diameter
 avg-crown-diameter
 1
 10
-4.0
+10.0
 1
 1
 m
@@ -1059,10 +1059,10 @@ NIL
 1
 
 MONITOR
-1431
-51
-1636
-96
+1802
+50
+2007
+95
 NIL
 [destination] of one-of orangutans
 17
@@ -1070,10 +1070,10 @@ NIL
 11
 
 MONITOR
-1429
-103
-2104
-148
+1800
+102
+2475
+147
 NIL
 [path-route] of one-of orangutans
 17
@@ -1081,10 +1081,10 @@ NIL
 11
 
 MONITOR
-1429
-266
-1841
-311
+1800
+265
+2212
+310
 visited-fruiting-tree
 [visited-fruiting-tree] of one-of orangutans
 17
@@ -1308,10 +1308,10 @@ kcal
 HORIZONTAL
 
 MONITOR
-1430
-156
-1627
-201
+1802
+155
+1999
+200
 NIL
 [next-tree] of one-of orangutans
 17
@@ -1319,10 +1319,10 @@ NIL
 11
 
 MONITOR
-1429
-208
-1698
-253
+1800
+207
+2069
+252
 NIL
 [upcoming-link] of one-of orangutans
 17
@@ -1392,7 +1392,7 @@ true
 false
 "" ""
 PENS
-"default" 1.0 1 -16777216 true "" ";if not plot? [ stop ]\nlet max-degree max [count link-neighbors] of trees\nplot-pen-reset  ;; erase what we plotted before\nset-plot-x-range 1 (max-degree + 1)  ;; + 1 to make room for the width of the last bar\nhistogram [count link-neighbors] of trees"
+"default" 1.0 1 -16777216 true "" "let max-degree max [count link-neighbors] of trees\nplot-pen-reset  ;; erase what we plotted before\nset-plot-x-range 1 (max-degree + 1)  ;; + 1 to make room for the width of the last bar\nhistogram [count link-neighbors] of trees"
 
 SLIDER
 201
@@ -1445,10 +1445,10 @@ FOREST PROPERTIES
 1
 
 TEXTBOX
-1432
-23
-1582
-41
+1804
+22
+1954
+40
 ROUTE TRAVERSING
 12
 0.0
@@ -1593,6 +1593,153 @@ energy-expenditure (kCal)
 2
 1
 11
+
+PLOT
+1436
+185
+1609
+308
+tree dbh distribution
+NIL
+NIL
+0.0
+100.0
+0.0
+100.0
+true
+false
+"" "histogram [dbh] of trees"
+PENS
+"default" 1.0 1 -16777216 true "" "histogram [dbh] of trees"
+
+MONITOR
+1621
+52
+1731
+97
+max-tree-height (m)
+max ([height] of trees)
+17
+1
+11
+
+MONITOR
+1622
+102
+1732
+147
+min-tree-height (m)
+min [height] of trees
+17
+1
+11
+
+MONITOR
+1625
+181
+1728
+226
+max-tree-dbh (cm)
+max [dbh] of trees
+17
+1
+11
+
+PLOT
+1436
+52
+1606
+183
+tree height distribution
+NIL
+NIL
+0.0
+100.0
+0.0
+10.0
+true
+false
+"" ""
+PENS
+"default" 1.0 1 -16777216 true "" "histogram [height] of trees"
+
+MONITOR
+1626
+233
+1730
+278
+min-tree-dbh (cm)
+min [dbh] of trees
+17
+1
+11
+
+PLOT
+1436
+309
+1609
+435
+crown distribution
+NIL
+NIL
+0.0
+10.0
+0.0
+10.0
+true
+false
+"" ""
+PENS
+"default" 1.0 1 -16777216 true "" "histogram [crown-diameter] of trees"
+
+BUTTON
+1311
+453
+1374
+486
+NIL
+setup
+NIL
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
+
+MONITOR
+1623
+312
+1772
+357
+max-crown-diameter (m)
+max [crown-diameter] of trees
+2
+1
+11
+
+MONITOR
+1625
+367
+1748
+412
+min-crown-diameter
+min [crown-diameter] of trees
+2
+1
+11
+
+TEXTBOX
+1533
+23
+1683
+41
+FOREST PROPERTIES
+12
+0.0
+1
 
 @#$#@#$#@
 # OUmove: OrangUtan Movement Agent-based Model
