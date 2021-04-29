@@ -93,7 +93,7 @@ to expend-basal-energy
     let energy-spent 1 / 3600 * (basal-energy * body-mass)
     set energy-reserve energy-reserve - energy-spent
     set basal-metabolic-cost basal-metabolic-cost + energy-spent ;+ cumulative-movement-cost
-  ] ;1/3600 - convert hour to second
+  ]
 end
 
 to clear-transit-flags
@@ -109,7 +109,7 @@ to orangutan-move
  [
     ;pen-down
     ;check if an arboreal route to destination exists, if not:
-    ifelse path-route = [] ;or length path-route = 0;if orangutan reached destination or there is no arboreal link
+    ifelse path-route = [] ;if orangutan reached destination or there is no arboreal link
     [
       ;if this is a fruiting tree
       if [color] of one-of trees-here = red ;and one-of trees-here != last-visited-fruiting-tree
@@ -152,14 +152,13 @@ to orangutan-move
       ifelse path-route = []
       [
         let dstn destination
-        ;is there REALLY no connection with the target tree? recheck
+        ;is there no connection with the target tree? recheck
         ifelse one-of [link-with dstn] of trees-here != nobody
         [
           move-arboreal
         ]
         [
           move-terrestrial
-          ;print "terrestrial move now..."
         ]
       ]
       [
@@ -213,8 +212,7 @@ to move-arboreal
     ;here, calculate the energy cost to reach the next tree
     calculate-arboreal-cost
 
-    ;inget ya ini sebelum move, dia lihat dulu distance nya, sama jangkauan jarak yang bisa dia tempuh dalam satu detik
-    ;first, get the distance
+    ;calculate distance and time required to reach the next tree
     if upcoming-link != nobody
     [
       let dist-to-next-tree [link-length] of upcoming-link
@@ -420,19 +418,12 @@ to-report brachiation-time[d]
 end
 
 to-report brachiate [d]
-  ;m.g.L
-  ;number of swing -> distance / 2 * arm-length
-  ;assume intermediate-distance = 2 * arm-length
-;  let number-of-swing abs(d / 2 * arm-length)
-;  let energy-cost body-mass * 9.8 * 2 * arm-length ;* ((cos 45) - 1)
+  ;cost of brachiation is 1.5 * cost of walking
   let energy-cost 1.5 * (0.91 * body-mass * d) / 1000
   report precision (ceiling (energy-cost)) 3
-  ;report precision (ceiling (number-of-swing * energy-cost) * 0.239 / 1000) 3 ;convert to kilocalories
 end
 
 to-report walk [d]
-  ;m.a.d
-  ;report ceiling (body-mass * 1.2 * d)
   ;from Pontzer et al 2010 (from Sockol et al 2007):
   ;energy cost for walking = 0.91 calories * body-mass * distance
   report precision (ceiling (0.91 * body-mass * d) / 1000) 3 ;convert to kilocalories
@@ -508,7 +499,6 @@ to set-fruiting-trees
     set color red
   ]
 end
-;which trees are orangutan food source?
 
 
 to set-orangutans
@@ -541,7 +531,6 @@ to set-orangutans
     ifelse location != nobody
     [move-to location]
     [move-to one-of trees]
-    ;select destination
     select-destination
     find-route
 ]
@@ -549,28 +538,24 @@ to set-orangutans
 end
 
 to set-energy-reserve
-  ;from Knott et al 1999
-  ;female in high fruiting period: 5892 kcal
-  ;female in low fruiting period: 281 kcal
   set energy-reserve initial-satiation
 end
 
 to find-route
     ask trees-here
     [
-      set temp-path get-path-route [destination] of myself
+      set temp-path nw:turtles-on-path-to [destination] of myself
     ]
 
-    ;what if there is no path?
+    ;when there is no path
     if [temp-path] of trees-here = [FALSE] or [temp-path] of trees-here = nobody or [temp-path] of trees-here = [] or length [temp-path] of trees-here = 0
     [
-      ;when there is no path
+
       ;find a route that can get me as close as possible to the fruiting tree
-      ;called by orangutan agent
       set pre-destination get-alternative-route
       ask trees-here
       [
-        set temp-path get-path-route [pre-destination] of myself
+        set temp-path nw:turtles-on-path-to [pre-destination] of myself
       ]
     ]
 
@@ -602,12 +587,9 @@ to select-destination
   ]
 end
 
-
 to-report get-alternative-route
-  ;print "i need alternative route / destination"
   ;identify the tree that is the nearest to destination tree, but still connected to me
   ;from the destination tree, examine the immediate neighbors (use radius)
-  ;how to determine maximum radius? (that is still feasible / desirable for the orangutans to walk through)
   let nearest-connected-tree nobody
   ask destination ;tree agent
   [
@@ -632,10 +614,6 @@ to-report get-alternative-route
     ]
   ]
   report nearest-connected-tree
-end
-
-to-report get-path-route [desti]
-  report nw:turtles-on-path-to desti
 end
 
 to calculate-row-col
@@ -1107,7 +1085,7 @@ true
 false
 "" ""
 PENS
-"default" 1.0 0 -16777216 true "" "plot [cumulative-movement-cost] of one-of orangutans"
+"default" 1.0 0 -16777216 true "" "if plot-update = true [plot [cumulative-movement-cost] of one-of orangutans]"
 
 MONITOR
 1045
@@ -1268,7 +1246,7 @@ true
 false
 "" ""
 PENS
-"default" 1.0 0 -16777216 true "show [cumulative-energy-gain] of one-of orangutans" "plot [cumulative-energy-gain] of one-of orangutans"
+"default" 1.0 0 -16777216 true "show [cumulative-energy-gain] of one-of orangutans" "if plot-update = true [plot [cumulative-energy-gain] of one-of orangutans]"
 
 MONITOR
 1043
@@ -1301,7 +1279,7 @@ initial-satiation
 initial-satiation
 -100
 500
-45.0
+-100.0
 1
 1
 kcal
@@ -1392,7 +1370,7 @@ true
 false
 "" ""
 PENS
-"default" 1.0 1 -16777216 true "" "let max-degree max [count link-neighbors] of trees\nplot-pen-reset  ;; erase what we plotted before\nset-plot-x-range 1 (max-degree + 1)  ;; + 1 to make room for the width of the last bar\nhistogram [count link-neighbors] of trees"
+"default" 1.0 1 -16777216 true "" "if plot-update = true\n[let max-degree max [count link-neighbors] of trees\nplot-pen-reset  ;; erase what we plotted before\nset-plot-x-range 1 (max-degree + 1)  ;; + 1 to make room for the width of the last bar\nhistogram [count link-neighbors] of trees]"
 
 SLIDER
 201
@@ -1516,7 +1494,7 @@ true
 false
 "" ""
 PENS
-"default" 1.0 0 -16777216 true "" "plot [energy-reserve] of one-of orangutans"
+"default" 1.0 0 -16777216 true "" "if plot-update = true [plot [energy-reserve] of one-of orangutans]"
 
 TEXTBOX
 907
@@ -1608,9 +1586,9 @@ NIL
 100.0
 true
 false
-"" "histogram [dbh] of trees"
+"" "if plot-update = true [histogram [dbh] of trees]"
 PENS
-"default" 1.0 1 -16777216 true "" "histogram [dbh] of trees"
+"default" 1.0 1 -16777216 true "" "if plot-update = true [histogram [dbh] of trees]"
 
 MONITOR
 1621
@@ -1661,7 +1639,7 @@ true
 false
 "" ""
 PENS
-"default" 1.0 1 -16777216 true "" "histogram [height] of trees"
+"default" 1.0 1 -16777216 true "" "if plot-update = true [histogram [height] of trees]"
 
 MONITOR
 1626
@@ -1690,7 +1668,7 @@ true
 false
 "" ""
 PENS
-"default" 1.0 1 -16777216 true "" "histogram [crown-diameter] of trees"
+"default" 1.0 1 -16777216 true "" "if plot-update = TRUE [histogram [crown-diameter] of trees]"
 
 BUTTON
 1311
@@ -1740,6 +1718,17 @@ FOREST PROPERTIES
 12
 0.0
 1
+
+SWITCH
+1318
+55
+1408
+88
+plot-update
+plot-update
+0
+1
+-1000
 
 @#$#@#$#@
 # OUmove: OrangUtan Movement Agent-based Model
