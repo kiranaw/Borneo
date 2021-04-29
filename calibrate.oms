@@ -119,4 +119,4 @@ NSGA2Evolution(
   termination = 500000,
   stochastic = Stochastic(seed = seed),
   distribution = Island(5 minutes)
-) hook (workDirectory / "result", filter = Seq(resultLine)) 
+) hook (workDirectory / "result", filter = Seq(resultLine), frequency = 100) on env

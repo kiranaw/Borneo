@@ -10,6 +10,7 @@ val swaySpeed = Val[Double]
 val climbSpeed = Val[Double]
 val descentSpeed = Val[Double]
 val walkSpeed = Val[Double]
+val plotUpdate = Val[Boolean]
 
 val seed = Val[Int]
 
@@ -28,6 +29,7 @@ val restingBudget = Val[Double]
 val model = 
   NetLogo6Task(workDirectory / "model/OUmove-v04.nlogo", Seq("random-seed ${seed}", "setup", "repeat 43200 [go]"), embedWorkspace = true) set (
     inputs += seed,
+    inputs += plotUpdate mapped "plot-update",
     inputs += treeDist mapped "tree-dist",
     inputs += bodyWeight mapped "body-weight",
     inputs += energyIntake mapped "energy-intake",
@@ -49,6 +51,7 @@ val model =
     outputs += feedingBudget mapped "[budget-feeding] of one-of orangutans",
     outputs += travellingBudget mapped "[budget-travel] of one-of orangutans",
     outputs += restingBudget mapped "[budget-resting] of one-of orangutans",
+    plotUpdate := false,
     treeDist := "from-file",
     bodyWeight := 45.0,
     energyIntake := 6.11,
