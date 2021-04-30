@@ -2,7 +2,7 @@ extensions [nw csv]
 breed [trees tree]
 breed [orangutans orangutan]
 globals [cumulative-energy-gain trees-in-row trees-in-col max-rows max-cols tree-counter row-counter col-counter starting-col starting-row isolated-trees number-of-trees]
-trees-own [fruiting-tree? transit-tree? targeted? neighbor-nodes crown-diameter height dbh temp-path visiting-orangutans]
+trees-own [energy-content fruiting-tree? transit-tree? targeted? neighbor-nodes crown-diameter height dbh temp-path visiting-orangutans]
 orangutans-own [budget-travel budget-feeding budget-resting freq-brachiate freq-sway freq-climb freq-walk freq-descent basal-metabolic-cost count-move-all current-activity feeding-count resting-count travelling-count energy-acquired? body-mass feed-wait-time move-wait-time time-to-reach-next-tree travel-time-required cumulative-travel-length travel-length move-duration time-budget count-walk count-descent count-climb count-brachiation count-sway total-expended-energy energy-reserve last-sway energy-reserve location path-route destination pre-destination temp-path-me arm-length upcoming-link move-cost arm-length next-tree cumulative-movement-cost visited-fruiting-tree last-visited-fruiting-tree]
 patches-own [affecting-tree]
 links-own [link-type dist]
@@ -165,8 +165,6 @@ to orangutan-move
         move-arboreal
       ]
     ]
-    ;sum up the travel length
-    set cumulative-travel-length cumulative-travel-length + travel-length
     set count-move-all count-walk + count-sway + count-descent + count-climb + count-brachiation
   ]
 end
@@ -181,8 +179,8 @@ to gain-energy
 
   if feed-wait-time = time-to-acquire-energy
   [
-    set energy-reserve energy-reserve + energy-gain
-    set cumulative-energy-gain cumulative-energy-gain + energy-gain
+    set energy-reserve energy-reserve + item 0 [energy-content] of trees-here
+    set cumulative-energy-gain cumulative-energy-gain + item 0 [energy-content] of trees-here
     set energy-acquired? TRUE
     set feed-wait-time 0
   ]
@@ -205,6 +203,12 @@ to move-arboreal
     ask trees-here
     [
        set linknya link-with [next-tree] of myself
+    ]
+
+    if linknya != nobody
+    [
+      set d [link-length] of linknya
+      set travel-length d
     ]
 
     set upcoming-link item 0 [linknya] of trees-here ; <-- this is the link that the orangutan would use to travel, IMPORTANT: UPCOMING LINK
@@ -242,25 +246,14 @@ to move-arboreal
           move-to next-tree
           ;when successfully moved to the next tree, then remove the element from list
           set path-route remove-item 0 path-route
+          ;sum up the travel length
+          set cumulative-travel-length cumulative-travel-length + travel-length
           ;also, reset the counter!
           set move-wait-time 0
         ]
       ]
     ]
 
-    ; sebenernya ini sama dengan speed
-  ;ini adalah fungsi dari speed, distance, mode pergerakan, dan karakteristik orangutan
-  ;ok, now compare the distance and distance that I can travel
-  ;wait
-
-    ;move-to next-tree
-
-    if linknya != nobody
-    [
-      set d [link-length] of linknya
-      set travel-length d
-    ]
-    ;set last-sway sway d
 end
 
 ;important: do not forget to add the calculation to the cumulative energy cost
@@ -353,15 +346,13 @@ to calculate-terrestrial-cost
   calculate-climb-cost "climb from ground" ;calculate climb cost -> move-cost
   set cumulative-movement-cost cumulative-movement-cost + move-cost ; add the climbing cost
   set energy-reserve energy-reserve - move-cost
-
-  set travel-length distance destination
 end
 
 to move-terrestrial
   set next-tree destination
   calculate-terrestrial-cost
 
-  ;oh! do not forget the time required to descent and climb the next tree!
+  ;time required to descent and climb the next tree!
   ;repeat the same procedure ==> DESCENT
   ;1. calculate the distance to be descended
   let dist-to-descent [height] of one-of trees-here
@@ -371,7 +362,6 @@ to move-terrestrial
   let time-to-descent-to-ground dist-to-descent / descent-speed
 
   ;sebelum move to next tree, perlu disini adanya penghitungan waktu yang diperlukan untuk mencapai pohon selanjutnya
-  ;NOTED for NEXT working package (08.03.2021 / 10:50)
   ;ulangi prosedur sebelumnya yaitu
   ;1. menghitung jarak antara posisi saya dan pohon selanjutnya
   let dist-to-next-tree distance next-tree
@@ -390,11 +380,13 @@ to move-terrestrial
   ; no need because it is almost impossible set dist-that-i-can-travel-in-one-second
 
   ;NOW THE WAITING TIME
+  set travel-length dist-to-next-tree ;get the travel length
   set move-wait-time move-wait-time + 1
   if move-wait-time >= time-to-reach-next-tree ;compare waiting time (time elapsed) and time required to reach target tree
   [
      set current-activity "travelling"
      move-to next-tree
+     set cumulative-travel-length cumulative-travel-length + travel-length
      ;when successfully moved to the next tree, then remove the element from list
      if path-route != []
      [set path-route remove-item 0 path-route]
@@ -434,7 +426,6 @@ to-report climb-time [d]
 end
 
 to-report climb [d]
-  ;m.g.h
   report precision (ceiling (body-mass * 9.8 * d) * 0.239 / 1000) 3 ;convert to kilocalories
 end
 
@@ -674,6 +665,7 @@ to establish-tree
     set dbh abs(random-normal avg-dbh 1)
     set height abs(random-normal avg-tree-height 1)
     set visiting-orangutans []
+    set energy-content energy-gain
 
     ifelse dbh <= 20 [set crown-diameter 0 set size 0.5]
     [set crown-diameter abs(random-normal avg-crown-diameter 1) set size 1]
@@ -702,6 +694,7 @@ to from-csv
   while [ not file-at-end? ] [
     let data csv:from-row file-read-line
     create-trees 1 [
+      set energy-content energy-gain
       set transit-tree? FALSE
       set targeted? false
       set neighbor-nodes turtle-set no-turtles
@@ -848,15 +841,15 @@ tree-dist
 2
 
 SLIDER
-1805
-332
-1956
-365
+1930
+605
+2081
+638
 reg-dist-between-trees
 reg-dist-between-trees
 1
 5
-2.0
+3.0
 1
 1
 m
@@ -910,9 +903,9 @@ SLIDER
 294
 avg-crown-diameter
 avg-crown-diameter
-1
+0
 10
-10.0
+0.0
 1
 1
 m
@@ -964,7 +957,7 @@ fruiting-tree
 fruiting-tree
 0
 100
-7.5
+0.0
 0.1
 1
 %
@@ -1155,14 +1148,14 @@ climb%
 
 SLIDER
 200
-256
+260
 374
-289
+293
 walking-speed
 walking-speed
 0.5
 3
-0.5
+1.0
 0.5
 1
 m/s
@@ -1170,9 +1163,9 @@ HORIZONTAL
 
 SLIDER
 200
-355
+359
 373
-388
+392
 brachiation-speed
 brachiation-speed
 0.5
@@ -1185,9 +1178,9 @@ HORIZONTAL
 
 SLIDER
 200
-321
+325
 373
-354
+358
 sway-speed
 sway-speed
 0.5
@@ -1224,7 +1217,7 @@ energy-gain
 energy-gain
 10
 1000
-10.0
+292.0
 1
 1
 kCal / tree
@@ -1272,14 +1265,14 @@ day range (m)
 
 SLIDER
 201
-183
+187
 373
-216
+220
 initial-satiation
 initial-satiation
--100
+-500
 500
--100.0
+-500.0
 1
 1
 kcal
@@ -1309,9 +1302,9 @@ NIL
 
 SLIDER
 200
-389
+393
 374
-422
+426
 climb-speed
 climb-speed
 0.5
@@ -1324,9 +1317,9 @@ HORIZONTAL
 
 SLIDER
 200
-289
+293
 373
-322
+326
 descent-speed
 descent-speed
 0.5
@@ -1389,9 +1382,9 @@ HORIZONTAL
 
 SLIDER
 200
-220
+224
 375
-253
+257
 basal-energy
 basal-energy
 1
@@ -1441,7 +1434,7 @@ body-weight
 body-weight
 30
 100
-30.0
+45.0
 1
 1
 kg
@@ -1722,13 +1715,24 @@ FOREST PROPERTIES
 SWITCH
 1318
 55
-1408
+1422
 88
 plot-update
 plot-update
-0
+1
 1
 -1000
+
+MONITOR
+1837
+601
+1926
+646
+next-distance
+[travel-length] of one-of orangutans
+17
+1
+11
 
 @#$#@#$#@
 # OUmove: OrangUtan Movement Agent-based Model
