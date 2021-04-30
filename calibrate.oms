@@ -21,7 +21,7 @@ def energyAvg(d: Seq[Array[Double]]) =
    dailyTravelDistanceAvg(d.map(_(5))),
    totalEnergyExpenditureAvg(d.map(_(10))),
    totalEnergyIntakeAvg(d.map(_(9)))
- ).max
+ ).sum / 3
 
 // def frequencyOfSwayPValue(d: Seq[Double]) = ksTestGaussian(d, mu = 19.0, sigma = 1.0).getOrElse(1.0)  
 // def frequencyOfBrachiatePValue(d: Seq[Double]) = ksTestGaussian(d, mu = 47.9, sigma = 1.0).getOrElse(1.0)
@@ -52,7 +52,7 @@ def frequencyOfMoveAvg(d: Seq[Array[Double]]) =
     frequencyOfWalkAvg(d.map(_(0))),
     frequencyOfClimbAvg(d.map(_(3))),
     frequencyOfDescentAvg(d.map(_(4))),
-  ).max
+  ).sum / 5
 
 
 
@@ -71,7 +71,7 @@ def budgetDelta(d: Seq[Array[Double]]) =
     feedingBudgetFitness(d.map(_(6))),
     travelingBudgetFitness(d.map(_(7))),
     restingBudgetFitness(d.map(_(8)))
-  ).max
+  ).sum / 3
 
 val resultLine = Val[Array[Double]]
 
@@ -119,4 +119,4 @@ NSGA2Evolution(
   termination = 500000,
   stochastic = Stochastic(seed = seed),
   distribution = Island(5 minutes)
-) hook (workDirectory / "result", filter = Seq(resultLine), frequency = 100) on env
+) hook (workDirectory / "results", filter = Seq(resultLine), frequency = 100) on env
