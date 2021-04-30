@@ -563,8 +563,8 @@ to select-destination
 
   ifelse dest != nobody
   [set destination dest]
-  ;if there is no fruiting tree that can be visited, move to the nearest non-fruiting tree
-  [set destination min-one-of other trees with [color != red and self != [one-of trees-here] of myself] [distance myself]]
+  ;if there is no fruiting tree that can be visited, move to non-fruiting tree (at random)
+  [set destination one-of other trees with [color != red and self != [one-of trees-here] of myself]]
 
   ;show the destination (make the target tree look bigger)
   ask trees-here
@@ -1389,7 +1389,7 @@ basal-energy
 basal-energy
 1
 1.5
-1.0
+1.5
 0.1
 1
 kcal / BW / hr
