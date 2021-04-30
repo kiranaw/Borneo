@@ -27,7 +27,7 @@ val travellingBudget = Val[Double]
 val restingBudget = Val[Double]
 
 val model = 
-  NetLogo6Task(workDirectory / "model/OUmove-v04.nlogo", Seq("random-seed ${seed}", "setup", "repeat 43200 [go]"), embedWorkspace = true) set (
+  NetLogo6Task(workDirectory / "model/OUmove-v04.nlogo", Seq("random-seed ${seed}", "setup", "repeat 43200 [go]"), embedWorkspace = true, reuseWorkspace = true) set (
     inputs += seed,
     inputs += plotUpdate mapped "plot-update",
     inputs += treeDist mapped "tree-dist",
@@ -76,8 +76,5 @@ val env =
     threads = 1,
     workDirectory = "/tmp"
   )
-
-
-				   
 
 model hook display
