@@ -16,8 +16,23 @@ val tupleTask = ScalaTask("""
   outputs += (resultLine)
 )
 
+val replicationSeed = Val[Long]
+
+val repli = 
+  Replication(
+    evaluation = model,
+    sample = 100,
+    seed = seed,
+    distributionSeed = replicationSeed,
+    aggregation = Seq(
+      travelDistance aggregate median, 
+      totalEnergyIntake aggregate median, 
+      energyExpenditure aggregate median
+    )
+  )
+
 NSGA2Evolution(
-  evaluation = model -- tupleTask,
+  evaluation = repli -- tupleTask,
   genome = Seq(
     bodyWeight in (30.0 to 45.0),
     energyIntake in (2.0 to 10.0),
@@ -36,6 +51,6 @@ NSGA2Evolution(
   ),
   parallelism = 500,
   termination = 500000,
-  stochastic = Stochastic(seed = seed),
+  stochastic = Stochastic(seed = replicationSeed),
   distribution = Island(5 minutes)
-) hook (workDirectory / "result-std", filter = Seq(resultLine), frequency = 100) on env
+) hook (workDirectory / "result-std", filter = Seq(resultLine), frequency = 100) on env 
