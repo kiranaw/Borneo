@@ -36,6 +36,7 @@ val model =
     inputs += energyGain mapped "energy-gain",
     inputs += initialSatiation mapped "initial-satiation",
     inputs += basalEnergy mapped "basal-energy",
+    inputs += walkSpeed mapped "walking-speed",
     inputs += brachiationSpeed mapped "brachiation-speed",
     inputs += swaySpeed mapped "sway-speed",
     inputs += climbSpeed mapped "climb-speed",
@@ -58,10 +59,11 @@ val model =
     energyGain := 292.4,
     initialSatiation := 292.4,
     basalEnergy := 1.5,
-    brachiationSpeed := 2.0,
-    swaySpeed := 2.0,
-    climbSpeed := 2.0,
-    descentSpeed := 2.0,
+    walkSpeed := 0.5,
+    brachiationSpeed := 0.5,
+    swaySpeed := 0.5,
+    climbSpeed := 0.5,
+    descentSpeed := 0.5,
     seed := seed
   )
   
