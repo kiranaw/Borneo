@@ -426,7 +426,9 @@ to-report climb-time [d]
 end
 
 to-report climb [d]
-  report precision (ceiling (body-mass * 9.8 * d) * 0.239 / 1000) 3 ;convert to kilocalories
+  ;from Pontzer et al 2010
+  ;body-mass * gravity * height / 15% energy efficiency
+  report precision (ceiling ((body-mass * 9.8 * d / 0.15) * 0.239) / 1000) 3 ;convert to kilocalories
 end
 
 to update-view
@@ -814,10 +816,10 @@ ticks
 30.0
 
 BUTTON
-9
-10
-93
-43
+868
+455
+952
+488
 NIL
 setup
 NIL
@@ -838,7 +840,7 @@ CHOOSER
 tree-dist
 tree-dist
 "regular" "random" "from-file"
-2
+0
 
 SLIDER
 1930
@@ -875,7 +877,7 @@ tree-density
 tree-density
 20
 10000
-5520.0
+20.0
 500
 1
 ind / Ha
@@ -890,7 +892,7 @@ avg-tree-height
 avg-tree-height
 15
 50
-30.0
+20.0
 5
 1
 m
@@ -905,7 +907,7 @@ avg-crown-diameter
 avg-crown-diameter
 0
 10
-0.0
+2.0
 1
 1
 m
@@ -957,7 +959,7 @@ fruiting-tree
 fruiting-tree
 0
 100
-0.0
+3.8
 0.1
 1
 %
@@ -996,10 +998,10 @@ simulation-size
 0
 
 BUTTON
-112
-11
-231
-44
+961
+455
+1080
+488
 go
 go
 T
@@ -1192,10 +1194,10 @@ m/s
 HORIZONTAL
 
 BUTTON
-238
-11
-301
-44
+1088
+455
+1151
+488
 NIL
 go
 NIL
@@ -1217,7 +1219,7 @@ energy-gain
 energy-gain
 10
 1000
-292.0
+29.0
 1
 1
 kCal / tree
