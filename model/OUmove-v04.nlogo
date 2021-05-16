@@ -145,21 +145,14 @@ to orangutan-move
     ;if i have arboreal route to traverse
     [
       ;remove the first & current tree from list --> make sure it doesn't waste a timestep staying on the same tree
-      if [who] of item 0 path-route = [who] of one-of trees-here
-      [set path-route remove-item 0 path-route]
+      if [who] of item 0 path-route = [who] of one-of trees-here ;check if the route map contains my current tree..
+      [set path-route remove-item 0 path-route] ;if so, remove this tree from my route map
 
-      ;if there is no connected tree from here
+      ;if there is no connected tree from here, rechecking this after removing a tree from the list (see above)
       ifelse path-route = []
       [
         let dstn destination
-        ;is there no connection with the target tree? recheck
-        ifelse one-of [link-with dstn] of trees-here != nobody
-        [
-          move-arboreal
-        ]
-        [
-          move-terrestrial
-        ]
+        move-terrestrial ;walk to the destination tree
       ]
       [
         move-arboreal
@@ -194,29 +187,27 @@ to leave-visiting-stamp
   ]
 end
 
+;report to be called by orangutan
+to-report get-upcoming-link [orangutan-self]
+  let up-link nobody
+  ask trees-here
+  [
+     set up-link link-with [next-tree] of myself ;orangutan (myself) has a record of the next tree, now get the link to to this tree
+  ]
+  report up-link
+end
+
 to move-arboreal
     set next-tree item 0 path-route
-    let linknya nobody
-    let d 0
-    ask trees-here
-    [
-       set linknya link-with [next-tree] of myself
-    ]
 
-    if linknya != nobody
-    [
-      set d [link-length] of linknya
-      set travel-length d
-    ]
-
-    set upcoming-link item 0 [linknya] of trees-here ; <-- this is the link that the orangutan would use to travel, IMPORTANT: UPCOMING LINK
-
-
+    set upcoming-link get-upcoming-link self
 
     ;calculate distance and time required to reach the next tree
     if upcoming-link != nobody
     [
       let dist-to-next-tree [link-length] of upcoming-link
+      set travel-length dist-to-next-tree
+
       let ltyp [link-type] of upcoming-link
       let mvspeed 0
 
@@ -883,7 +874,7 @@ CHOOSER
 tree-dist
 tree-dist
 "regular" "random" "from-file"
-2
+0
 
 SLIDER
 202
@@ -894,7 +885,7 @@ reg-dist-between-trees
 reg-dist-between-trees
 1
 5
-3.0
+1.0
 1
 1
 m
@@ -978,7 +969,7 @@ SWITCH
 444
 show-crown
 show-crown
-0
+1
 1
 -1000
 
@@ -1262,7 +1253,7 @@ energy-gain
 energy-gain
 10
 1000
-130.0
+60.0
 1
 1
 kCal / tree
@@ -1808,7 +1799,7 @@ MONITOR
 546
 sway-dist
 [sway-dist] of one-of orangutans
-17
+2
 1
 11
 
@@ -1874,7 +1865,7 @@ MONITOR
 546
 swaycost
 [sway-cost] of one-of orangutans
-17
+2
 1
 11
 
