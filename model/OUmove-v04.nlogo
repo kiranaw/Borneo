@@ -2,8 +2,8 @@ extensions [nw csv]
 breed [trees tree]
 breed [orangutans orangutan]
 globals [cumulative-energy-gain trees-in-row trees-in-col max-rows max-cols tree-counter row-counter col-counter starting-col starting-row isolated-trees number-of-trees]
-trees-own [energy-content fruiting-tree? transit-tree? targeted? neighbor-nodes crown-diameter height dbh temp-path visiting-orangutans]
-orangutans-own [budget-travel budget-feeding budget-resting freq-brachiate freq-sway freq-climb freq-walk freq-descent basal-metabolic-cost count-move-all current-activity feeding-count resting-count travelling-count energy-acquired? body-mass feed-wait-time move-wait-time time-to-reach-next-tree travel-time-required cumulative-travel-length travel-length move-duration time-budget count-walk count-descent count-climb count-brachiation count-sway total-expended-energy energy-reserve last-sway energy-reserve location path-route destination pre-destination temp-path-me arm-length upcoming-link move-cost arm-length next-tree cumulative-movement-cost visited-fruiting-tree last-visited-fruiting-tree]
+trees-own [energy-content fruiting-tree? transit-tree? targeted? neighbor-nodes close-neighbors crown-diameter height dbh temp-path visiting-orangutans]
+orangutans-own [descent-costs climb-costs walk-cost sway-cost brachiation-cost sway-dist brachiation-dist walk-dist climb-dist descent-dist budget-travel budget-feeding budget-resting freq-brachiate freq-sway freq-climb freq-walk freq-descent basal-metabolic-cost count-move-all current-activity feeding-count resting-count travelling-count energy-acquired? body-mass feed-wait-time move-wait-time time-to-reach-next-tree travel-time-required cumulative-travel-length travel-length move-duration time-budget count-walk count-descent count-climb count-brachiation count-sway total-expended-energy energy-reserve last-sway energy-reserve location path-route destination pre-destination temp-path-me arm-length upcoming-link move-cost arm-length next-tree cumulative-movement-cost visited-fruiting-tree last-visited-fruiting-tree]
 patches-own [affecting-tree]
 links-own [link-type dist]
 
@@ -195,8 +195,6 @@ to leave-visiting-stamp
 end
 
 to move-arboreal
-    ;disini, sebelum orangutan move, hitung dulu jarak yang bisa dia tempuh dalam satu detik
-    ;selain itu hitung juga jarak dia dari pohon yang mau dia visit
     set next-tree item 0 path-route
     let linknya nobody
     let d 0
@@ -213,8 +211,7 @@ to move-arboreal
 
     set upcoming-link item 0 [linknya] of trees-here ; <-- this is the link that the orangutan would use to travel, IMPORTANT: UPCOMING LINK
 
-    ;here, calculate the energy cost to reach the next tree
-    calculate-arboreal-cost
+
 
     ;calculate distance and time required to reach the next tree
     if upcoming-link != nobody
@@ -243,6 +240,8 @@ to move-arboreal
         set move-wait-time move-wait-time + 1
         if move-wait-time >= time-to-reach-next-tree ;compare waiting time (time elapsed) and time required to reach target tree
         [
+          ;here, calculate the energy cost to reach the next tree
+          calculate-arboreal-cost
           move-to next-tree
           ;when successfully moved to the next tree, then remove the element from list
           set path-route remove-item 0 path-route
@@ -266,19 +265,21 @@ to calculate-climb-cost [move-category]
       ifelse [height] of next-tree > [height] of one-of trees-here
       [
         let height-dif [height] of next-tree - [height] of one-of trees-here
-        set move-cost climb abs(height-dif)
+        set move-cost descent abs(height-dif)
+        set descent-costs descent-costs + move-cost
         set move-duration climb-time abs(height-dif)
         ;output-print (word "=> descent, energy cost: " move-cost " kCal")
         ;DESCENT not accounted
-        ;set count-descent count-descent + 1
+        set count-descent count-descent + 1
       ]
       [
         let height-dif [height] of next-tree - [height] of one-of trees-here
         set move-cost climb abs(height-dif)
+        set climb-costs climb-costs + move-cost
         set move-duration climb-time abs(height-dif)
         ;output-print (word "=> climb, energy cost: " move-cost " kCal")
         ;CLIMB not accounted
-        ;set count-climb count-climb + 1
+        set count-climb count-climb + 1
       ]
     ]
   ]
@@ -288,7 +289,8 @@ to calculate-climb-cost [move-category]
     ;add both calculation (cost for descent and climb)
   if move-category = "descent to ground"
   [
-    let descent-cost 1 / 3 * (climb [height] of one-of trees-here) ; added 20.4.2021 assuming descent is 1/3 costly than climbing
+    let descent-cost descent [height] of one-of trees-here ; added 20.4.2021 assuming descent is 1/3 costly than climbing
+    set descent-costs descent-cost
     set move-cost descent-cost
     set move-duration climb-time [height] of one-of trees-here
     ;output-print (word "=> descent to ground, energy cost: " move-cost " kCal")
@@ -297,6 +299,7 @@ to calculate-climb-cost [move-category]
   if move-category = "climb from ground"
   [
     let climb-cost climb [height] of destination
+    set climb-costs climb-cost
     set move-cost climb-cost
     set move-duration climb-time [height] of one-of trees-here
     ;output-print (word "=> climb from ground, energy cost: " move-cost " kCal")
@@ -314,6 +317,7 @@ to calculate-arboreal-cost
     if [link-type] of upcoming-link = "sway"
     [
       set move-cost sway [link-length] of upcoming-link
+      set sway-cost sway-cost + move-cost
       set move-duration sway-time [link-length] of upcoming-link
       ;output-print (word "locomotor type: " [link-type] of upcoming-link ", energy cost: " move-cost " kCal")
       set count-sway count-sway + 1
@@ -322,6 +326,7 @@ to calculate-arboreal-cost
     if [link-type] of upcoming-link = "brachiation"
     [
       set move-cost brachiate [link-length] of upcoming-link
+      set brachiation-cost brachiation-cost + move-cost
       set move-duration brachiation-time [link-length] of upcoming-link
       ;output-print (word "locomotor type: " [link-type] of upcoming-link ", energy cost: " move-cost " kCal")
       set count-brachiation count-brachiation + 1
@@ -338,6 +343,7 @@ to calculate-terrestrial-cost
   set energy-reserve energy-reserve - move-cost
 
   set move-cost walk distance destination
+  set walk-cost walk-cost + move-cost
   ;output-print (word "locomotor type: walk on ground, energy cost: " move-cost " kCal")
   set cumulative-movement-cost cumulative-movement-cost + move-cost ; add the walking cost
   set energy-reserve energy-reserve - move-cost
@@ -350,7 +356,6 @@ end
 
 to move-terrestrial
   set next-tree destination
-  calculate-terrestrial-cost
 
   ;time required to descent and climb the next tree!
   ;repeat the same procedure ==> DESCENT
@@ -384,6 +389,7 @@ to move-terrestrial
   set move-wait-time move-wait-time + 1
   if move-wait-time >= time-to-reach-next-tree ;compare waiting time (time elapsed) and time required to reach target tree
   [
+     calculate-terrestrial-cost
      set current-activity "travelling"
      move-to next-tree
      set cumulative-travel-length cumulative-travel-length + travel-length
@@ -397,38 +403,59 @@ to move-terrestrial
 end
 
 to-report sway-time[d]
-  report d * sway-speed
+  report d / sway-speed
 end
 
 to-report sway [d]
   ;pi^2 * d^2 * m
-  report precision (ceiling (pi ^ 2 * d ^ 2 * body-mass) * 0.239 / 1000) 3 ;convert to kilocalories
+  ;set sway-count sway-count + 1
+  set sway-dist sway-dist + d
+  report precision (ceiling (pi ^ 2 * d ^ 2 * body-mass) / 0.15 * 0.239 / 1000) 3 ;convert to kilocalories
 end
 
 to-report brachiation-time[d]
-  report d * brachiation-speed
+  report d / brachiation-speed
 end
 
 to-report brachiate [d]
   ;cost of brachiation is 1.5 * cost of walking
+  ;set brachiation-count brachiation-count + 1
+  set brachiation-dist brachiation-dist + d
   let energy-cost 1.5 * (0.91 * body-mass * d) / 1000
   report precision (ceiling (energy-cost)) 3
+end
+
+to-report walk-time [d]
+  report d / walking-speed
 end
 
 to-report walk [d]
   ;from Pontzer et al 2010 (from Sockol et al 2007):
   ;energy cost for walking = 0.91 calories * body-mass * distance
+  ;set walk-count walk-count + 1
+  set walk-dist walk-dist + d
   report precision (ceiling (0.91 * body-mass * d) / 1000) 3 ;convert to kilocalories
 end
 
 to-report climb-time [d]
-  report 1 * d
+  report d / climb-speed
 end
 
 to-report climb [d]
   ;from Pontzer et al 2010
   ;body-mass * gravity * height / 15% energy efficiency
-  report precision (ceiling ((body-mass * 9.8 * d / 0.15) * 0.239) / 1000) 3 ;convert to kilocalories
+  ;set climb-count climb-count + 1
+  set climb-dist climb-dist + d
+  report precision (ceiling ((body-mass * 9.8 * d / 0.20) * 0.239) / 1000) 3 ;convert to kilocalories
+end
+
+to-report descent-time [d]
+  report d / descent-speed
+end
+
+to-report descent [d]
+  set descent-dist descent-dist + d
+  report precision(ceiling (1 / 3 * (body-mass * 9.8 * d / 0.20) * 0.239) / 1000) 3 ;convert to kilocalories
 end
 
 to update-view
@@ -664,8 +691,9 @@ to establish-tree
     set transit-tree? FALSE
     set targeted? false
     set neighbor-nodes turtle-set no-turtles
+    set close-neighbors turtle-set no-turtles
     set dbh abs(random-normal avg-dbh 1)
-    set height abs(random-normal avg-tree-height 1)
+    set height abs(random-normal avg-tree-height 10)
     set visiting-orangutans []
     set energy-content energy-gain
 
@@ -687,7 +715,7 @@ to establish-tree
 end
 
 ;add data from csv file
-;data format: TreeID / x / y / dbh / crown / height / fruiting
+;data format: TreeID / x / y / dbh / crown / height / fruiting / species
 to from-csv
   file-close-all
   file-open "tree_data.csv"
@@ -727,7 +755,7 @@ to from-csv
   file-close-all
 end
 
-;remember: the tree density parameter should be adjustable so that it gives number of trees / Hectares
+;the tree density parameter should be adjustable so that it gives number of trees / Hectares
 to random-setup
   ;check the size of world
   ;if there are 10000 patches, then trees-density =* 1
@@ -746,9 +774,24 @@ end
 to link-trees
   ask trees
   [
+   set close-neighbors (trees with [distance myself <= 2])
+   if close-neighbors != nobody
+   [ ;link with close neighbors
+    repeat count close-neighbors
+    [
+      let node-connect one-of close-neighbors with [not link-neighbor? myself and who != [who] of myself]
+      if node-connect != nobody
+      [
+        create-link-with node-connect
+        [set link-type "sway" set color green set thickness 0.1]
+      ]
+    ]
+    ]
+
     ;get the affecting-trees from the patches in-radius of my crown
     set neighbor-nodes (turtle-set neighbor-nodes ([affecting-tree] of patches in-radius floor(crown-diameter / 2)))
     ;set neighbor-nodes (turtle-set neighbor-nodes turtles-on neighbors) <-- what is this for?
+
 
     ;NOTE: the patches within 2 meters (which crown dont overlap) are not detected!
     repeat count neighbor-nodes
@@ -758,7 +801,7 @@ to link-trees
       [
         create-link-with node-connect
         [
-          ifelse link-length <= 2 [set link-type "sway" set color green set thickness 0.1] ;edit
+          if link-length > 2 ;[set link-type "sway" set color green set thickness 0.1] ;edit
           [set link-type "brachiation" set color blue set thickness 0.1]
           set dist link-length
         ]
@@ -840,13 +883,13 @@ CHOOSER
 tree-dist
 tree-dist
 "regular" "random" "from-file"
-0
+2
 
 SLIDER
-1930
-605
-2081
-638
+202
+432
+353
+465
 reg-dist-between-trees
 reg-dist-between-trees
 1
@@ -877,7 +920,7 @@ tree-density
 tree-density
 20
 10000
-20.0
+520.0
 500
 1
 ind / Ha
@@ -907,7 +950,7 @@ avg-crown-diameter
 avg-crown-diameter
 0
 10
-2.0
+4.0
 1
 1
 m
@@ -922,7 +965,7 @@ avg-dbh
 avg-dbh
 5
 50
-30.0
+22.0
 1
 1
 cm
@@ -959,7 +1002,7 @@ fruiting-tree
 fruiting-tree
 0
 100
-3.8
+0.0
 0.1
 1
 %
@@ -1219,7 +1262,7 @@ energy-gain
 energy-gain
 10
 1000
-29.0
+130.0
 1
 1
 kCal / tree
@@ -1255,11 +1298,11 @@ energy-gain (kCal)
 11
 
 MONITOR
-1299
-340
-1391
-385
-day range (m)
+1278
+341
+1417
+386
+day range (m) - horizontal
 [cumulative-travel-length] of one-of orangutans
 2
 1
@@ -1376,7 +1419,7 @@ energy-intake
 energy-intake
 1
 15
-1.0
+10.0
 1
 1
 kcal / min
@@ -1391,7 +1434,7 @@ basal-energy
 basal-energy
 1
 1.5
-1.5
+1.4
 0.1
 1
 kcal / BW / hr
@@ -1436,7 +1479,7 @@ body-weight
 body-weight
 30
 100
-45.0
+35.0
 1
 1
 kg
@@ -1504,7 +1547,7 @@ ENERGETICS
 MONITOR
 1164
 341
-1288
+1273
 386
 visited fruiting trees
 length ([visited-fruiting-tree] of one-of orangutans)
@@ -1513,9 +1556,9 @@ length ([visited-fruiting-tree] of one-of orangutans)
 11
 
 MONITOR
-1135
+1127
 395
-1215
+1207
 440
 travelling %
 [budget-travel] of one-of orangutans
@@ -1524,10 +1567,10 @@ travelling %
 11
 
 MONITOR
-1225
-394
-1296
-439
+1208
+396
+1279
+441
 feeding %
 [budget-feeding] of one-of orangutans
 2
@@ -1535,10 +1578,10 @@ feeding %
 11
 
 MONITOR
-1305
-393
-1372
-438
+1280
+396
+1347
+441
 resting %
 [budget-resting] of one-of orangutans
 2
@@ -1726,13 +1769,167 @@ plot-update
 -1000
 
 MONITOR
-1837
-601
-1926
-646
+1623
+497
+1712
+542
 next-distance
 [travel-length] of one-of orangutans
 17
+1
+11
+
+MONITOR
+390
+501
+463
+546
+swaycount
+[count-sway] of one-of orangutans
+17
+1
+11
+
+MONITOR
+599
+500
+695
+545
+brachiation-cnt
+[count-brachiation] of one-of orangutans
+17
+1
+11
+
+MONITOR
+465
+501
+531
+546
+sway-dist
+[sway-dist] of one-of orangutans
+17
+1
+11
+
+MONITOR
+697
+501
+795
+546
+brachiation-dist
+[brachiation-dist] of one-of orangutans
+2
+1
+11
+
+MONITOR
+881
+500
+954
+545
+walk-count
+[count-walk] of one-of orangutans
+17
+1
+11
+
+MONITOR
+956
+500
+1018
+545
+walk-dist
+[walk-dist] of one-of orangutans
+17
+1
+11
+
+MONITOR
+1084
+503
+1159
+548
+climb-count
+[count-climb] of one-of orangutans
+17
+1
+11
+
+MONITOR
+1162
+504
+1226
+549
+climb-dist
+[climb-dist] of one-of orangutans
+2
+1
+11
+
+MONITOR
+533
+501
+598
+546
+swaycost
+[sway-cost] of one-of orangutans
+17
+1
+11
+
+MONITOR
+799
+500
+880
+545
+brachiatecst
+[brachiation-cost] of one-of orangutans
+17
+1
+11
+
+MONITOR
+1024
+502
+1081
+547
+walkcst
+[walk-cost] of one-of orangutans
+17
+1
+11
+
+MONITOR
+1227
+504
+1284
+549
+climbcst
+[climb-costs] of one-of orangutans
+2
+1
+11
+
+MONITOR
+1287
+504
+1380
+549
+descent-count
+[count-descent] of one-of orangutans
+2
+1
+11
+
+MONITOR
+1382
+505
+1463
+550
+descent-dist
+[descent-dist] of one-of orangutans
+2
 1
 11
 
