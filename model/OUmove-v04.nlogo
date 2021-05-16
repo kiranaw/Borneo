@@ -401,7 +401,7 @@ to-report sway [d]
   ;pi^2 * d^2 * m
   ;set sway-count sway-count + 1
   set sway-dist sway-dist + d
-  report precision (ceiling (pi ^ 2 * d ^ 2 * body-mass) / 0.15 * 0.239 / 1000) 3 ;convert to kilocalories
+  report precision ((pi ^ 2 * d ^ 2 * body-mass) / 0.15 * 0.239 / 1000) 3 ;convert to kilocalories
 end
 
 to-report brachiation-time[d]
@@ -413,7 +413,7 @@ to-report brachiate [d]
   ;set brachiation-count brachiation-count + 1
   set brachiation-dist brachiation-dist + d
   let energy-cost 1.5 * (0.91 * body-mass * d) / 1000
-  report precision (ceiling (energy-cost)) 3
+  report precision ((energy-cost)) 3
 end
 
 to-report walk-time [d]
@@ -425,7 +425,7 @@ to-report walk [d]
   ;energy cost for walking = 0.91 calories * body-mass * distance
   ;set walk-count walk-count + 1
   set walk-dist walk-dist + d
-  report precision (ceiling (0.91 * body-mass * d) / 1000) 3 ;convert to kilocalories
+  report precision ((0.91 * body-mass * d) / 1000) 3 ;convert to kilocalories
 end
 
 to-report climb-time [d]
@@ -437,7 +437,7 @@ to-report climb [d]
   ;body-mass * gravity * height / 15% energy efficiency
   ;set climb-count climb-count + 1
   set climb-dist climb-dist + d
-  report precision (ceiling ((body-mass * 9.8 * d / 0.20) * 0.239) / 1000) 3 ;convert to kilocalories
+  report precision (((body-mass * 9.8 * d / 0.20) * 0.239) / 1000) 3 ;convert to kilocalories
 end
 
 to-report descent-time [d]
@@ -446,7 +446,7 @@ end
 
 to-report descent [d]
   set descent-dist descent-dist + d
-  report precision(ceiling (1 / 3 * (body-mass * 9.8 * d / 0.20) * 0.239) / 1000) 3 ;convert to kilocalories
+  report precision((1 / 3 * (body-mass * 9.8 * d / 0.20) * 0.239) / 1000) 3 ;convert to kilocalories
 end
 
 to update-view
@@ -885,7 +885,7 @@ reg-dist-between-trees
 reg-dist-between-trees
 1
 5
-1.0
+3.0
 1
 1
 m
@@ -911,7 +911,7 @@ tree-density
 tree-density
 20
 10000
-520.0
+20.0
 500
 1
 ind / Ha
@@ -941,7 +941,7 @@ avg-crown-diameter
 avg-crown-diameter
 0
 10
-4.0
+10.0
 1
 1
 m
@@ -1832,7 +1832,7 @@ MONITOR
 545
 walk-dist
 [walk-dist] of one-of orangutans
-17
+2
 1
 11
 
@@ -1876,7 +1876,7 @@ MONITOR
 545
 brachiatecst
 [brachiation-cost] of one-of orangutans
-17
+2
 1
 11
 
@@ -1887,7 +1887,7 @@ MONITOR
 547
 walkcst
 [walk-cost] of one-of orangutans
-17
+2
 1
 11
 
