@@ -203,7 +203,7 @@ to move-arboreal
     set upcoming-link get-upcoming-link self
 
     ;calculate distance and time required to reach the next tree
-    if upcoming-link != nobody
+    ifelse upcoming-link != nobody
     [
       let dist-to-next-tree [link-length] of upcoming-link
       set travel-length dist-to-next-tree
@@ -243,6 +243,7 @@ to move-arboreal
         ]
       ]
     ]
+  [print "nolink"]
 
 end
 
@@ -357,8 +358,7 @@ to move-terrestrial
   ;3. calculate time to descent to the ground
   let time-to-descent-to-ground dist-to-descent / descent-speed
 
-  ;sebelum move to next tree, perlu disini adanya penghitungan waktu yang diperlukan untuk mencapai pohon selanjutnya
-  ;ulangi prosedur sebelumnya yaitu
+  ;time required to WALK to the next tree
   ;1. menghitung jarak antara posisi saya dan pohon selanjutnya
   let dist-to-next-tree distance next-tree
   ;2. how far can I travel in one second?
@@ -390,7 +390,6 @@ to move-terrestrial
      ;also, reset the counter!
      set move-wait-time 0
   ]
-  ;move-to next-tree
 end
 
 to-report sway-time[d]
@@ -874,7 +873,7 @@ CHOOSER
 tree-dist
 tree-dist
 "regular" "random" "from-file"
-0
+1
 
 SLIDER
 202
@@ -911,7 +910,7 @@ tree-density
 tree-density
 20
 10000
-20.0
+2020.0
 500
 1
 ind / Ha
@@ -941,7 +940,7 @@ avg-crown-diameter
 avg-crown-diameter
 0
 10
-10.0
+1.0
 1
 1
 m
@@ -993,7 +992,7 @@ fruiting-tree
 fruiting-tree
 0
 100
-0.0
+1.6
 0.1
 1
 %
@@ -1837,10 +1836,10 @@ walk-dist
 11
 
 MONITOR
-1084
-503
-1159
-548
+1082
+500
+1157
+545
 climb-count
 [count-climb] of one-of orangutans
 17
@@ -1848,10 +1847,10 @@ climb-count
 11
 
 MONITOR
-1162
-504
-1226
-549
+1159
+502
+1223
+547
 climb-dist
 [climb-dist] of one-of orangutans
 2
@@ -1881,10 +1880,10 @@ brachiatecst
 11
 
 MONITOR
-1024
-502
-1081
-547
+1022
+499
+1079
+544
 walkcst
 [walk-cost] of one-of orangutans
 2
@@ -1892,10 +1891,10 @@ walkcst
 11
 
 MONITOR
-1227
-504
-1284
-549
+1224
+502
+1281
+547
 climbcst
 [climb-costs] of one-of orangutans
 2
@@ -1903,10 +1902,10 @@ climbcst
 11
 
 MONITOR
-1287
-504
-1380
-549
+1284
+502
+1377
+547
 descent-count
 [count-descent] of one-of orangutans
 2
@@ -1914,10 +1913,10 @@ descent-count
 11
 
 MONITOR
-1382
-505
-1463
-550
+1379
+502
+1460
+547
 descent-dist
 [descent-dist] of one-of orangutans
 2
