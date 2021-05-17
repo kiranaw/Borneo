@@ -400,7 +400,7 @@ to-report sway [d]
   ;pi^2 * d^2 * m
   ;set sway-count sway-count + 1
   set sway-dist sway-dist + d
-  report precision ((pi ^ 2 * d ^ 2 * body-mass) / 0.15 * 0.239 / 1000) 3 ;convert to kilocalories
+  report precision ((0.69 * pi ^ 2 * d ^ 2 * body-mass) * 0.239 / 1000) 3 ;convert to kilocalories
 end
 
 to-report brachiation-time[d]
@@ -436,7 +436,7 @@ to-report climb [d]
   ;body-mass * gravity * height / 15% energy efficiency
   ;set climb-count climb-count + 1
   set climb-dist climb-dist + d
-  report precision (((body-mass * 9.8 * d / 0.20) * 0.239) / 1000) 3 ;convert to kilocalories
+  report precision ((body-mass * 9.8 * d / 0.15) * 0.239 / 1000) 3 ;convert to kilocalories
 end
 
 to-report descent-time [d]
@@ -873,7 +873,7 @@ CHOOSER
 tree-dist
 tree-dist
 "regular" "random" "from-file"
-1
+0
 
 SLIDER
 202
@@ -910,7 +910,7 @@ tree-density
 tree-density
 20
 10000
-2020.0
+520.0
 500
 1
 ind / Ha
@@ -940,7 +940,7 @@ avg-crown-diameter
 avg-crown-diameter
 0
 10
-1.0
+6.0
 1
 1
 m
@@ -992,7 +992,7 @@ fruiting-tree
 fruiting-tree
 0
 100
-1.6
+0.0
 0.1
 1
 %
@@ -1252,7 +1252,7 @@ energy-gain
 energy-gain
 10
 1000
-60.0
+136.0
 1
 1
 kCal / tree
@@ -1919,6 +1919,17 @@ MONITOR
 547
 descent-dist
 [descent-dist] of one-of orangutans
+2
+1
+11
+
+MONITOR
+1462
+502
+1547
+547
+descent-cost
+[descent-costs] of one-of orangutans
 2
 1
 11
