@@ -1,10 +1,13 @@
 import _file_.model._
 
-def dailyTravelDistanceAvg(d: Seq[Array[Double]]) = math.abs(d.map(_(0)).median - 769)
-def dailyTravelDistanceStd(d: Seq[Array[Double]]) = d.map(_(0)).meanSquaredError
+//def dailyTravelDistanceAvg(d: Seq[Array[Double]]) = math.abs(d.map(_(0)).median - 769)
+//def dailyTravelDistanceStd(d: Seq[Array[Double]]) = d.map(_(0)).rootMeanSquaredError
+
+//def dailyTravelDistanceStd(d: Seq[Array[Double]]) = d.map(_(0)).meanSquaredError
 
 //def totalEnergyIntakeAvg(d: Seq[Array[Double]]) = math.abs(d.map(_(1)).average - 3015)
-//def totalEnergyExpenditureAvg(d: Seq[Array[Double]]) = math.abs(d.map(_(2)).average - 1476)
+def totalEnergyExpenditureAvg(d: Seq[Array[Double]]) = math.abs(d.map(_(2)).average - 1476)
+def totalEnergyExpenditureStd(d: Seq[Array[Double]]) = d.map(_(0)).rootMeanSquaredError
 
 val resultLine = Val[Array[Double]]
 
@@ -16,9 +19,9 @@ val tupleTask = ScalaTask("""
   outputs += (resultLine)
 )
 
-val replicationSeed = Val[Long]
+//val replicationSeed = Val[Long]
 
-val repli = 
+/*val repli = 
   Replication(
     evaluation = model,
     sample = 100,
@@ -29,14 +32,14 @@ val repli =
       totalEnergyIntake aggregate median, 
       energyExpenditure aggregate median
     )
-  )
+  )*/
 
 NSGA2Evolution(
-  evaluation = repli -- tupleTask,
+  evaluation = model -- tupleTask,
   genome = Seq(
     bodyWeight in (30.0 to 45.0),
     energyIntake in (2.0 to 10.0),
-    energyGain in (200.0 to 400.0),
+    energyGain in (50.0 to 400.0),
     initialSatiation in (-500.0 to 500.0),
     basalEnergy in (1.0 to 1.5),
     brachiationSpeed in (0.5 to 2.0),
@@ -46,11 +49,12 @@ NSGA2Evolution(
     walkSpeed in (0.5 to 1.0)
   ),
   objective = Seq(
-    resultLine aggregate (dailyTravelDistanceAvg _) as "travelDistance",
-    resultLine aggregate (dailyTravelDistanceStd _) as "travelDistanceStd"
+    resultLine aggregate (totalEnergyExpenditureAvg _) as "EnergyExpenditure",
+    resultLine aggregate (totalEnergyExpenditureStd _) as "EnergyExpenditureStd"
   ),
   parallelism = 500,
   termination = 500000,
-  stochastic = Stochastic(seed = replicationSeed),
-  distribution = Island(5 minutes)
-) hook (workDirectory / "result-std", filter = Seq(resultLine), frequency = 100) on env 
+  stochastic = Stochastic(seed = seed, sample = 100),
+  //Stochastic(seed = replicationSeed),
+  distribution = Island(10 minutes)
+) hook (workDirectory / "result-1805-energy", filter = Seq(resultLine), frequency = 100) on env 
