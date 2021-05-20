@@ -400,19 +400,21 @@ to-report sway [d]
   ;pi^2 * d^2 * m
   ;set sway-count sway-count + 1
   set sway-dist sway-dist + d
-  report precision ((0.69 * pi ^ 2 * d ^ 2 * body-mass) * 0.239 / 1000) 3 ;convert to kilocalories
+  report precision (((0.69 * pi ^ 2 * d ^ 2 * body-mass) / 0.15) * 0.239 / 1000) 3 ;convert to kilocalories
 end
 
 to-report brachiation-time[d]
   report d / brachiation-speed
 end
 
+;mgL
+;Bertram, 1999
+;assumption: D = 2L; D -> distance of one swing
 to-report brachiate [d]
-  ;cost of brachiation is 1.5 * cost of walking
-  ;set brachiation-count brachiation-count + 1
   set brachiation-dist brachiation-dist + d
-  let energy-cost 1.5 * (0.91 * body-mass * d) / 1000
-  report precision ((energy-cost)) 3
+  let number-of-swing abs(d / 2 * arm-length)
+  let energy-cost body-mass * 9.8 * arm-length ;mgL
+  report precision (((number-of-swing * energy-cost) / 0.15) * 0.239 / 1000) 3
 end
 
 to-report walk-time [d]
@@ -420,11 +422,10 @@ to-report walk-time [d]
 end
 
 to-report walk [d]
-  ;from Pontzer et al 2010 (from Sockol et al 2007):
-  ;energy cost for walking = 0.91 calories * body-mass * distance
-  ;set walk-count walk-count + 1
+  ;W = F.s
+  ;assume a = 1 m/s^2
   set walk-dist walk-dist + d
-  report precision ((0.91 * body-mass * d) / 1000) 3 ;convert to kilocalories
+  report precision (((body-mass * 1 * d) / 0.15) * 0.239 / 1000) 3 ;convert to kilocalories
 end
 
 to-report climb-time [d]
@@ -434,7 +435,6 @@ end
 to-report climb [d]
   ;from Pontzer et al 2010
   ;body-mass * gravity * height / 15% energy efficiency
-  ;set climb-count climb-count + 1
   set climb-dist climb-dist + d
   report precision ((body-mass * 9.8 * d / 0.15) * 0.239 / 1000) 3 ;convert to kilocalories
 end
@@ -445,7 +445,7 @@ end
 
 to-report descent [d]
   set descent-dist descent-dist + d
-  report precision((1 / 3 * (body-mass * 9.8 * d / 0.20) * 0.239) / 1000) 3 ;convert to kilocalories
+  report precision((1 / 3 * (body-mass * 9.8 * d / 0.15) * 0.239) / 1000) 3 ;convert to kilocalories
 end
 
 to update-view
@@ -873,7 +873,7 @@ CHOOSER
 tree-dist
 tree-dist
 "regular" "random" "from-file"
-0
+2
 
 SLIDER
 202
@@ -910,7 +910,7 @@ tree-density
 tree-density
 20
 10000
-520.0
+20.0
 500
 1
 ind / Ha
@@ -940,7 +940,7 @@ avg-crown-diameter
 avg-crown-diameter
 0
 10
-6.0
+2.0
 1
 1
 m
@@ -968,7 +968,7 @@ SWITCH
 444
 show-crown
 show-crown
-1
+0
 1
 -1000
 
@@ -992,7 +992,7 @@ fruiting-tree
 fruiting-tree
 0
 100
-0.0
+1.0
 0.1
 1
 %
@@ -1252,7 +1252,7 @@ energy-gain
 energy-gain
 10
 1000
-136.0
+79.0
 1
 1
 kCal / tree
@@ -1875,7 +1875,7 @@ MONITOR
 545
 brachiatecst
 [brachiation-cost] of one-of orangutans
-2
+10
 1
 11
 
