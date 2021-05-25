@@ -25,7 +25,7 @@ def frequencyOfMoveFit(d: Seq[Array[Double]]) =
   Seq(
     frequencyOfSwayFit(d.map(_(1))),
     frequencyOfBrachiateFit(d.map(_(2))),
-    frequencyOfWalkFit(d.map(_(0))),
+// in this world setting, orangutan would not walk <-   frequencyOfWalkFit(d.map(_(0))),
     frequencyOfClimbFit(d.map(_(3))),
     frequencyOfDescentFit(d.map(_(4))),
   ).average
@@ -89,4 +89,4 @@ NSGA2Evolution(
   termination = 500000,
   stochastic = Stochastic(seed = seed, sample = 500),
   distribution = Island(5 minutes)
-) hook (workDirectory / "results_25_05_1840", filter = Seq(resultLine), frequency = 100) on env
+) hook (workDirectory / "results_25_05_1911", filter = Seq(resultLine), frequency = 100) on env
