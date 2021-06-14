@@ -109,7 +109,7 @@ to orangutan-move
  [
     ;pen-down
     ;check if an arboreal route to destination exists, if not:
-    ifelse path-route = [] ;if orangutan reached destination or there is no arboreal link
+    ifelse path-route = [] or path-route = false ;if orangutan reached destination or there is no arboreal link
     [
       ;if this is a fruiting tree
       if [color] of one-of trees-here = red ;and one-of trees-here != last-visited-fruiting-tree
@@ -708,7 +708,7 @@ end
 ;data format: TreeID / x / y / dbh / crown / height / fruiting / species
 to from-csv
   file-close-all
-  file-open "tree_data.csv"
+  file-open file-name
   let headings csv:from-row file-read-line
 
   while [ not file-at-end? ] [
@@ -719,11 +719,11 @@ to from-csv
       set targeted? false
       set neighbor-nodes turtle-set no-turtles
       set visiting-orangutans []
-      set dbh item 4 data
-      set height item 6 data
-      set crown-diameter item 5 data
-      ifelse item 7 data = 1 [set fruiting-tree? TRUE][set fruiting-tree? FALSE]
-      setxy item 2 data item 3 data
+      set dbh item 3 data ;* 100
+      set height item 5 data
+      set crown-diameter item 4 data
+      ifelse item 6 data = 1 [set fruiting-tree? TRUE][set fruiting-tree? FALSE]
+      setxy item 1 data item 2 data
       set size 1
 
       ifelse fruiting-tree? = TRUE
@@ -732,7 +732,8 @@ to from-csv
       set shape "circle"
 
       ask patches in-radius ceiling(crown-diameter / 2) [
-        if show-crown = true and [dbh] of myself > 20
+        if show-crown = true ;and [dbh] of myself > 20
+        ;[set pcolor green]
         [set pcolor (green) - [height] of myself mod 5]
 
         ;each patch will record the id of tree which crown shadows the patch, it is saved in a "turtle-set" named "affecting-tree"
@@ -866,20 +867,20 @@ NIL
 1
 
 CHOOSER
-11
-85
-132
-130
+8
+54
+129
+99
 tree-dist
 tree-dist
 "regular" "random" "from-file"
 2
 
 SLIDER
-202
-432
-353
-465
+198
+402
+349
+435
 reg-dist-between-trees
 reg-dist-between-trees
 1
@@ -902,10 +903,10 @@ mean [count my-links] of trees
 11
 
 SLIDER
-10
-184
-162
-217
+7
+204
+159
+237
 tree-density
 tree-density
 20
@@ -917,10 +918,10 @@ ind / Ha
 HORIZONTAL
 
 SLIDER
-9
-221
-160
-254
+6
+241
+157
+274
 avg-tree-height
 avg-tree-height
 15
@@ -932,10 +933,10 @@ m
 HORIZONTAL
 
 SLIDER
-11
-261
-159
-294
+8
+281
+156
+314
 avg-crown-diameter
 avg-crown-diameter
 0
@@ -947,10 +948,10 @@ m
 HORIZONTAL
 
 SLIDER
-12
-300
-159
-333
+9
+320
+156
+353
 avg-dbh
 avg-dbh
 5
@@ -962,10 +963,10 @@ cm
 HORIZONTAL
 
 SWITCH
-10
-411
-122
-444
+7
+431
+119
+464
 show-crown
 show-crown
 0
@@ -973,10 +974,10 @@ show-crown
 -1000
 
 SWITCH
-11
-377
-121
-410
+8
+397
+118
+430
 show-grid
 show-grid
 1
@@ -984,10 +985,10 @@ show-grid
 -1000
 
 SLIDER
-12
-340
-160
-373
+9
+360
+157
+393
 fruiting-tree
 fruiting-tree
 0
@@ -1021,10 +1022,10 @@ count links with [link-type = \"brachiation\"]
 11
 
 CHOOSER
-10
-135
-133
-180
+7
+104
+130
+149
 simulation-size
 simulation-size
 "100 x 100" "75 x 75" "50 x 50" "25 x 25" "500 x 500"
@@ -1048,10 +1049,10 @@ NIL
 1
 
 BUTTON
-10
-451
-111
-484
+7
+471
+108
+504
 NIL
 update-view
 NIL
@@ -1155,7 +1156,7 @@ MONITOR
 283
 sway%
 [freq-sway] of one-of orangutans
-2
+12
 1
 11
 
@@ -1182,10 +1183,10 @@ climb%
 11
 
 SLIDER
-200
-260
-374
-293
+196
+230
+370
+263
 walking-speed
 walking-speed
 0.5
@@ -1197,10 +1198,10 @@ m/s
 HORIZONTAL
 
 SLIDER
-200
-359
-373
-392
+196
+329
+369
+362
 brachiation-speed
 brachiation-speed
 0.5
@@ -1212,10 +1213,10 @@ m/s
 HORIZONTAL
 
 SLIDER
-200
-325
-373
-358
+196
+295
+369
+328
 sway-speed
 sway-speed
 0.5
@@ -1244,15 +1245,15 @@ NIL
 1
 
 SLIDER
-201
-150
-373
-183
+198
+119
+370
+152
 energy-gain
 energy-gain
 10
 1000
-79.0
+319.0
 1
 1
 kCal / tree
@@ -1299,15 +1300,15 @@ day range (m) - horizontal
 11
 
 SLIDER
-201
-187
-373
-220
+197
+157
+369
+190
 initial-satiation
 initial-satiation
 -500
 500
--500.0
+0.0
 1
 1
 kcal
@@ -1336,10 +1337,10 @@ NIL
 11
 
 SLIDER
-200
-393
-374
-426
+196
+363
+370
+396
 climb-speed
 climb-speed
 0.5
@@ -1351,10 +1352,10 @@ m/s
 HORIZONTAL
 
 SLIDER
-200
-293
-373
-326
+196
+263
+369
+296
 descent-speed
 descent-speed
 0.5
@@ -1401,25 +1402,25 @@ PENS
 "default" 1.0 1 -16777216 true "" "if plot-update = true\n[let max-degree max [count link-neighbors] of trees\nplot-pen-reset  ;; erase what we plotted before\nset-plot-x-range 1 (max-degree + 1)  ;; + 1 to make room for the width of the last bar\nhistogram [count link-neighbors] of trees]"
 
 SLIDER
-201
-117
-374
-150
+198
+86
+371
+119
 energy-intake
 energy-intake
 1
 15
-10.0
+1.0
 1
 1
 kcal / min
 HORIZONTAL
 
 SLIDER
-200
-224
-375
-257
+196
+194
+371
+227
 basal-energy
 basal-energy
 1
@@ -1431,20 +1432,20 @@ kcal / BW / hr
 HORIZONTAL
 
 TEXTBOX
-210
-61
-379
-79
+207
+30
+376
+48
 ORANGUTAN PROPERTIES
 13
 0.0
 1
 
 TEXTBOX
-19
-66
-169
-84
+16
+35
+166
+53
 FOREST PROPERTIES
 12
 0.0
@@ -1461,10 +1462,10 @@ ROUTE TRAVERSING
 1
 
 SLIDER
-201
-84
-373
-117
+198
+53
+370
+86
 body-weight
 body-weight
 30
@@ -1933,6 +1934,16 @@ descent-cost
 2
 1
 11
+
+CHOOSER
+7
+155
+145
+200
+file-name
+file-name
+"sbRec_1.csv" "sbRec_2.csv" "sbRec_3.csv" "daV_1.csv"
+0
 
 @#$#@#$#@
 # OUmove: OrangUtan Movement Agent-based Model
