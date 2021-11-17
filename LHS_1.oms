@@ -1,0 +1,42 @@
+import _file_.model._
+
+val env =
+  SLURMEnvironment(
+    "widyastu",
+    "taurus.hrsk.tu-dresden.de",
+    time = 4 hour,
+    memory = 6000 megabytes,
+    openMOLEMemory = 5000 megabytes,
+    //reservation = "p_peatfire_386",
+    nodes = 1,
+    cpuPerTask = 3,
+    //nTasks = 12,
+    threads = 6
+  )
+
+DirectSampling(
+  evaluation =
+    Replication(
+      evaluation = model,
+      seed = seed,
+      sample = 100
+   ),
+  sampling = LHS(
+      sample = 10,
+      factor = Seq(
+          //bodyWeight in (30.0 to 45.0),
+          energyIntake in (0.01 to 10.0),
+          energyGain in (0.1 to 500.0),
+          // initialSatiation in (-500.0 to 500.0),
+          basalEnergy in (0.1 to 1.5),
+          brachiationSpeed in (0.1 to 2.0),
+          swaySpeed in (0.1 to 2.0),
+          climbSpeed in (0.1 to 2.0),
+          descentSpeed in (0.1 to 2.0),
+          walkSpeed in (0.1 to 1.0)
+          )
+    )
+) hook (workDirectory / "LHSsamplingou.csv") on env by 300
+
+
+    
