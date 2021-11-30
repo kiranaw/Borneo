@@ -1,6 +1,5 @@
 import _file_.model._
 
-
 // def dailyTravelDistancePValue(d: Seq[Double]) = ksTestGaussian(d, mu = 769, sigma = 19).getOrElse(1.0) 
 // def totalEnergyExpenditurePValue(d: Seq[Double]) = ksTestGaussian(d, mu = 1476, sigma = 268).getOrElse(1.0) 
 // def totalEnergyIntakePValue(d: Seq[Double]) = ksTestGaussian(d, mu = 3015, sigma = 40.8).getOrElse(1.0) 
@@ -87,11 +86,12 @@ val env =
   SLURMEnvironment(
     "widyastu",
     "taurus.hrsk.tu-dresden.de",
-    wallTime = 1 hour,
+    //wallTime = 1 hour,
     memory = 2100 megabytes,
     openMOLEMemory = 1500 megabytes,
+    reservation = "p_peatfire_386",
     nodes = 1,
-    threads = 1,
+    threads = 2,
     workDirectory = "/tmp"
   )
 
@@ -115,8 +115,8 @@ NSGA2Evolution(
     resultLine aggregate (frequencyOfMoveAvg _) as "frequencyOfMoveAvg",
     resultLine aggregate (budgetDelta _) as "budgetAvg"
   ),
-  parallelism = 500,
-  termination = 500000,
+  parallelism = 10000,
+  termination = 1000000,
   stochastic = Stochastic(seed = seed),
   distribution = Island(5 minutes)
 ) hook (workDirectory / "results", filter = Seq(resultLine), frequency = 100) on env
