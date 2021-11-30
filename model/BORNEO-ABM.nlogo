@@ -3,7 +3,7 @@ breed [trees tree]
 breed [orangutans orangutan]
 globals [cumulative-energy-gain trees-in-row trees-in-col max-rows max-cols tree-counter row-counter col-counter starting-col starting-row isolated-trees number-of-trees]
 trees-own [energy-content fruiting-tree? transit-tree? targeted? neighbor-nodes close-neighbors crown-diameter height dbh temp-path visiting-orangutans]
-orangutans-own [descent-costs climb-costs walk-cost sway-cost brachiation-cost sway-dist brachiation-dist walk-dist climb-dist descent-dist budget-travel budget-feeding budget-resting freq-brachiate freq-sway freq-climb freq-walk freq-descent basal-metabolic-cost count-move-all current-activity feeding-count resting-count travelling-count energy-acquired? body-mass feed-wait-time move-wait-time time-to-reach-next-tree travel-time-required cumulative-travel-length travel-length move-duration time-budget count-walk count-descent count-climb count-brachiation count-sway total-expended-energy energy-reserve last-sway energy-reserve location path-route destination pre-destination temp-path-me arm-length upcoming-link move-cost arm-length next-tree cumulative-movement-cost visited-fruiting-tree last-visited-fruiting-tree]
+orangutans-own [descent-costs climb-costs walk-cost sway-cost brachiation-cost sway-dist brachiation-dist walk-dist climb-dist descent-dist budget-travel budget-feeding budget-resting freq-brachiate freq-sway freq-climb freq-walk freq-descent basal-metabolic-cost count-move-all current-activity feeding-count resting-count travelling-count energy-acquired? body-mass feed-wait-time move-wait-time time-to-reach-next-tree travel-time-required cumulative-travel-length travel-length move-duration time-budget count-walk count-descent count-climb count-brachiation count-sway total-expended-energy energy-reserve last-sway energy-reserve initial-location path-route destination pre-destination temp-path-me arm-length upcoming-link move-cost arm-length next-tree cumulative-movement-cost visited-fruiting-tree last-visited-fruiting-tree]
 patches-own [affecting-tree]
 links-own [link-type dist]
 
@@ -149,8 +149,9 @@ to orangutan-move
       [set path-route remove-item 0 path-route] ;if so, remove this tree from my route map
 
       ;if there is no connected tree from here, rechecking this after removing a tree from the list (see above)
-      ifelse path-route = []
+      ifelse path-route = [] or path-route = false or path-route = [false] ;accomodating from previous counting
       [
+        ;show "masuk sini"
         let dstn destination
         move-terrestrial ;walk to the destination tree
       ]
@@ -243,7 +244,7 @@ to move-arboreal
         ]
       ]
     ]
-  [print "nolink"]
+  [];print "nolink"]
 
 end
 
@@ -347,6 +348,7 @@ to calculate-terrestrial-cost
 end
 
 to move-terrestrial
+  ;show "move terrestrially"
   set next-tree destination
 
   ;time required to descent and climb the next tree!
@@ -380,6 +382,7 @@ to move-terrestrial
   set move-wait-time move-wait-time + 1
   if move-wait-time >= time-to-reach-next-tree ;compare waiting time (time elapsed) and time required to reach target tree
   [
+    ;show "almost arrived"
      calculate-terrestrial-cost
      set current-activity "travelling"
      move-to next-tree
@@ -473,7 +476,7 @@ end
 
 to set-simulation-size
   if simulation-size = "100 x 100"
-  [resize-world 0 99 0 99 set-patch-size 4.25]
+  [resize-world 0 100 0 100 set-patch-size 4.25]
   if simulation-size = "75 x 75"
   [resize-world 0 74 0 74 set-patch-size 5.5]
   if simulation-size = "50 x 50"
@@ -482,6 +485,8 @@ to set-simulation-size
   [resize-world 0 24 0 24 set-patch-size 16.5]
   if simulation-size = "500 x 500"
   [resize-world 0 499 0 499 set-patch-size 1]
+  if simulation-size = "1000 x 1000"
+  [resize-world 0 999 0 999 set-patch-size 1]
 end
 
 to set-patches
@@ -535,11 +540,11 @@ to set-orangutans
     set color red
     set body-mass body-weight
     set arm-length 1
-    set location one-of trees with [count my-links > 0 and any? orangutans-here = false]
+    set initial-location one-of trees with [count my-links > 0 and any? orangutans-here = false]
     set visited-fruiting-tree []
     set-energy-reserve
-    ifelse location != nobody
-    [move-to location]
+    ifelse initial-location != nobody
+    [move-to initial-location]
     [move-to one-of trees]
     select-destination
     find-route
@@ -558,9 +563,9 @@ to find-route
     ]
 
     ;when there is no path
-    if [temp-path] of trees-here = [FALSE] or [temp-path] of trees-here = nobody or [temp-path] of trees-here = [] or length [temp-path] of trees-here = 0
+    if [temp-path] of trees-here = [false] or [temp-path] of trees-here = false or [temp-path] of trees-here = nobody or [temp-path] of trees-here = [] or length [temp-path] of trees-here = 0
     [
-
+      ;show "no arboreal link"
       ;find a route that can get me as close as possible to the fruiting tree
       set pre-destination get-alternative-route
       ask trees-here
@@ -620,7 +625,7 @@ to-report get-alternative-route
       ]
     ]
     [
-      ;I am not connected to any other tree
+      ;show "I am not connected to any other tree"
     ]
   ]
   report nearest-connected-tree
@@ -705,7 +710,7 @@ to establish-tree
 end
 
 ;add data from csv file
-;data format: TreeID / x / y / dbh / crown / height / fruiting / species
+;data format: TreeID / x / y / dbh / crown / height / fruiting / genus / species
 to from-csv
   file-close-all
   file-open file-name
@@ -722,7 +727,7 @@ to from-csv
       set dbh item 3 data ;* 100
       set height item 5 data
       set crown-diameter item 4 data
-      ifelse item 6 data = 1 [set fruiting-tree? TRUE][set fruiting-tree? FALSE]
+      ifelse item (5 + month) data = 1 [set fruiting-tree? TRUE][set fruiting-tree? FALSE]
       setxy item 1 data item 2 data
       set size 1
 
@@ -765,7 +770,7 @@ end
 to link-trees
   ask trees
   [
-   set close-neighbors (trees with [distance myself <= 2])
+   set close-neighbors (trees with [distance myself <= 4])
    if close-neighbors != nobody
    [ ;link with close neighbors
     repeat count close-neighbors
@@ -825,8 +830,8 @@ end
 GRAPHICS-WINDOW
 399
 52
-832
-486
+836
+490
 -1
 -1
 4.25
@@ -840,9 +845,9 @@ GRAPHICS-WINDOW
 0
 1
 0
-99
+100
 0
-99
+100
 1
 1
 1
@@ -885,7 +890,7 @@ reg-dist-between-trees
 reg-dist-between-trees
 1
 5
-3.0
+5.0
 1
 1
 m
@@ -911,7 +916,7 @@ tree-density
 tree-density
 20
 10000
-20.0
+2520.0
 500
 1
 ind / Ha
@@ -941,7 +946,7 @@ avg-crown-diameter
 avg-crown-diameter
 0
 10
-2.0
+1.0
 1
 1
 m
@@ -993,7 +998,7 @@ fruiting-tree
 fruiting-tree
 0
 100
-1.0
+0.0
 0.1
 1
 %
@@ -1028,7 +1033,7 @@ CHOOSER
 149
 simulation-size
 simulation-size
-"100 x 100" "75 x 75" "50 x 50" "25 x 25" "500 x 500"
+"100 x 100" "75 x 75" "50 x 50" "25 x 25" "500 x 500" "1000 x 1000"
 0
 
 BUTTON
@@ -1206,7 +1211,7 @@ brachiation-speed
 brachiation-speed
 0.5
 3
-0.5
+1.0
 0.5
 1
 m/s
@@ -1221,7 +1226,7 @@ sway-speed
 sway-speed
 0.5
 3
-0.5
+1.0
 0.5
 1
 m/s
@@ -1253,7 +1258,7 @@ energy-gain
 energy-gain
 10
 1000
-319.0
+20.0
 1
 1
 kCal / tree
@@ -1345,7 +1350,7 @@ climb-speed
 climb-speed
 0.5
 3
-0.5
+1.0
 0.5
 1
 m/s
@@ -1360,7 +1365,7 @@ descent-speed
 descent-speed
 0.5
 3
-0.5
+1.0
 0.5
 1
 m/s
@@ -1410,7 +1415,7 @@ energy-intake
 energy-intake
 1
 15
-1.0
+15.0
 1
 1
 kcal / min
@@ -1425,7 +1430,7 @@ basal-energy
 basal-energy
 1
 1.5
-1.4
+1.5
 0.1
 1
 kcal / BW / hr
@@ -1470,7 +1475,7 @@ body-weight
 body-weight
 30
 100
-35.0
+36.0
 1
 1
 kg
@@ -1626,7 +1631,7 @@ MONITOR
 97
 max-tree-height (m)
 max ([height] of trees)
-17
+2
 1
 11
 
@@ -1637,7 +1642,7 @@ MONITOR
 147
 min-tree-height (m)
 min [height] of trees
-17
+2
 1
 11
 
@@ -1648,7 +1653,7 @@ MONITOR
 226
 max-tree-dbh (cm)
 max [dbh] of trees
-17
+2
 1
 11
 
@@ -1766,7 +1771,7 @@ MONITOR
 542
 next-distance
 [travel-length] of one-of orangutans
-17
+2
 1
 11
 
@@ -1938,15 +1943,25 @@ descent-cost
 CHOOSER
 7
 155
-145
+197
 200
 file-name
 file-name
-"sbRec_1.csv" "sbRec_2.csv" "sbRec_3.csv" "daV_1.csv"
+"sebangau.csv"
+0
+
+CHOOSER
+197
+446
+335
+491
+month
+month
+1 2 3 4 5 6 7 8 9 10 11 12
 0
 
 @#$#@#$#@
-# OUmove: OrangUtan Movement Agent-based Model
+# BORNEO: Arboreal animal movement on tree network
 
 ## Purpose and Patterns
 
@@ -1954,12 +1969,7 @@ The purpose of this model is to simulate the effect of forest structure variatio
 
 ## EXTENDING THE MODEL
 
-Animate the turtles as they move from node to node.
-
 ## RELATED MODELS
-
-* Lattice-Walking Turtles Example
-* Grid-Walking Turtles Example
 
 <!-- 2007 -->
 @#$#@#$#@
@@ -2245,7 +2255,7 @@ false
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 @#$#@#$#@
-NetLogo 6.2.0
+NetLogo 6.2.1
 @#$#@#$#@
 random-seed 2
 setup
