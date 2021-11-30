@@ -1,4 +1,5 @@
 val treeDist = Val[String]
+val fileName = Val[String]
 
 val bodyWeight = Val[Double]
 val energyIntake = Val[Double]
@@ -10,6 +11,7 @@ val swaySpeed = Val[Double]
 val climbSpeed = Val[Double]
 val descentSpeed = Val[Double]
 val walkSpeed = Val[Double]
+val month = Val[Int]
 val plotUpdate = Val[Boolean]
 
 val seed = Val[Int]
@@ -27,10 +29,11 @@ val travellingBudget = Val[Double]
 val restingBudget = Val[Double]
 
 val model = 
-  NetLogo6Task(workDirectory / "model/OUmove-v04.nlogo", Seq("random-seed ${seed}", "setup", "repeat 43200 [go]"), embedWorkspace = true, reuseWorkspace = true) set (
+  NetLogo6Task(workDirectory / "model/BORNEO-ABM.nlogo", Seq("random-seed ${seed}", "setup", "repeat 43200 [go]"), embedWorkspace = true, reuseWorkspace = true) set (
     inputs += seed,
     inputs += plotUpdate mapped "plot-update",
     inputs += treeDist mapped "tree-dist",
+    inputs += fileName mapped "file-name",
     inputs += bodyWeight mapped "body-weight",
     inputs += energyIntake mapped "energy-intake",
     inputs += energyGain mapped "energy-gain",
@@ -41,6 +44,7 @@ val model =
     inputs += swaySpeed mapped "sway-speed",
     inputs += climbSpeed mapped "climb-speed",
     inputs += descentSpeed mapped "descent-speed",
+    inputs += month mapped "month",
     outputs += totalEnergyIntake mapped "[cumulative-energy-gain] of one-of orangutans",
     outputs += energyExpenditure mapped "[cumulative-movement-cost] of one-of orangutans + [basal-metabolic-cost] of one-of orangutans",
     outputs += walk mapped "[freq-walk] of one-of orangutans",
@@ -54,6 +58,8 @@ val model =
     outputs += restingBudget mapped "[budget-resting] of one-of orangutans",
     plotUpdate := false,
     treeDist := "from-file",
+    fileName := "sebangau.csv",
+    
     bodyWeight := 40.0, // 30.0 - 45.0
     energyIntake := 5.5, // 1.0 - 10.0
     energyGain := 255, // 10.0 - 500.0
@@ -64,19 +70,20 @@ val model =
     swaySpeed := 1, // 0.5 - 2
     climbSpeed := 1, // 0.5 - 2
     descentSpeed := 1, // 0.5 - 2
+    month := 1,
     seed := 0
   )
   
-val env =
+/*val env =
   SLURMEnvironment(
     "widyastu",
     "taurus.hrsk.tu-dresden.de",
-    wallTime = 1 hour,
-    memory = 2100 megabytes,
-    openMOLEMemory = 1500 megabytes,
+    time = 1 hour,
+    memory = 3000 megabytes,
+    openMOLEMemory = 2000 megabytes,
+    reservation = "p_peatfire_288",
     nodes = 1,
-    threads = 1,
-    workDirectory = "/tmp"
-  )
+    threads = 1
+  )*/
 
 model hook display
