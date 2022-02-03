@@ -167,7 +167,7 @@ end
 to gain-energy
   ;based on the energy intake rate, I will stay in this tree for xxx more timesteps to handle my food, before I acquire energy
   set energy-acquired? FALSE
-  let time-to-acquire-energy round(energy-gain / (energy-intake / 60))
+  let time-to-acquire-energy round(energy-gain / energy-intake )
   set feed-wait-time feed-wait-time + 1
   set current-activity "feeding"
 
