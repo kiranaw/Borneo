@@ -1055,9 +1055,9 @@ NIL
 
 BUTTON
 7
-471
-108
 504
+108
+537
 NIL
 update-view
 NIL
@@ -1415,7 +1415,7 @@ energy-intake
 energy-intake
 1
 15
-15.0
+4.0
 1
 1
 kcal / min
@@ -1951,14 +1951,40 @@ file-name
 0
 
 CHOOSER
-197
-446
-335
-491
+198
+478
+336
+523
 month
 month
 1 2 3 4 5 6 7 8 9 10 11 12
 0
+
+SWITCH
+6
+467
+167
+500
+stochastic-month
+stochastic-month
+1
+1
+-1000
+
+SLIDER
+194
+441
+370
+474
+prob-move-non-feed
+prob-move-non-feed
+0
+1
+0.5
+0.1
+1
+NIL
+HORIZONTAL
 
 @#$#@#$#@
 # BORNEO: Arboreal animal movement on tree network
