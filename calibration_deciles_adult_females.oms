@@ -1,0 +1,49 @@
+import _file_.model_rollback._
+
+
+def feedingBudgetTest(d: Seq[Double]) = 
+  squareDistance(percentile(d, (10 to 90 by 10)), Seq(57.75824, 61.73859, 64.86207, 68.24138, 69.84127, 71.57548, 73.57639, 76.29817, 79.03704))
+
+def restBudgetTest(d: Seq[Double]) = 
+ squareDistance(percentile(d, (10 to 90 by 10)), Seq(8.621118, 10.810811, 12.168754, 14.191263, 16.406250, 18.475897, 20.292889, 23.863248, 27.604743))
+
+def travelBudgetTest(d: Seq[Double]) = 
+  squareDistance(percentile(d, (10 to 90 by 10)), Seq(7.378129, 9.457331, 11.390939, 12.693674, 14.049587, 15.259467, 16.012833, 17.564499, 19.492552))
+
+val env =
+  SLURMEnvironment(
+    "widyastu",
+    "taurus.hrsk.tu-dresden.de",
+    workDirectory = "/tmp",
+    sharedDirectory = "/scratch/ws/0/widyastu-100",
+    time = 2 hour,
+    memory = 3000 megabytes,
+    openMOLEMemory = 2000 megabytes,
+    //reservation = "p_peatfire_386",
+    nodes = 1,
+    threads = 2
+  )
+
+NSGA2Evolution(
+  evaluation = model,
+  objective = Seq(feedingBudget aggregate (feedingBudgetTest _), travellingBudget aggregate (travelBudgetTest _), restingBudget aggregate (restBudgetTest _)),
+  reject = "climbSpeed > (descentSpeed - 0.2) || brachiationSpeed > swaySpeed || walkSpeed > swaySpeed", //, "brachiationSpeed < swaySpeed", "walkSpeed < swaySpeed - 0.2" ),
+  genome = Seq(
+    //bodyWeight in (30.0 to 45.0),
+    energyIntake in (0.01 to 0.20),
+    energyGain in (100.0 to 500.0), //constrain 400
+    initialSatiation in (-500.0 to 500.0),
+    basalEnergy in (0.1 to 10), //constrain 1.5
+    brachiationSpeed in (0.1 to 2.0),
+    swaySpeed in (0.1 to 2.0),
+    climbSpeed in (0.1 to 2.0),
+    descentSpeed in (0.1 to 2.0),
+    probMoveNoFeed in (0.0 to 1.0),
+    walkSpeed in (0.1 to 1.0)
+    //month
+  ),
+  parallelism = 10000,
+  termination = 5000000, //number of evaluated individuals
+  stochastic = Stochastic(seed = seed, sample = 50),
+  distribution = Island(5 minutes)
+) hook (workDirectory / s"results_calibration_adult_female", frequency = 500) on env by 10
