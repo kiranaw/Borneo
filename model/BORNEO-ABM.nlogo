@@ -770,6 +770,7 @@ end
 to from-csv
   file-close-all
   file-open file-name
+  file-open word (word "scenario/" burnt-proportion) ".csv"
   let headings csv:from-row file-read-line
   if stochastic-month = TRUE
   [
@@ -2023,7 +2024,7 @@ CHOOSER
 month
 month
 1 2 3 4 5 6 7 8 9 10 11 12
-10
+8
 
 SWITCH
 11
@@ -2081,16 +2082,31 @@ energy-gain / energy-intake
 11
 
 SLIDER
-21
-565
-193
-598
+10
+558
+182
+591
 prob-move-no-feed
 prob-move-no-feed
 0
 1
 0.1
 0.1
+1
+NIL
+HORIZONTAL
+
+SLIDER
+65
+629
+242
+662
+burnt-proportion
+burnt-proportion
+0
+9
+4.0
+1
 1
 NIL
 HORIZONTAL
@@ -2390,7 +2406,7 @@ false
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 @#$#@#$#@
-NetLogo 6.2.1
+NetLogo 6.2.2
 @#$#@#$#@
 random-seed 2
 setup
