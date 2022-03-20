@@ -1,4 +1,4 @@
-extensions [nw csv]
+extensions [nw csv rnd]
 breed [trees tree]
 breed [orangutans orangutan]
 globals [cumulative-energy-gain trees-in-row trees-in-col max-rows max-cols tree-counter row-counter col-counter starting-col starting-row isolated-trees number-of-trees]
@@ -17,7 +17,7 @@ to setup
   set-simulation-size
   set-patches
   setup-forest
-  set-fruiting-trees
+  ;set-fruiting-trees
   set-orangutans
   reset-ticks
 end
@@ -26,7 +26,12 @@ to go
   if ticks >= 43200
   [stop]
   ifelse check-hunger = TRUE
-  [orangutan-move][rest]
+  [orangutan-move]
+  [
+    ifelse random-float 1 < prob-move-no-feed
+    [move-nearby]
+    [rest]
+  ]
   expend-basal-energy
   record-activity
  tick
@@ -167,7 +172,7 @@ end
 to gain-energy
   ;based on the energy intake rate, I will stay in this tree for xxx more timesteps to handle my food, before I acquire energy
   set energy-acquired? FALSE
-  let time-to-acquire-energy round(energy-gain / (energy-intake / 60))
+  let time-to-acquire-energy round(energy-gain / energy-intake)
   set feed-wait-time feed-wait-time + 1
   set current-activity "feeding"
 
@@ -456,7 +461,7 @@ to update-view
   [
     ask trees
     [
-      ask patches in-radius floor(crown-diameter / 2) [
+      ask patches in-radius floor(crown-diameter) [ ;/ 2) [
       if [dbh] of myself > 20
       [set pcolor (green) + [height] of myself mod 10]
       ]
@@ -499,16 +504,21 @@ end
 
 to setup-forest
   if tree-dist = "regular"
-  [regular-setup]
+  [
+    regular-setup
+    set-fruiting-trees
+  ]
   if tree-dist = "random"
-  [random-setup]
+  [
+    random-setup
+    set-fruiting-trees
+  ]
   if tree-dist = "from-file"
   [from-csv]
   link-trees
 end
 
 to set-fruiting-trees
-
   ask n-of floor(fruiting-tree / 100 * count trees) trees with [dbh > 20]
   [
     set color red
@@ -599,6 +609,192 @@ to select-destination
   [
     set size 2
     set targeted? true
+  ]
+end
+
+to move-nearby
+  ask orangutans[
+  ;select a fruiting tree that havent been visited, which is the nearest from me
+  let dest min-one-of other trees with [self != [one-of trees-here] of myself] [distance myself]; and targeted? = false]
+
+  ifelse dest != nobody
+  [set destination dest]
+  ;if there is no fruiting tree that can be visited, move to non-fruiting tree (at random)
+  [set destination one-of other trees with [color != red and self != [one-of trees-here] of myself]]
+
+  ;show the destination (make the target tree look bigger)
+  ask trees-here
+  [
+    set size 1
+  ]
+  ask destination
+  [
+    set size 2
+    set targeted? true
+  ]
+
+    ask trees-here
+    [
+      set temp-path nw:turtles-on-path-to [destination] of myself
+    ]
+
+    ;when there is no path
+    if [temp-path] of trees-here = [false] or [temp-path] of trees-here = false or [temp-path] of trees-here = nobody or [temp-path] of trees-here = [] or length [temp-path] of trees-here = 0
+    [
+      ;show "no arboreal link"
+      ;find a route that can get me as close as possible to the fruiting tree
+      set pre-destination get-alternative-route
+      ask trees-here
+      [
+        set temp-path nw:turtles-on-path-to [pre-destination] of myself
+      ]
+    ]
+
+      ;pass the route to orangutans-own variable
+      set path-route [temp-path] of trees-here
+      ;need to extract the list from list
+      set path-route item 0 path-route
+  ]
+  orangutan-move-nearby
+end
+
+to orangutan-move-nearby
+ ask orangutans
+ [
+    ;pen-down
+    ;check if an arboreal route to destination exists, if not:
+    ifelse path-route = [] or path-route = false ;if orangutan reached destination or there is no arboreal link
+    [
+      ;if this is a transit tree, switch to terrestrial move
+      if [color] of one-of trees-here = yellow
+      [
+        ;print "no arboreal route to destination! proceed with terrestrial move.."
+        set upcoming-link nobody
+        move-terrestrial-nearby
+      ]
+      if [color] of one-of trees-here = green + 20
+      [
+
+        clear-transit-flags
+        select-destination
+        find-route
+      ]
+    ]
+    ;if i have arboreal route to traverse
+    [
+      ;remove the first & current tree from list --> make sure it doesn't waste a timestep staying on the same tree
+      if [who] of item 0 path-route = [who] of one-of trees-here ;check if the route map contains my current tree..
+      [set path-route remove-item 0 path-route] ;if so, remove this tree from my route map
+
+      ;if there is no connected tree from here, rechecking this after removing a tree from the list (see above)
+      ifelse path-route = [] or path-route = false or path-route = [false] ;accomodating from previous counting
+      [
+        ;show "masuk sini"
+        let dstn destination
+        move-terrestrial-nearby ;walk to the destination tree
+      ]
+      [
+        move-arboreal-nearby
+      ]
+    ]
+    set count-move-all count-walk + count-sway + count-descent + count-climb + count-brachiation
+  ]
+end
+
+to move-arboreal-nearby
+    set next-tree item 0 path-route
+
+    set upcoming-link get-upcoming-link self
+
+    ;calculate distance and time required to reach the next tree
+    ifelse upcoming-link != nobody
+    [
+      let dist-to-next-tree [link-length] of upcoming-link
+      set travel-length dist-to-next-tree
+
+      let ltyp [link-type] of upcoming-link
+      let mvspeed 0
+
+      ;take the brachiation / sway / walking speed
+      if ltyp = "brachiation"
+      [set mvspeed brachiation-speed]
+      if ltyp = "sway"
+      [set mvspeed sway-speed]
+
+      let dist-that-i-can-travel-in-one-second mvspeed
+      set time-to-reach-next-tree dist-to-next-tree / mvspeed
+
+      ifelse dist-to-next-tree <= dist-that-i-can-travel-in-one-second
+      [
+        set current-activity "travelling"
+        move-to next-tree
+      ]
+      ;wait routine
+      [
+        set current-activity "travelling"
+        set move-wait-time move-wait-time + 1
+        if move-wait-time >= time-to-reach-next-tree ;compare waiting time (time elapsed) and time required to reach target tree
+        [
+          ;here, calculate the energy cost to reach the next tree
+          ;calculate-arboreal-cost
+          move-to next-tree
+          ;when successfully moved to the next tree, then remove the element from list
+          set path-route remove-item 0 path-route
+          ;sum up the travel length
+          ;set cumulative-travel-length cumulative-travel-length + travel-length
+          ;also, reset the counter!
+          set move-wait-time 0
+        ]
+      ]
+    ]
+  []
+end
+
+to move-terrestrial-nearby
+  ;show "move terrestrially"
+  set next-tree destination
+
+  ;time required to descent and climb the next tree!
+  ;repeat the same procedure ==> DESCENT
+  ;1. calculate the distance to be descended
+  let dist-to-descent [height] of one-of trees-here
+  ;2. how far can I descent in one second
+  let dist-i-can-descent-per-second descent-speed
+  ;3. calculate time to descent to the ground
+  let time-to-descent-to-ground dist-to-descent / descent-speed
+
+  ;time required to WALK to the next tree
+  ;1. menghitung jarak antara posisi saya dan pohon selanjutnya
+  let dist-to-next-tree distance next-tree
+  ;2. how far can I travel in one second?
+  let dist-i-can-travel-per-second walking-speed
+  ;3. calculate time to reach the next-tree
+  let time-to-walk dist-to-next-tree / walking-speed
+
+  ;==> CLIMB
+  let dist-to-climb [height] of next-tree
+  let dist-i-can-climb-per-second climb-speed
+  let time-to-climb-from-ground dist-to-climb / climb-speed
+
+  ;==> CALCULATE THE OVERALL TIME
+  set time-to-reach-next-tree time-to-descent-to-ground + time-to-walk + time-to-climb-from-ground
+  ; no need because it is almost impossible set dist-that-i-can-travel-in-one-second
+
+  ;NOW THE WAITING TIME
+  set travel-length dist-to-next-tree ;get the travel length
+  set move-wait-time move-wait-time + 1
+  if move-wait-time >= time-to-reach-next-tree ;compare waiting time (time elapsed) and time required to reach target tree
+  [
+    ;show "almost arrived"
+     ;calculate-terrestrial-cost
+     set current-activity "travelling"
+     move-to next-tree
+     ;set cumulative-travel-length cumulative-travel-length + travel-length
+     ;when successfully moved to the next tree, then remove the element from list
+     if path-route != []
+     [set path-route remove-item 0 path-route]
+     ;also, reset the counter!
+     set move-wait-time 0
   ]
 end
 
@@ -698,7 +894,7 @@ to establish-tree
     set color green + 20
 
     set shape "circle"
-    ask patches in-radius floor(crown-diameter / 2) [
+    ask patches in-radius floor(crown-diameter) [ ;/ 2) [
       if show-crown = true and [dbh] of myself > 20
       [set pcolor (green) + [height] of myself mod 10]
 
@@ -715,6 +911,10 @@ to from-csv
   file-close-all
   file-open file-name
   let headings csv:from-row file-read-line
+  if stochastic-month = TRUE
+  [
+    set month select-month
+  ]
 
   while [ not file-at-end? ] [
     let data csv:from-row file-read-line
@@ -736,7 +936,7 @@ to from-csv
 
       set shape "circle"
 
-      ask patches in-radius ceiling(crown-diameter / 2) [
+      ask patches in-radius ceiling(crown-diameter) [ ;/ 2) [
         if show-crown = true ;and [dbh] of myself > 20
         ;[set pcolor green]
         [set pcolor (green) - [height] of myself mod 5]
@@ -749,6 +949,11 @@ to from-csv
     ]
   ]
   file-close-all
+end
+
+to-report select-month
+  let pairs [[ 1 0.03589744 ] [ 2 0.05128205 ] [ 3 0.07179487 ] [ 4 0.08205128 ] [ 5 0.08717949 ] [ 6 0.06153846 ] [ 7 0.05641026 ] [ 8 0.09743590 ] [ 9 0.18974359 ] [ 10 0.13333333 ] [ 11 0.10769231 ] [ 12 0.02564103 ]]
+  report first rnd:weighted-one-of-list pairs [ [p] -> last p ]
 end
 
 ;the tree density parameter should be adjustable so that it gives number of trees / Hectares
@@ -785,7 +990,7 @@ to link-trees
     ]
 
     ;get the affecting-trees from the patches in-radius of my crown
-    set neighbor-nodes (turtle-set neighbor-nodes ([affecting-tree] of patches in-radius floor(crown-diameter / 2)))
+    set neighbor-nodes (turtle-set neighbor-nodes ([affecting-tree] of patches in-radius floor(crown-diameter))) ;/ 2)))
     ;set neighbor-nodes (turtle-set neighbor-nodes turtles-on neighbors) <-- what is this for?
 
 
@@ -1055,9 +1260,9 @@ NIL
 
 BUTTON
 7
-504
+471
 108
-537
+504
 NIL
 update-view
 NIL
@@ -1209,10 +1414,10 @@ SLIDER
 362
 brachiation-speed
 brachiation-speed
-0.5
+0.1
 3
-1.0
 0.5
+0.0001
 1
 m/s
 HORIZONTAL
@@ -1226,7 +1431,7 @@ sway-speed
 sway-speed
 0.5
 3
-1.0
+1.524
 0.5
 1
 m/s
@@ -1258,7 +1463,7 @@ energy-gain
 energy-gain
 10
 1000
-20.0
+441.0
 1
 1
 kCal / tree
@@ -1313,7 +1518,7 @@ initial-satiation
 initial-satiation
 -500
 500
-0.0
+500.0
 1
 1
 kcal
@@ -1350,7 +1555,7 @@ climb-speed
 climb-speed
 0.5
 3
-1.0
+0.5
 0.5
 1
 m/s
@@ -1365,7 +1570,7 @@ descent-speed
 descent-speed
 0.5
 3
-1.0
+1.476
 0.5
 1
 m/s
@@ -1413,10 +1618,10 @@ SLIDER
 119
 energy-intake
 energy-intake
-1
+0
 15
-4.0
-1
+0.161
+0.0001
 1
 kcal / min
 HORIZONTAL
@@ -1429,8 +1634,8 @@ SLIDER
 basal-energy
 basal-energy
 1
-1.5
-1.5
+15
+9.077
 0.1
 1
 kcal / BW / hr
@@ -1951,36 +2156,80 @@ file-name
 0
 
 CHOOSER
-198
-478
-336
-523
+197
+446
+335
+491
 month
 month
 1 2 3 4 5 6 7 8 9 10 11 12
-0
+1
 
 SWITCH
-6
-467
-167
-500
+11
+518
+193
+551
 stochastic-month
 stochastic-month
-1
+0
 1
 -1000
 
+MONITOR
+216
+516
+327
+561
+NIL
+[current-activity] of one-of orangutans
+17
+1
+11
+
+MONITOR
+378
+549
+484
+594
+NIL
+[move-wait-time] of one-of orangutans
+17
+1
+11
+
+MONITOR
+501
+547
+603
+592
+NIL
+[feed-wait-time] of one-of orangutans
+17
+1
+11
+
+MONITOR
+609
+547
+778
+592
+NIL
+energy-gain / energy-intake
+17
+1
+11
+
 SLIDER
-194
-441
-370
-474
-prob-move-non-feed
-prob-move-non-feed
+21
+565
+193
+598
+prob-move-no-feed
+prob-move-no-feed
 0
 1
-0.5
+0.1
 0.1
 1
 NIL

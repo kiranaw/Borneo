@@ -1,0 +1,65 @@
+import _file_.model_rollback._
+
+
+def feedingBudgetTest(d: Seq[Double]) = 
+  squareDistance(percentile(d, (10 to 90 by 10)), Seq(54.55556, 60.03018, 63.94841, 67.67823, 70.37037, 73.33504, 75.81183, 77.96054, 81.17573))
+  
+def restBudgetTest(d: Seq[Double]) = 
+ squareDistance(percentile(d, (10 to 90 by 10)), Seq(7.012987, 8.955224, 10.720050, 12.731905, 15.079365, 16.739659, 20.504695, 23.850973, 28.156495))
+
+def travelBudgetTest(d: Seq[Double]) = 
+  squareDistance(percentile(d, (10 to 90 by 10)), Seq(6.644628, 8.479446, 10.467097, 11.694799, 13.043478, 15.078947, 17.040482, 19.369356, 21.513859))
+  
+
+val env =
+  SLURMEnvironment(
+    "widyastu",
+    "taurus.hrsk.tu-dresden.de",
+    workDirectory = "/tmp",
+    sharedDirectory = "/scratch/ws/0/widyastu-100",
+    time = 2 hour,
+    memory = 3000 megabytes,
+    openMOLEMemory = 2000 megabytes,
+    //reservation = "p_peatfire_386",
+    nodes = 1,
+    threads = 2
+  )
+
+NSGA2Evolution(
+  evaluation = model,
+  objective = Seq(feedingBudget aggregate (feedingBudgetTest _), travellingBudget aggregate (travelBudgetTest _), restingBudget aggregate (restBudgetTest _)),
+  reject = "climbSpeed > (descentSpeed - 0.2) || brachiationSpeed > swaySpeed || walkSpeed > swaySpeed", //, "brachiationSpeed < swaySpeed", "walkSpeed < swaySpeed - 0.2" ),
+  genome = Seq(
+    //bodyWeight in (30.0 to 45.0),
+    energyIntake in (0.01 to 0.20),
+    energyGain in (100.0 to 500.0), //constrain 400
+    initialSatiation in (-500.0 to 500.0),
+    basalEnergy in (0.1 to 10), //constrain 1.5
+    brachiationSpeed in (0.1 to 2.0),
+    swaySpeed in (0.1 to 2.0),
+    climbSpeed in (0.1 to 2.0),
+    descentSpeed in (0.1 to 2.0),
+    probMoveNoFeed in (0.0 to 1.0),
+    walkSpeed in (0.1 to 1.0)
+    //month
+  ),
+  parallelism = 10000,
+  termination = 5000000, //number of evaluated individuals
+  stochastic = Stochastic(seed = seed, sample = 50),
+  distribution = Island(5 minutes)
+) hook (workDirectory / s"results_calibration_rb1_FM", frequency = 500) on env by 10
+
+
+
+
+//EmptyTask() -- (profile(descentSpeed))
+
+//EmptyTask() -- (profile(brachiationSpeed))
+
+//EmptyTask() -- (profile(basalEnergy))
+
+//EmptyTask() -- (profile(energyGain))
+
+
+
+//EmptyTask() -- (profile(energyIntake), profile(energyGain), profile(basalEnergy), profile(brachiationSpeed), profile(swaySpeed), profile(climbSpeed), profile(descentSpeed), profile(walkSpeed))
