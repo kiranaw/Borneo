@@ -31,7 +31,7 @@ val restingBudget = Val[Double]
 val stochasticmonth = Val[Boolean]
 
 val model = 
-  NetLogo6Task(workDirectory / "model/BORNEO-ABM.nlogo", Seq("random-seed ${seed}", "setup", "repeat 43200 [go]"), embedWorkspace = true, reuseWorkspace = true) set (
+  NetLogo6Task(workDirectory / "model/BORNEO-ABM-stochasticmonth_rollback1.nlogo", Seq("random-seed ${seed}", "setup", "repeat 43200 [go]"), embedWorkspace = true, reuseWorkspace = true) set (
     inputs += seed,
     inputs += plotUpdate mapped "plot-update",
     inputs += treeDist mapped "tree-dist",
