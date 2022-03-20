@@ -655,147 +655,7 @@ to move-nearby
       ;need to extract the list from list
       set path-route item 0 path-route
   ]
-  orangutan-move-nearby
-end
-
-to orangutan-move-nearby
- ask orangutans
- [
-    ;pen-down
-    ;check if an arboreal route to destination exists, if not:
-    ifelse path-route = [] or path-route = false ;if orangutan reached destination or there is no arboreal link
-    [
-      ;if this is a transit tree, switch to terrestrial move
-      if [color] of one-of trees-here = yellow
-      [
-        ;print "no arboreal route to destination! proceed with terrestrial move.."
-        set upcoming-link nobody
-        move-terrestrial-nearby
-      ]
-      if [color] of one-of trees-here = green + 20
-      [
-
-        clear-transit-flags
-        select-destination
-        find-route
-      ]
-    ]
-    ;if i have arboreal route to traverse
-    [
-      ;remove the first & current tree from list --> make sure it doesn't waste a timestep staying on the same tree
-      if [who] of item 0 path-route = [who] of one-of trees-here ;check if the route map contains my current tree..
-      [set path-route remove-item 0 path-route] ;if so, remove this tree from my route map
-
-      ;if there is no connected tree from here, rechecking this after removing a tree from the list (see above)
-      ifelse path-route = [] or path-route = false or path-route = [false] ;accomodating from previous counting
-      [
-        ;show "masuk sini"
-        let dstn destination
-        move-terrestrial-nearby ;walk to the destination tree
-      ]
-      [
-        move-arboreal-nearby
-      ]
-    ]
-    set count-move-all count-walk + count-sway + count-descent + count-climb + count-brachiation
-  ]
-end
-
-to move-arboreal-nearby
-    set next-tree item 0 path-route
-
-    set upcoming-link get-upcoming-link self
-
-    ;calculate distance and time required to reach the next tree
-    ifelse upcoming-link != nobody
-    [
-      let dist-to-next-tree [link-length] of upcoming-link
-      set travel-length dist-to-next-tree
-
-      let ltyp [link-type] of upcoming-link
-      let mvspeed 0
-
-      ;take the brachiation / sway / walking speed
-      if ltyp = "brachiation"
-      [set mvspeed brachiation-speed]
-      if ltyp = "sway"
-      [set mvspeed sway-speed]
-
-      let dist-that-i-can-travel-in-one-second mvspeed
-      set time-to-reach-next-tree dist-to-next-tree / mvspeed
-
-      ifelse dist-to-next-tree <= dist-that-i-can-travel-in-one-second
-      [
-        set current-activity "travelling"
-        move-to next-tree
-      ]
-      ;wait routine
-      [
-        set current-activity "travelling"
-        set move-wait-time move-wait-time + 1
-        if move-wait-time >= time-to-reach-next-tree ;compare waiting time (time elapsed) and time required to reach target tree
-        [
-          ;here, calculate the energy cost to reach the next tree
-          ;calculate-arboreal-cost
-          move-to next-tree
-          ;when successfully moved to the next tree, then remove the element from list
-          set path-route remove-item 0 path-route
-          ;sum up the travel length
-          ;set cumulative-travel-length cumulative-travel-length + travel-length
-          ;also, reset the counter!
-          set move-wait-time 0
-        ]
-      ]
-    ]
-  []
-end
-
-to move-terrestrial-nearby
-  ;show "move terrestrially"
-  set next-tree destination
-
-  ;time required to descent and climb the next tree!
-  ;repeat the same procedure ==> DESCENT
-  ;1. calculate the distance to be descended
-  let dist-to-descent [height] of one-of trees-here
-  ;2. how far can I descent in one second
-  let dist-i-can-descent-per-second descent-speed
-  ;3. calculate time to descent to the ground
-  let time-to-descent-to-ground dist-to-descent / descent-speed
-
-  ;time required to WALK to the next tree
-  ;1. menghitung jarak antara posisi saya dan pohon selanjutnya
-  let dist-to-next-tree distance next-tree
-  ;2. how far can I travel in one second?
-  let dist-i-can-travel-per-second walking-speed
-  ;3. calculate time to reach the next-tree
-  let time-to-walk dist-to-next-tree / walking-speed
-
-  ;==> CLIMB
-  let dist-to-climb [height] of next-tree
-  let dist-i-can-climb-per-second climb-speed
-  let time-to-climb-from-ground dist-to-climb / climb-speed
-
-  ;==> CALCULATE THE OVERALL TIME
-  set time-to-reach-next-tree time-to-descent-to-ground + time-to-walk + time-to-climb-from-ground
-  ; no need because it is almost impossible set dist-that-i-can-travel-in-one-second
-
-  ;NOW THE WAITING TIME
-  set travel-length dist-to-next-tree ;get the travel length
-  set move-wait-time move-wait-time + 1
-  if move-wait-time >= time-to-reach-next-tree ;compare waiting time (time elapsed) and time required to reach target tree
-  [
-    ;show "almost arrived"
-     ;calculate-terrestrial-cost
-     set current-activity "travelling"
-     move-to next-tree
-     ;set cumulative-travel-length cumulative-travel-length + travel-length
-     ;when successfully moved to the next tree, then remove the element from list
-     if path-route != []
-     [set path-route remove-item 0 path-route]
-     ;also, reset the counter!
-     set move-wait-time 0
-  ]
+  orangutan-move
 end
 
 to-report get-alternative-route
@@ -2163,7 +2023,7 @@ CHOOSER
 month
 month
 1 2 3 4 5 6 7 8 9 10 11 12
-1
+10
 
 SWITCH
 11
@@ -2530,7 +2390,7 @@ false
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 @#$#@#$#@
-NetLogo 6.2.2
+NetLogo 6.2.1
 @#$#@#$#@
 random-seed 2
 setup
