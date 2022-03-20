@@ -28,7 +28,7 @@ val env =
 NSGA2Evolution(
   evaluation = model,
   objective = Seq(feedingBudget aggregate (feedingBudgetTest _), travellingBudget aggregate (travelBudgetTest _), restingBudget aggregate (restBudgetTest _)),
-  reject = "climbSpeed > (descentSpeed - 0.2) || brachiationSpeed > swaySpeed || walkSpeed > swaySpeed", //, "brachiationSpeed < swaySpeed", "walkSpeed < swaySpeed - 0.2" ),
+  reject = "climbSpeed > (descentSpeed - 0.2) || brachiationSpeed > swaySpeed || walkSpeed > swaySpeed", 
   genome = Seq(
     //bodyWeight in (30.0 to 45.0),
     energyIntake in (0.01 to 0.20),
@@ -48,18 +48,3 @@ NSGA2Evolution(
   stochastic = Stochastic(seed = seed, sample = 50),
   distribution = Island(5 minutes)
 ) hook (workDirectory / s"results_calibration_rb1_FM", frequency = 500) on env by 10
-
-
-
-
-//EmptyTask() -- (profile(descentSpeed))
-
-//EmptyTask() -- (profile(brachiationSpeed))
-
-//EmptyTask() -- (profile(basalEnergy))
-
-//EmptyTask() -- (profile(energyGain))
-
-
-
-//EmptyTask() -- (profile(energyIntake), profile(energyGain), profile(basalEnergy), profile(brachiationSpeed), profile(swaySpeed), profile(climbSpeed), profile(descentSpeed), profile(walkSpeed))
