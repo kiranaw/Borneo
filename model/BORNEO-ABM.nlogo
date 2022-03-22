@@ -550,7 +550,9 @@ to set-orangutans
     set color red
     set body-mass body-weight
     set arm-length 1
-    set initial-location one-of trees with [count my-links > 0 and any? orangutans-here = false]
+    ifelse static-start-pos = true
+      [set initial-location one-of trees with [xcor = 1 and ycor = 93]]
+      [set initial-location one-of trees with [count my-links > 0 and any? orangutans-here = false]]
     set visited-fruiting-tree []
     set-energy-reserve
     ifelse initial-location != nobody
@@ -2024,7 +2026,7 @@ CHOOSER
 month
 month
 1 2 3 4 5 6 7 8 9 10 11 12
-8
+1
 
 SWITCH
 11
@@ -2097,19 +2099,30 @@ NIL
 HORIZONTAL
 
 SLIDER
-65
-629
-242
-662
+11
+598
+188
+631
 burnt-proportion
 burnt-proportion
 0
 9
-4.0
+0.0
 1
 1
 NIL
 HORIZONTAL
+
+SWITCH
+14
+647
+180
+681
+static-start-pos
+static-start-pos
+1
+1
+-1000
 
 @#$#@#$#@
 # BORNEO: Arboreal animal movement on tree network
