@@ -771,8 +771,12 @@ end
 ;data format: TreeID / x / y / dbh / crown / height / fruiting / genus / species
 to from-csv
   file-close-all
-  file-open file-name
-  file-open word (word "scenario/" burnt-proportion) ".csv"
+
+  ifelse burnscenario = TRUE
+  [
+    file-open word (word "scenario/" burnt-proportion) ".csv"
+  ]
+  [file-open file-name]
   let headings csv:from-row file-read-line
   if stochastic-month = TRUE
   [
@@ -1543,7 +1547,7 @@ body-weight
 body-weight
 30
 100
-36.0
+74.0
 1
 1
 kg
@@ -2015,7 +2019,7 @@ CHOOSER
 200
 file-name
 file-name
-"sebangau.csv"
+"sebangau.csv" "burntsebangau.csv"
 0
 
 CHOOSER
@@ -2026,7 +2030,7 @@ CHOOSER
 month
 month
 1 2 3 4 5 6 7 8 9 10 11 12
-1
+6
 
 SWITCH
 11
@@ -2035,7 +2039,7 @@ SWITCH
 551
 stochastic-month
 stochastic-month
-0
+1
 1
 -1000
 
@@ -2092,7 +2096,7 @@ prob-move-no-feed
 prob-move-no-feed
 0
 1
-0.1
+0.0
 0.1
 1
 NIL
@@ -2106,7 +2110,7 @@ SLIDER
 burnt-proportion
 burnt-proportion
 0
-9
+10
 0.0
 1
 1
@@ -2117,9 +2121,31 @@ SWITCH
 14
 647
 180
-681
+680
 static-start-pos
 static-start-pos
+1
+1
+-1000
+
+MONITOR
+852
+560
+950
+605
+fruiting trees
+count trees with [color = red]
+17
+1
+11
+
+SWITCH
+281
+665
+433
+698
+burnscenario
+burnscenario
 1
 1
 -1000
