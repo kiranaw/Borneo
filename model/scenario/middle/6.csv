@@ -1,0 +1,687 @@
+,x,y,dbh,canopy_radius,height,fruiting_jan,fruiting_feb,fruiting_mar,fruiting_apr,fruiting_may,fruiting_jun,fruiting_jul,fruiting_aug,fruiting_sep,fruiting_oct,fruiting_nov,fruiting_dec,genus,species,status
+1,1,1,18.3,3.1,18.13924121851,0,0,0,0,0,0,0,0,0,0,0,0,Shorea,teysmanniana,untouched
+2,1,2,8.7,0.85,13,0,0,0,0,0,0,0,0,0,0,0,0,Ilex,hypoglauca,untouched
+3,0,3,7.2,0.9,13,0,0,0,0,0,0,0,0,0,0,0,0,Sandoricum,beccanarium,untouched
+4,3,3,10.5,2.2325,13,0,0,0,0,0,0,0,1,0,0,0,0,Memecylon,sp. 1,untouched
+5,2,7,36.4,5.3425,10.080060910052,0,0,0,0,0,0,0,0,0,0,0,0,Campnosperma,coriaceum,untouched
+6,1,7,10.3,1.925,13,0,0,0,0,0,0,0,0,0,0,0,0,Tristaniopsis,sp. 2,untouched
+7,1,10,10.2,2.225,15,0,0,0,0,0,0,0,0,0,0,0,0,Callophyllum,cf. lanigerum / sp. 2,untouched
+8,2,10,18.8,2.525,17.8201402942395,1,0,0,0,0,0,0,0,0,0,1,1,Madhuca,mottleyana,untouched
+9,4,9,37.5,3.85,9.63515430442063,0,0,0,0,0,1,1,0,0,1,0,0,Tetramerista,glabra,untouched
+10,4,10,11.6,1.65,9.31285626506717,0,0,0,0,0,0,0,0,0,0,0,0,Gonystylus,bancanus,untouched
+11,1,13,33.2,4.5,12.9351091399407,0,0,0,0,0,0,0,0,0,0,0,0,Mesua,sp. 1,untouched
+12,2,14,11,1.9,15,0,0,0,0,0,0,0,0,0,0,0,0,Nephelium,lappaceum,untouched
+13,2,15,8.8,1.65,9,0,0,0,0,0,0,0,0,0,0,0,0,Tetractomia,tetrandra,untouched
+14,3,18,13,2.175,15,0,0,0,0,0,0,0,0,0,0,0,0,Ilex,hypoglauca,untouched
+15,6,19,7.6,1.925,13,0,0,0,0,0,0,0,0,0,0,0,0,Tetractomia,tetrandra,untouched
+16,7,17,24.9,3.8,11.7768347915753,0,0,0,0,0,0,0,0,0,0,0,0,Calophyllum,cf. hosei (cf. fragrans),untouched
+17,8,19,10.1,0.875,13,0,0,0,0,0,0,0,0,0,0,0,0,Gymnacranthera,farquhariania,untouched
+18,8,16,10,2.025,10,0,0,0,0,0,0,0,0,0,0,0,0,Tetractomia,tetrandra,untouched
+19,10,18,6.5,1.25,6,0,0,0,0,0,0,0,0,0,0,0,0,Horsfieldia,crassifolia,untouched
+20,11,16,7.7,1.325,8.5,0,0,0,0,0,0,0,0,0,0,0,0,Isonandra,lanceolata,untouched
+21,11,14,14.1,2.85,14,0,0,0,0,0,0,0,0,0,0,0,0,Licania,splendens,untouched
+22,14,15,8.3,0.8,15,0,0,0,0,0,0,0,0,0,0,0,0,Nephelium,lappaceum,untouched
+23,14,18,8.2,2.875,10,0,0,0,0,0,0,0,0,0,0,0,0,Licania,splendens,untouched
+24,16,15,10.9,1.925,12,0,0,0,0,0,0,0,0,0,1,1,0,Maasia (Polyalthia),hypoleuca,untouched
+25,6,13,11.7,2.25,11,0,0,0,0,0,0,0,0,0,0,0,0,Diospyros,areolata (bantamensis),untouched
+26,7,10,7.5,1.65,7,0,0,0,0,0,0,0,0,0,0,0,0,Diospyros,areolata (bantamensis),untouched
+27,6,9,12.3,2.275,15,0,0,0,0,0,0,0,0,0,0,0,0,Nephelium,lappaceum,untouched
+28,7,8,15.1,3.775,13,0,0,0,0,0,0,0,0,0,0,0,0,Nephelium,lappaceum,untouched
+29,7,7,11.5,2.2,14,0,0,0,0,0,0,0,0,0,0,0,0,Tetractomia,tetrandra,untouched
+30,9,9,25.7,2.975,18.5,1,0,0,0,0,0,0,0,0,0,1,1,Madhuca,mottleyana,untouched
+31,9,10,12,2.45,10,1,0,0,0,0,0,0,0,0,1,1,0,Garcinia,bancana,untouched
+32,11,11,11.1,1.5,15,0,0,0,0,0,0,0,0,0,0,0,0,Gonystylus,bancanus,untouched
+33,11,10,11.6,1.825,14,0,0,0,0,0,0,0,0,0,0,0,0,Tetractomia,tetrandra,untouched
+34,13,8,10.6,2.275,15,0,0,0,0,0,0,0,0,0,0,0,0,Nephelium,lappaceum,untouched
+35,11,6,12.9,2.725,15,0,0,0,0,0,0,0,0,0,0,0,0,Elaeocarpus,mastersii,untouched
+36,10,5,21.6,2.55,16.8864989212714,0,0,0,0,0,0,0,1,1,1,0,0,Xylopia,fusca,untouched
+37,11,1,18.8,3.075,12.7996921216367,0,0,0,0,0,0,0,0,0,0,0,0,Mezzetia,parviflora (leptopoda),untouched
+38,15,4,12.4,1.425,14,0,0,0,0,0,0,0,0,0,0,0,0,Horsfieldia,crassifolia,untouched
+39,13,2,8.4,1.775,5.5,0,0,0,0,0,0,0,0,0,0,0,1,Garcinia,sp. 4 parvifolia,untouched
+40,18,5,11,2.775,13,1,0,0,0,0,0,0,0,0,0,1,1,Madhuca,mottleyana,untouched
+41,19,7,8.5,1.65,7,0,0,0,0,0,0,0,0,0,0,0,0,Horsfieldia,crassifolia,untouched
+42,19,2,12,2.35,8,0,0,0,0,0,0,0,0,0,0,0,0,Ilex,hypoglauca,untouched
+43,17,0,10,2.625,11,0,0,0,0,0,0,0,1,1,1,0,0,Xylopia,fusca,untouched
+44,19,0,11,1.15,13,0,0,0,0,0,0,0,0,0,0,0,0,Diospyros,areolata (bantamensis),untouched
+45,82,3,26,4.05,19.6245520334292,0,0,0,0,0,0,0,0,0,0,0,0,Mezzetia,parviflora (leptopoda),untouched
+46,84,2,7.3,1.35,11,0,0,0,0,0,0,0,0,0,0,0,0,Syzygium,sp. 4,untouched
+47,84,1,18.8,2.05,18.4275960327994,0,0,0,0,0,0,0,0,0,0,0,0,Stemonurus,cf. scorpiodes,untouched
+48,85,0,10.4,1.425,10,0,0,0,0,0,0,0,0,0,0,0,1,Dyera,polyphylla (lowii),untouched
+49,85,1,7.3,1.15,6,0,0,0,0,0,0,0,0,0,0,0,0,Gymnacranthera,farquhariania,untouched
+50,83,7,7.1,1.85,11,0,0,0,0,0,0,0,0,0,1,1,0,Maasia (Polyalthia),hypoleuca,untouched
+51,83,9,11.4,2.775,16,0,0,0,0,0,0,0,0,0,0,0,0,Shorea,teysmanniana,untouched
+52,84,9,12.7,2.275,16,0,0,0,0,0,0,0,0,0,0,0,0,Diospyros,sp. 1,untouched
+53,83,10,35.4,3.2,26.70066468558,1,0,0,0,0,0,0,0,0,0,1,1,Madhuca,mottleyana,untouched
+54,83,17,16.3,1.85,17,0,0,0,0,0,0,0,0,0,0,0,0,Maasia (Polyalthia),glauca,untouched
+55,84,18,14.5,2.7,17,1,0,0,0,0,0,0,0,0,1,1,0,Garcinia,bancana,untouched
+56,86,19,10.3,1.425,12,0,0,0,0,0,1,1,0,0,1,0,0,Tetramerista,glabra,untouched
+57,88,18,10.2,1.775,16,0,0,0,0,0,0,0,0,0,0,0,0,Tetractomia,tetrandra,untouched
+58,90,18,21.5,2.1,16,0,0,0,0,0,0,0,0,0,0,0,0,Tristaniopsis,sp. 4,untouched
+59,92,19,26,1.975,14,0,0,0,0,0,0,0,0,0,0,0,0,Litsea,sp. 1 cf. resinosa,untouched
+60,93,18,10,1.925,12,0,0,0,0,0,0,0,0,0,0,0,0,Syzygium,sp. 4,untouched
+61,97,17,7.4,2.1,10,0,0,0,0,0,0,0,0,0,0,0,1,Garcinia,sp. 4 parvifolia,untouched
+62,96,15,10.3,1.8125,13,0,0,0,0,0,0,0,0,0,0,0,0,Gonystylus,bancanus,untouched
+63,97,14,20.5,3.575,18,0,0,0,0,0,0,0,0,0,0,0,0,Syzygium,sp. 4,untouched
+64,99,13,16.6,2.3,18,0,0,0,0,0,0,0,0,0,0,0,0,Nephelium,maingayi,untouched
+65,98,12,29.5,4.875,33.1348769457281,0,0,0,0,0,0,0,0,0,0,0,0,Koompassia,malaccensis,untouched
+66,86,13,8.5,1.3,8,0,0,0,0,0,0,0,0,0,0,0,0,Stemonurus,cf. scorpiodes,untouched
+67,92,12,28.4,3.7,27.9060230016595,1,0,0,0,0,0,0,0,0,0,1,1,Madhuca,mottleyana,untouched
+68,91,12,23.4,2.575,21.3866612589015,0,0,0,0,0,0,0,0,0,0,0,0,Palaquium,cochlearifolium,untouched
+69,93,12,24.6,3.525,24.5,0,0,0,0,0,0,0,0,0,0,0,0,Xylopia,coriifolia,untouched
+70,93,11,25,3.1,22.5,0,0,0,0,0,0,0,0,0,0,0,0,Mesua,sp. 1,untouched
+71,90,10,17.5,1.4,14,0,0,0,0,0,0,0,1,0,0,0,0,Myristica,lowiana,untouched
+72,90,9,13.3,1.925,14,0,0,0,0,0,0,0,0,0,0,0,0,Magnolia,bintulensis,untouched
+73,90,8,23.2,2.55,17,0,0,0,0,0,0,0,0,0,0,0,0,Magnolia,bintulensis,untouched
+74,92,8,23.7,2.725,21.7590909967014,0,0,0,0,0,0,0,0,0,0,0,0,Syzygium,cf. valevenosum,untouched
+75,90,7,14.4,2.325,16,0,0,0,0,0,0,0,0,0,0,0,0,Neoscortechinia,kingii,untouched
+76,91,7,18.4,2.125,12,0,0,0,0,0,0,0,0,0,0,0,0,Tetractomia,tetrandra,untouched
+77,90,6,7.1,1,10,0,0,0,0,0,0,0,0,0,0,0,0,Neoscortechinia,kingii,untouched
+78,90,5,16.5,1.7,20,0,0,0,0,0,0,0,0,0,0,0,0,Diospyros,cf. evena,untouched
+79,89,4,10,2.6,17,0,0,0,0,0,0,0,0,0,0,0,0,Blumeodendron,tokbrai (elateriospermum),untouched
+80,88,4,19.7,2.775,19,0,0,0,0,0,0,0,0,0,0,0,0,Neoscortechinia,kingii,untouched
+81,87,3,12.8,1.975,17,0,0,0,0,0,0,0,0,0,0,0,0,Vatica,mangachapoi,untouched
+82,88,3,8,1.375,6,2,1,0,0,0,0,1,1,1,1,2,2,Aglaia,rubiginosa,untouched
+83,88,2,18,2.45,15,0,0,0,0,0,0,0,0,0,0,0,0,Mesua,sp. 1,untouched
+84,90,1,12.5,2.95,11,0,0,0,0,0,0,0,0,0,0,0,0,Koompassia,malaccensis,untouched
+85,92,4,27.8,4.225,25.092111620543,1,0,0,0,0,0,0,0,0,0,1,1,Madhuca,mottleyana,untouched
+86,97,4,20.5,2.5,15,0,0,0,0,0,0,0,0,0,0,0,0,Gymnacranthera,farquhariania,untouched
+87,96,3,8,1.8,13,0,0,0,0,0,0,0,0,0,0,0,0,Elaeocarpus,mastersii,untouched
+88,97,2,16.6,3.35,16,0,0,0,0,0,0,0,0,0,0,0,0,Litsea,sp. 1 cf. resinosa,untouched
+89,0,20,13.8,2.415,15,0,0,0,0,0,0,0,0,0,0,0,0,Mesua,sp. 1,untouched
+90,0,21,11,2.25,15,0,0,0,0,0,0,0,0,0,0,0,0,Nephelium,maingayi,untouched
+91,5,22,13.3,2.05,16,1,0,0,0,0,0,0,0,0,0,1,1,Madhuca,mottleyana,untouched
+92,5,24,13.4,1.825,15,1,0,0,0,0,0,0,0,0,0,1,1,Madhuca,mottleyana,untouched
+93,3,31,10.7,3.4,9,0,0,0,0,0,0,0,0,0,0,0,0,Tetractomia,tetrandra,untouched
+94,1,31,14.9,2.125,13,0,0,0,0,0,0,0,0,0,0,0,0,Tetractomia,tetrandra,untouched
+95,0,33,13.5,2.65,15,0,0,0,0,0,0,0,0,0,0,0,0,Tetractomia,tetrandra,untouched
+96,2,33,26.3,3.225,17,0,0,0,0,0,0,0,0,0,0,0,0,Campnosperma,squamatum,untouched
+97,2,34,10.5,1.975,15,0,0,0,0,0,0,0,0,0,0,0,0,Tetractomia,tetrandra,untouched
+98,3,35,7,2.05,8.5,0,0,0,0,0,0,0,0,0,0,0,0,Tetractomia,tetrandra,untouched
+99,10,37,10.5,1.85,15,0,0,0,0,0,0,0,0,0,0,0,0,Nephelium,maingayi,untouched
+100,10,39,20.6,3,25.246519562317,0,0,0,0,0,0,0,0,0,0,0,0,Mesua,sp. 1,untouched
+101,3,36,8.5,1.6,9,0,0,0,0,0,0,0,0,0,0,0,0,Tetractomia,tetrandra,untouched
+102,2,37,22.4,2.075,25.5,0,0,0,0,0,0,0,0,0,0,0,0,Dactylocladus,stenostachys,untouched
+103,1,34,9.2,1.25,9,0,0,0,0,0,0,0,0,0,0,0,0,Xylopia,coriifolia,untouched
+104,1,39,8.4,0.65,6,0,0,0,0,0,0,0,0,0,0,0,0,Horsfieldia,crassifolia,untouched
+105,13,39,34.5,2.525,26.8079015565825,0,0,0,0,0,0,0,0,0,0,0,0,Shorea,teysmanniana,untouched
+106,14,38,10,2.05,13,0,0,0,0,0,0,0,0,0,0,0,0,Stemonurus,cf. scorpiodes,untouched
+107,13,37,9.1,1.775,15,0,0,0,0,0,0,0,0,0,0,0,0,Gonystylus,bancanus,untouched
+108,13,36,14.7,1.275,17,0,0,0,0,0,0,0,0,0,0,0,0,Syzygium,sp. 4,untouched
+109,14,35,11.8,2.025,17,0,0,0,0,0,0,0,0,0,0,0,0,Tetractomia,tetrandra,untouched
+110,15,35,12.1,2.8,18,0,0,0,0,0,0,0,0,0,0,0,0,Lithocarpus,conocarpus,untouched
+111,18,36,18.5,3.45,20.4627599809399,0,0,0,0,0,0,0,1,0,0,0,0,Neoscortechinia,kingii,untouched
+112,13,35,26.3,2.7,36.8730153561092,0,0,0,0,0,0,0,0,0,0,0,0,Mezzetia,parviflora (leptopoda),untouched
+113,17,29,34,4.65,26.0251467654205,0,0,0,0,0,0,0,1,1,1,0,0,Xylopia,fusca,untouched
+114,16,35,8.6,0.95,10,0,0,0,0,0,0,0,0,0,0,0,0,Shorea,teysmanniana,untouched
+115,15,37,9.2,1.175,17,0,0,0,0,0,0,0,0,0,0,0,0,Diospyros,cf. evena,untouched
+116,16,37,13.5,2.725,17,0,0,0,0,0,0,0,0,0,0,0,0,Elaeocarpus,mastersii,untouched
+117,17,33,9.2,1.35,17,0,0,0,0,0,0,0,0,0,0,0,0,Tetractomia,tetrandra,untouched
+118,18,32,7.1,3.05,11,0,0,0,0,0,0,0,0,0,0,0,0,Nephelium,maingayi,untouched
+119,19,34,7.1,1.775,9,0,0,0,0,0,0,0,0,0,0,0,0,Tetractomia,tetrandra,untouched
+120,18,34,6.5,1.3,9,0,0,0,0,0,0,0,0,0,0,0,0,Tetractomia,tetrandra,untouched
+121,18,30,14.7,3.5,16,0,0,0,0,0,0,0,0,0,0,0,0,Elaeocarpus,mastersii,untouched
+122,16,32,10.5,1.525,15.5,0,0,0,0,0,0,0,0,0,0,0,0,Calophyllum,hosei,untouched
+123,15,32,7.6,0.85,7.5,0,0,0,0,0,0,0,1,0,0,0,0,Memecylon,sp. 1,untouched
+124,11,31,19,1.325,17,0,0,0,0,0,0,0,0,0,1,0,0,Palaquium,pseudorostratum,untouched
+125,11,30,16.6,3.9,15,0,0,0,0,0,0,0,0,0,0,0,0,Elaeocarpus,mastersii,untouched
+126,8,28,13,2.475,18,0,0,0,0,0,0,0,1,1,1,0,0,Xylopia,fusca,untouched
+127,7,31,10.2,1.55,16,0,0,0,0,0,0,0,0,0,0,0,0,Mezzetia,parviflora (leptopoda),untouched
+128,4,26,10.7,1.95,13,1,0,0,0,0,0,0,0,0,0,1,1,Madhuca,mottleyana,untouched
+129,6,22,27,3.175,17,0,0,0,0,0,0,0,0,0,0,0,0,Neoscortechinia,kingii,untouched
+130,5,21,30,3.875,18,0,0,0,0,0,0,0,0,0,0,0,0,Palaquium,ridleyii,untouched
+131,3,20,8.6,1.4,9,0,0,0,0,0,0,0,0,0,0,0,0,Horsfieldia,crassifolia,untouched
+132,4,20,8.1,1.975,10,0,0,0,0,0,0,0,0,0,0,0,0,Lithocarpus,conocarpus,untouched
+133,12,20,8.7,0.775,15,0,0,0,0,0,0,0,0,0,0,0,0,Sandoricum,beccanarium,untouched
+134,14,22,8.4,1.725,13,0,0,0,0,0,0,0,0,0,0,0,0,Litsea,cf. elliptica,untouched
+135,14,21,16.9,2.275,22.4,0,0,0,0,0,0,0,1,1,1,0,0,Xylopia,fusca,untouched
+136,15,24,8.2,1.7,11,0,0,0,0,0,0,0,0,0,0,0,0,Tetractomia,tetrandra,untouched
+137,18,23,21,2.95,22.8319244640857,0,0,0,0,0,0,0,1,1,1,0,0,Xylopia,fusca,untouched
+138,82,20,7,1.625,10,0,0,0,0,0,0,0,0,0,0,0,0,Palaquium,cochlearifolium,untouched
+139,87,20,7.4,1.25,9,0,0,0,0,0,0,0,0,0,0,0,0,Sandoricum,beccanarium,untouched
+140,86,22,12,3.05,9,0,0,0,0,0,0,0,0,0,0,0,0,Campnosperma,squamatum,untouched
+141,86,23,12.3,2.4,13,0,0,0,0,0,1,1,1,0,1,0,0,Litsea,sp. 1 cf. resinosa,untouched
+142,87,24,40.7,4.65,26,0,0,0,0,0,0,0,0,0,0,0,0,Shorea,teysmanniana,untouched
+143,86,26,7.9,1.725,11,0,0,0,0,0,0,0,0,0,0,0,0,Tetractomia,tetrandra,untouched
+144,83,26,10.4,3.3125,18,0,0,0,0,0,0,0,0,0,1,0,0,Palaquium,pseudorostratum,untouched
+145,82,26,7.8,0.125,7.5,0,0,0,0,0,0,0,0,0,0,0,1,Dyera,polyphylla (lowii),untouched
+146,81,25,17.1,2.6775,13,0,0,0,0,0,0,0,0,0,0,0,0,Mesua,sp. 1,untouched
+147,81,28,14,2.0625,10,0,0,0,0,0,0,0,0,0,0,0,0,Gonystylus,bancanus,untouched
+148,82,30,11,2.5025,17,0,0,0,0,0,0,0,0,0,0,0,0,Tetractomia,tetrandra,untouched
+149,81,33,14.4,2.0125,17,0,0,0,0,0,0,0,0,0,0,0,0,Tetractomia,tetrandra,untouched
+150,81,37,8.2,1.3125,7.5,0,0,0,0,0,0,0,0,0,0,0,0,Gymnacranthera,farquhariania,untouched
+151,82,34,7.5,1.65,11,0,0,0,0,0,0,0,0,0,0,0,0,Syzygium,sp. 4,untouched
+152,83,39,14.5,2.525,17,0,0,0,0,0,0,0,0,0,0,0,0,Horsfieldia,crassifolia,untouched
+153,86,39,14,2.825,16,0,0,0,0,0,0,0,0,0,0,0,0,Horsfieldia,crassifolia,untouched
+154,85,37,8.7,1.85,8,0,0,0,0,0,0,0,0,0,0,0,0,Gonystylus,bancanus,untouched
+155,86,34,15.3,2.5375,18,0,0,0,0,0,0,0,0,0,1,0,0,Palaquium,pseudorostratum,untouched
+156,88,20,14,2.5,10,0,0,0,0,0,0,0,0,0,1,0,0,Litsea,sp. 1 cf. resinosa,untouched
+157,89,21,13.5,2.4,13,0,0,0,0,0,0,0,0,0,0,0,0,Palaquium,cochlearifolium,untouched
+158,88,24,16.2,2.3875,13,0,0,0,0,0,0,0,0,0,0,0,0,Ternstroemia,magnifica,untouched
+159,90,25,8,1.6375,12,0,0,0,0,0,0,0,0,0,0,0,0,Tetractomia,tetrandra,untouched
+160,91,25,12.5,1.9875,13.5,0,0,0,0,0,0,0,0,0,0,0,0,Santiria,cf. laevigata,untouched
+161,92,20,31.1,3.85,7.3,0,0,0,0,0,0,0,0,0,0,0,0,Koompassia,malaccensis,untouched
+162,94,21,17.7,3.0875,18,0,0,0,0,0,0,0,0,0,0,0,0,Myristica,lowiana,untouched
+163,95,22,12.5,2.625,16,0,0,0,0,0,0,0,0,0,0,0,0,Campnosperma,squamatum,untouched
+164,96,24,7.6,1.3375,9,1,0,0,0,0,0,0,0,0,0,1,1,Madhuca,mottleyana,untouched
+165,97,24,9.6,1.5125,7.5,0,0,0,0,0,0,0,0,0,0,0,0,Magnolia,bintulensis,untouched
+166,99,23,8.1,1.6,9,0,0,0,0,0,0,0,0,0,0,0,0,Tetractomia,tetrandra,untouched
+167,98,27,18.7,3.4875,14,0,0,0,0,0,0,0,0,0,0,0,0,Neoscortechinia,kingii,untouched
+168,98,28,19.6,2.1625,16,0,0,0,0,0,0,0,0,0,0,0,0,Shorea,teysmanniana,untouched
+169,99,28,6.5,3.125,6,0,0,0,0,0,0,0,0,0,0,0,0,Gymnacranthera,farquhariania,untouched
+170,99,29,10,2.125,13,0,0,0,0,0,0,0,0,0,0,0,0,Litsea,sp. 1 cf. resinosa,untouched
+171,97,27,6.1,0.8125,8,0,0,0,0,0,0,0,0,0,0,0,0,Litsea,sp. 1 cf. resinosa,untouched
+172,96,29,9,1.25,10,0,0,0,0,0,0,1,1,1,0,0,0,Baccaurea,bracteata,untouched
+173,94,29,17.9,2.1625,18,0,0,0,0,0,0,0,0,0,1,0,0,Palaquium,pseudorostratum,untouched
+174,94,27,6,1.8,7.5,0,0,0,0,0,0,0,0,0,0,0,0,Litsea,sp. 1 cf. resinosa,untouched
+175,91,30,20.3,2.4375,18,0,0,0,0,0,0,0,0,0,0,0,0,Vatica,mangachapoi,untouched
+176,91,31,29.7,3.975,20,0,0,0,0,0,0,0,0,0,0,0,0,Diospyros,areolata (bantamensis),untouched
+177,92,31,9.6,1.7625,9.5,0,0,0,0,0,0,0,0,0,0,0,0,Gymnacranthera,farquhariania,untouched
+178,93,32,9.3,1.1375,11,0,0,0,0,0,0,0,0,0,0,0,0,Mesua,sp. 1,untouched
+179,88,30,8.6,1.55,11,0,0,0,0,0,0,0,0,0,0,0,0,Palaquium,cochlearifolium,untouched
+180,88,32,10.4,2.225,12,0,0,0,0,0,0,0,0,0,0,0,0,Gonystylus,bancanus,untouched
+181,88,34,14,1.675,17,0,0,0,0,0,0,0,0,0,0,0,0,Isonandra,lanceolata,untouched
+182,87,35,38.9,4.45,18,0,0,0,0,0,0,0,0,0,0,0,0,Palaquium,ridleyii,untouched
+183,89,33,6.6,1.75,8,1,0,0,0,0,0,0,0,0,1,1,0,Garcinia,sp. 11,untouched
+184,3,40,13.8,1.8,12.5,0,0,0,0,0,0,0,0,0,0,0,0,Palaquium,cochlearifolium,untouched
+185,2,41,13,3.75,13,0,0,0,0,0,0,0,0,0,0,0,0,Mesua,sp. 1,untouched
+186,2,43,6.7,1.2,6,0,0,0,0,0,0,0,1,1,1,0,0,Xylopia,fusca,untouched
+187,1,43,6.8,1.075,5,0,0,0,0,0,0,0,0,0,0,0,0,Mezzetia,umbellata,untouched
+188,0,46,10.8,3,11,0,0,0,0,0,0,0,0,0,0,0,0,Elaeocarpus,mastersii,untouched
+189,0,52,12,2.2,11,0,0,0,0,0,0,0,0,0,0,0,0,Elaeocarpus,mastersii,untouched
+190,1,53,13,2.775,15,0,0,0,0,0,0,0,0,0,0,0,0,Litsea,cf. elliptica,untouched
+191,1,56,7.5,1.55,8.5,0,0,0,0,0,0,0,0,0,1,1,0,Maasia (Polyalthia),hypoleuca,untouched
+192,1,59,10.3,2.15,10.5,0,0,0,0,0,0,0,0,0,0,0,0,Elaeocarpus,mastersii,untouched
+193,5,58,8.7,1.075,5,0,0,0,0,0,0,0,0,0,0,0,0,Myristica,lowiana,untouched
+194,5,59,10.6,2.9,11.5,0,0,0,0,0,0,0,0,0,1,1,0,Maasia (Polyalthia),hypoleuca,untouched
+195,6,57,6.1,1.325,7,0,0,0,0,0,0,0,0,0,0,0,0,Diospyros,areolata (bantamensis),untouched
+196,7,56,7.6,1.075,9,0,0,0,0,0,0,0,0,0,0,0,0,Dipterocarpus,borneensis,untouched
+197,9,58,6,0.7,7.5,1,0,0,0,0,0,0,0,0,1,1,0,Garcinia,bancana,untouched
+198,9,57,14.1,2.4,17.5,0,0,0,0,0,0,0,0,0,0,0,0,Calophyllum,hosei,untouched
+199,7,54,6.9,2.35,7.5,0,0,0,0,0,0,0,0,0,0,0,0,Elaeocarpus,mastersii,untouched
+200,6,52,18.6,4.625,15.5,0,0,0,0,0,0,0,0,0,0,0,0,Elaeocarpus,mastersii,untouched
+201,5,54,11.7,1.7,12.5,0,0,0,0,0,0,0,0,0,0,0,0,Nephelium,lappaceum,untouched
+202,4,53,6.3,1.75,5.5,0,0,0,0,0,0,0,0,0,0,0,1,Garcinia,sp. 4 parvifolia,untouched
+203,2,44,46.3,6.175,29.5062094259639,0,0,0,0,0,0,0,0,0,0,0,0,Calophyllum,sclerophyllum,untouched
+204,3,46,19.9,3.475,16.5,0,0,0,0,0,0,0,0,0,0,0,0,Campnosperma,coriaceum,untouched
+205,4,44,18,2.875,16,0,0,0,0,0,0,0,0,0,0,0,0,Tristaniopsis,sp. 4,untouched
+206,5,46,10.8,2.125,11,0,0,0,0,0,0,0,0,0,0,0,0,Mesua,sp. 1,untouched
+207,4,45,10.3,1.825,11.5,0,0,0,0,0,1,1,1,0,1,0,0,Syzygium,sp. 1 cf. garcinifolia,untouched
+208,6,41,41.3,4.925,29.4593184723454,0,0,0,0,0,0,0,0,0,0,0,0,Shorea,teysmanniana,untouched
+209,1,50,10.8,1.975,12,0,0,0,0,0,0,0,0,0,1,0,0,Palaquium,pseudorostratum,untouched
+210,8,44,9.3,1.525,8,0,0,0,0,0,0,0,0,0,0,0,0,Tetractomia,tetrandra,untouched
+211,9,43,33.2,3.075,27.0440878410714,0,0,0,0,0,0,0,0,0,0,0,0,Shorea,teysmanniana,untouched
+212,13,41,9.6,3.5,9.5,0,0,0,0,0,0,0,0,0,1,1,0,Maasia (Polyalthia),hypoleuca,untouched
+213,14,41,10.6,2.55,7.5,0,0,0,0,0,0,0,0,0,0,0,0,Xylopia,cf. malayana,untouched
+214,17,47,32.7,5.325,27.2368490405924,1,0,0,0,0,0,0,0,0,0,1,1,Madhuca,mottleyana,untouched
+215,18,48,15.7,1.95,17.5,1,0,0,0,0,0,0,0,0,0,1,1,Madhuca,mottleyana,untouched
+216,18,50,11,1.775,12.5,0,0,0,0,0,0,0,0,0,0,0,0,Blumeodendron,tokbrai (elateriospermum),untouched
+217,18,51,10.6,2.525,11,0,0,0,0,0,0,0,0,0,0,0,0,Nephelium,lappaceum,untouched
+218,16,50,16.3,2.425,14,0,0,0,0,0,0,0,0,0,0,0,0,Palaquium,cochlearifolium,untouched
+219,14,50,8.5,3.025,8.5,0,0,0,0,0,0,0,0,0,0,0,0,Lithocarpus,conocarpus,untouched
+220,14,52,12.9,2.425,15.5,1,0,0,0,0,0,0,0,0,0,1,1,Sandoricum,beccanarium,untouched
+221,16,52,9.6,1.9,11,0,0,0,0,0,0,0,0,0,0,0,0,Tetractomia,tetrandra,untouched
+222,13,52,8.5,1.55,10,0,0,0,0,0,0,0,0,0,0,0,0,Lithocarpus,conocarpus,untouched
+223,14,55,7.7,0.8,9.5,0,0,0,0,0,0,0,0,0,0,0,0,Dactylocladus,stenostachys,untouched
+224,13,57,13.8,3.85,12.5,0,0,0,0,0,0,0,0,0,0,0,0,Elaeocarpus,mastersii,untouched
+225,15,55,8.8,0.425,11.5,0,0,0,0,0,0,0,0,0,0,0,0,Palaquium,cochlearifolium,untouched
+226,14,53,18.4,2.125,17.5,0,0,0,0,0,0,0,0,0,0,0,0,Stemonurus,cf. scorpiodes,untouched
+227,16,53,8.7,1.3,10.5,1,0,0,0,0,0,0,0,0,0,1,1,Madhuca,mottleyana,untouched
+228,19,53,11.7,2.25,13,0,0,0,0,0,0,0,0,0,0,0,0,Tetractomia,tetrandra,untouched
+229,18,58,44.7,5.325,30.375925385559,1,0,0,0,0,0,0,0,0,0,1,1,Koompassia,malaccensis,untouched
+230,15,58,30.6,3.2,27.5,1,0,0,0,0,0,0,0,0,0,1,1,Madhuca,mottleyana,untouched
+231,16,58,9.3,1.075,13.5,0,0,0,0,0,0,0,0,0,0,0,0,Ilex,hypoglauca,untouched
+232,13,59,17.6,3.825,15,0,0,0,0,0,0,0,0,0,0,0,0,Elaeocarpus,mastersii,untouched
+233,81,40,16.7,2.95,16,0,0,0,0,0,0,0,0,0,0,0,0,Campnosperma,squamatum,untouched
+234,81,42,11.4,1.55,13.5,0,0,0,0,0,0,0,0,0,0,0,0,Stemonurus,cf. scorpiodes,untouched
+235,84,49,9.7,2.175,10.5,0,0,0,0,0,0,0,0,0,0,0,0,Tetractomia,tetrandra,untouched
+236,83,42,27.6,4.925,21.3866612589015,0,0,0,0,0,0,0,0,0,0,0,0,Campnosperma,coriaceum,untouched
+237,87,46,11.9,1.275,14,0,0,0,0,0,0,0,0,0,0,0,0,Shorea,teysmanniana,untouched
+238,83,47,8.6,3.4,9.5,0,0,0,0,0,0,0,0,0,0,0,0,Nephelium,lappaceum,untouched
+239,81,46,12.6,1.95,11.5,0,0,0,0,0,0,0,0,0,0,0,0,Mesua,sp. 1,untouched
+240,83,48,21.7,2.35,23.5,0,0,0,0,0,0,0,0,0,0,0,0,Palaquium,ridleyii,untouched
+241,81,48,19.4,3.4,19.7550214941408,0,0,0,0,0,0,0,0,0,0,0,0,Mesua,sp. 1,untouched
+242,82,48,8.4,1.425,6,0,0,0,0,0,0,0,0,0,0,0,0,Stemonurus,cf. scorpiodes,untouched
+243,86,44,35.6,3.875,29.2653128707298,0,0,0,0,0,0,0,0,0,0,0,0,Mezzetia,parviflora (leptopoda),untouched
+244,89,42,12.7,2.575,13,0,0,0,0,0,0,0,0,0,0,0,0,Elaeocarpus,mastersii,untouched
+245,81,59,38.2,5.2375,31.5,0,0,0,0,0,0,0,0,0,0,0,0,Koompassia,malaccensis,untouched
+246,82,58,9.3,1.675,11,1,0,0,0,0,0,0,0,0,1,1,0,Garcinia,bancana,untouched
+247,81,60,11.5,2.125,13,0,0,0,0,0,0,0,0,0,0,0,0,Tetractomia,tetrandra,untouched
+248,84,56,21.1,3.1375,16.8,0,0,0,0,0,0,0,0,0,0,0,0,Syzygium,havilandii,untouched
+249,87,54,10.6,1.925,9.5,0,0,0,0,0,0,0,0,0,0,0,0,Tetractomia,tetrandra,untouched
+250,87,53,17.2,2.2375,15.5,0,0,0,0,0,0,0,0,0,0,0,0,Stemonurus,cf. scorpiodes,untouched
+251,85,53,12.1,1.9375,11,0,0,0,0,0,0,0,0,0,0,0,0,Tetractomia,tetrandra,untouched
+252,89,40,17.5,2.375,18.5,0,0,0,0,0,0,0,0,0,0,0,0,Shorea,teysmanniana,untouched
+253,92,42,11.8,2.075,11.5,0,0,0,0,0,0,0,0,0,0,0,0,Diospyros,cf. evena,untouched
+254,93,41,9.7,1.375,12,0,0,0,0,0,0,0,0,0,0,0,0,Campnosperma,coriaceum,untouched
+255,96,43,14.1,1.675,13.5,0,0,0,0,0,0,0,0,0,0,0,0,Campnosperma,coriaceum,untouched
+256,100,46,23.8,3.625,14,0,0,0,0,0,0,0,0,0,0,0,0,Elaeocarpus,mastersii,untouched
+257,99,47,13.7,3.375,12.5,0,0,0,0,0,0,0,0,0,0,0,0,Nephelium,maingayi,untouched
+258,96,47,14.5,2.875,11,0,0,0,0,0,0,0,0,0,0,0,0,Nephelium,maingayi,untouched
+259,93,47,14.4,1.85,9,0,0,0,0,0,0,0,0,0,0,0,0,Horsfieldia,crassifolia,untouched
+260,92,46,8.9,1.325,10,0,0,0,0,0,0,0,0,0,0,0,0,Tetractomia,tetrandra,untouched
+261,94,47,9.3,2.35,10.5,0,0,0,0,0,0,0,0,0,0,0,0,Tetractomia,tetrandra,untouched
+262,99,50,7.5,1.9,7.5,0,0,0,0,0,0,0,0,0,0,0,0,Syzygium,havilandii,untouched
+263,98,53,7.7,1.8875,8.5,0,0,0,0,0,0,0,0,0,0,0,0,Campnosperma,coriaceum,untouched
+264,96,53,10.5,1.45,12.5,1,1,0,0,0,0,1,1,1,1,1,1,Aglaia,rubiginosa,untouched
+265,98,54,9.7,2.525,10.5,0,0,0,0,0,1,1,1,0,1,0,0,Syzygium,sp. 1 cf. garcinifolia,untouched
+266,97,58,7.5,1.9625,9,0,0,0,0,0,0,0,0,0,0,0,0,Nephelium,maingayi,untouched
+267,98,59,7.5,1.925,8.5,0,0,0,0,0,0,0,0,0,0,0,0,Litsea,sp. 1 cf. resinosa,untouched
+268,90,59,12.3,2.6875,11,1,0,0,0,0,0,0,0,0,1,1,0,Garcinia,bancana,untouched
+269,90,58,14.4,2.05,13,0,0,0,0,0,0,0,0,0,0,0,0,Ilex,hypoglauca,untouched
+270,90,53,7.5,2.475,10.5,0,0,0,0,0,0,0,1,1,1,0,0,Xylopia,fusca,untouched
+271,0,62,8.6,2.85,8,0,0,0,0,0,0,0,0,0,0,0,0,Nephelium,maingayi,untouched
+272,4,61,17,2.85,11,0,0,0,0,0,0,0,0,0,0,0,0,Elaeocarpus,mastersii,untouched
+273,1,66,11.4,2.4125,17,1,0,0,0,0,0,0,0,0,0,1,1,Madhuca,mottleyana,untouched
+274,0,66,8.1,2.95,17,0,0,0,0,0,0,0,0,0,0,0,0,Stemonurus,cf. scorpiodes,untouched
+275,4,67,6.9,2.5,16,0,0,0,0,0,0,0,0,0,0,0,0,Syzygium,sp. 4,untouched
+276,6,69,8.5,1.2375,11,0,0,0,0,0,0,0,0,0,0,0,0,Gonystylus,bancanus,untouched
+277,6,70,20.5,3.875,11,0,0,0,0,0,0,0,0,0,0,0,0,Tetractomia,tetrandra,untouched
+278,6,72,13.1,0.9125,6.5,0,0,0,0,0,0,0,0,0,0,0,0,Blumeodendron,tokbrai (elateriospermum),untouched
+279,7,73,6.7,3.25,18,0,0,0,0,0,0,0,0,0,0,0,0,Neoscortechinia,kingii,untouched
+280,0,74,13.1,2.0625,15.5,0,0,0,0,0,0,0,0,0,0,0,0,Elaeocarpus,mastersii,untouched
+281,2,74,6.7,1.375,8.5,0,0,0,0,0,0,0,0,0,0,0,0,Tetractomia,tetrandra,untouched
+282,3,75,12.6,1.6875,16,0,0,0,0,0,0,0,0,0,0,0,0,Elaeocarpus,mastersii,untouched
+283,2,78,9.9,1.55,16,0,0,0,0,0,0,0,0,0,0,0,0,Mesua,sp. 1,untouched
+284,7,74,16.1,2.625,12,0,0,0,0,0,0,0,0,0,0,0,0,Elaeocarpus,mastersii,untouched
+285,11,71,13.4,3.225,18,0,0,0,0,0,0,0,0,0,0,0,0,Mesua,sp. 1,untouched
+286,12,74,8.1,1.2625,7.5,0,0,0,0,0,0,0,0,0,0,0,0,Diospyros,areolata (bantamensis),untouched
+287,13,75,16.2,1.65,10,0,0,0,0,0,1,1,0,0,1,0,0,Tetramerista,glabra,untouched
+288,15,78,36.5,5.25,33.0836667545658,0,0,0,0,0,0,0,0,0,0,0,0,Campnosperma,coriaceum,untouched
+289,17,78,23.8,3.25,28.1547003559006,0,0,0,0,0,0,0,0,0,0,0,0,Shorea,teysmanniana,untouched
+290,19,79,14.6,1.95,13,0,0,0,0,0,0,0,0,0,0,0,0,Mezzetia,umbellata,untouched
+291,19,77,19.7,2.4125,19,0,0,0,0,0,0,0,0,0,0,0,0,Stemonurus,cf. scorpiodes,untouched
+292,17,77,12,2.5125,12,0,0,0,0,0,0,0,0,0,0,0,0,Calophyllum,cf. hosei (cf. fragrans),untouched
+293,19,76,9.8,1.725,13,0,0,0,0,0,0,0,0,0,1,0,0,Palaquium,pseudorostratum,untouched
+294,10,76,6.2,1.725,6,0,0,0,0,0,0,0,0,0,0,0,0,Syzygium,sp. 2,untouched
+295,8,71,32.7,5.1725,34.7073141933929,0,0,0,0,0,0,0,1,1,1,0,0,Xylopia,fusca,untouched
+296,14,71,17.7,3.15,18,0,0,0,0,0,0,0,0,0,0,0,0,Mesua,sp. 1,untouched
+297,12,68,36.5,4.8125,30.4706632442122,0,0,0,0,0,0,0,0,0,0,0,0,Diospyros,areolata (bantamensis),untouched
+298,11,65,10.1,1.575,13,0,0,0,0,0,0,0,0,0,0,0,0,Licania,splendens,untouched
+299,10,63,21.5,3.6,17,0,0,0,0,0,0,0,0,0,0,0,0,Mesua,sp. 1,untouched
+300,8,63,12.7,1.55,10,0,0,0,0,0,1,1,0,0,1,0,0,Tetramerista,glabra,untouched
+301,10,60,17.5,2.425,16,0,0,0,0,0,0,0,0,0,0,0,0,Xylopia,cf. malayana,untouched
+302,13,61,30.5,2.4375,29.2,0,0,0,0,0,0,0,0,0,0,0,0,Diospyros,areolata (bantamensis),untouched
+303,13,60,11.8,1.6875,16,0,0,0,0,0,0,0,0,0,0,0,0,Isonandra,lanceolata,untouched
+304,14,61,16.1,2.6,17.5,0,0,0,0,0,0,0,0,0,0,0,0,Gymnacranthera,farquhariania,untouched
+305,15,64,18.7,2.3375,17,0,0,0,0,0,0,0,0,0,0,0,0,Neoscortechinia,kingii,untouched
+306,16,63,9.6,1.8,12,0,0,0,0,0,0,0,0,0,0,0,0,Diospyros,areolata (bantamensis),untouched
+307,19,65,13.1,1.225,7,0,0,0,0,0,0,0,0,0,0,0,0,Gymnacranthera,farquhariania,untouched
+308,18,62,17.4,2.2625,13,0,0,0,0,0,0,0,0,0,0,0,0,Neoscortechinia,kingii,untouched
+309,86,64,25.3,3.475,18,0,0,0,0,0,0,0,0,0,0,0,0,Mesua,sp. 1,untouched
+310,81,63,15.5,3.425,12,0,0,0,0,0,0,0,0,0,0,0,0,Nephelium,lappaceum,untouched
+311,83,61,11.3,2,13,0,0,0,0,0,0,0,0,0,0,0,0,Nephelium,lappaceum,untouched
+312,85,60,6.9,1.125,9,0,0,0,0,0,0,0,0,0,0,0,0,Tetractomia,tetrandra,untouched
+313,83,64,10.1,1.3,13,0,0,0,0,0,0,0,0,0,0,0,0,Sandoricum,beccanarium,untouched
+314,82,64,8,2.1625,9,0,0,0,0,0,0,0,0,0,0,0,0,Shorea,teysmanniana,untouched
+315,81,68,8,1.9375,10,0,0,0,0,0,0,0,0,0,0,0,0,Syzygium,havilandii,untouched
+316,89,60,12.4,1.575,16,0,0,0,0,0,0,0,0,0,0,0,0,Calophyllum,soulattri,untouched
+317,92,61,45,2.7,28.8210678647981,0,0,0,0,0,0,0,0,0,0,0,0,Shorea,teysmanniana,untouched
+318,92,62,13.5,1.5375,11,0,0,0,0,0,0,0,1,0,0,0,0,Memecylon,sp. 1,untouched
+319,91,65,14.3,4.6,8,0,0,0,0,0,0,0,0,0,0,0,0,Sandoricum,beccanarium,untouched
+320,92,66,12.5,3.525,7,0,0,0,0,0,0,0,0,0,0,0,0,Shorea,teysmanniana,untouched
+321,92,68,21.4,4.5625,10,0,0,0,0,0,0,0,0,0,0,0,0,Litsea,sp. 1 cf. resinosa,untouched
+322,91,69,11.8,1.925,11,0,0,0,0,0,0,0,0,0,1,0,0,Palaquium,pseudorostratum,untouched
+323,91,70,10.7,1.6875,9,0,0,0,0,0,0,0,0,0,0,0,0,Stemonurus,cf. scorpiodes,untouched
+324,93,60,13.3,2.7125,13,0,0,0,0,0,0,0,0,0,0,0,0,Mesua,sp. 1,untouched
+325,93,61,33.1,3.225,25.5,0,0,0,0,0,0,0,0,0,0,0,0,Mezzetia,parviflora (leptopoda),untouched
+326,92,64,8.5,1.8,8.5,0,0,0,0,0,0,0,0,0,0,0,0,Mesua,sp. 1,untouched
+327,93,66,31.1,4.375,29.2238786140263,0,0,0,0,0,0,0,0,0,0,0,0,Koompassia,malaccensis,untouched
+328,96,60,23.5,3.025,24.3868239629277,0,0,0,0,0,0,0,0,0,0,0,0,Calophyllum,hosei,untouched
+329,96,62,18.3,2.8125,23.9200607030162,0,0,0,0,0,0,0,0,0,0,0,0,Calophyllum,hosei,untouched
+330,97,60,9,2.075,12,0,0,0,0,0,0,0,1,0,0,0,0,Memecylon,sp. 1,untouched
+331,98,60,30.3,3.6,23.1096970631482,0,0,0,0,0,0,0,1,0,0,0,0,Licania,splendens,untouched
+332,100,63,8.2,1.6,12,0,0,0,0,0,0,0,0,0,0,0,0,Mesua,sp. 1,untouched
+333,96,64,17.7,2.125,14,0,0,0,0,0,0,0,0,0,0,0,0,Shorea,teysmanniana,untouched
+334,97,65,9.9,1.9,17,0,0,0,0,0,0,0,0,0,0,0,0,Vatica,mangachapoi,untouched
+335,97,68,9.5,2.225,15,0,0,0,0,0,0,0,0,0,0,0,0,Licania,splendens,untouched
+336,94,71,35.3,3.975,27.0035268815161,0,0,0,0,0,0,0,0,0,0,0,0,Shorea,teysmanniana,untouched
+337,98,72,33,3.7625,23.3,0,0,0,0,0,0,0,0,0,0,0,0,Campnosperma,coriaceum,untouched
+338,97,73,26.1,3.775,26.5598335937318,0,0,0,0,0,0,0,0,0,0,0,0,Sandoricum,beccanarium,untouched
+339,98,75,15.1,2.825,15,0,0,0,0,0,0,0,0,0,0,0,0,Shorea,teysmanniana,untouched
+340,95,71,10.1,1.75,13,0,0,0,0,0,0,0,0,0,0,0,0,Neoscortechinia,kingii,untouched
+341,95,74,18.7,3.8125,17,0,0,0,0,0,0,0,0,0,0,0,0,Syzygium,sp. 4,untouched
+342,95,72,10.7,2.3375,11,0,0,0,0,0,0,0,0,0,0,0,0,Palaquium,cochlearifolium,untouched
+343,92,76,9.1,1.2,9,0,0,0,0,0,0,0,0,0,0,0,0,Magnolia,bintulensis,untouched
+344,91,77,21.5,1.625,21.6314471263677,0,0,0,0,0,0,0,0,0,0,0,0,Sandoricum,beccanarium,untouched
+345,91,78,11.8,1.2,16,0,0,0,0,0,0,0,0,0,0,0,0,Diospyros,cf. evena,untouched
+346,91,79,27.3,3.225,15,0,0,0,0,0,0,0,0,0,0,0,0,Litsea,sp. 1 cf. resinosa,untouched
+347,90,78,16.4,1.475,18,0,0,0,0,0,0,0,0,0,0,0,0,Horsfieldia,crassifolia,untouched
+348,87,72,27.4,5,23,0,0,0,0,0,0,0,0,0,0,0,0,Blumeodendron,tokbrai (elateriospermum),untouched
+349,81,74,15.5,2.225,16,0,0,0,0,0,0,0,0,0,0,0,0,Litsea,cf. grandis var. rufofusca (cf. rufo-fusca),untouched
+350,84,76,23,4.25,14,0,0,0,0,0,0,0,0,0,0,0,0,Elaeocarpus,mastersii,untouched
+351,87,79,8,1.375,6,1,0,0,0,0,0,0,0,0,0,1,1,Madhuca,mottleyana,untouched
+352,86,75,12,2.075,15,0,0,0,0,0,0,0,1,0,0,0,0,Memecylon,sp. 1,untouched
+353,84,79,9.7,1.425,10,0,0,0,0,0,0,0,0,0,0,0,0,Mezzetia,umbellata,untouched
+354,0,81,6.2,1.4575,8,0,0,0,0,0,0,0,1,0,0,0,0,Memecylon,sp. 1,untouched
+355,1,81,9.1,1.46,10,0,0,0,0,0,0,0,0,0,0,0,0,Neoscortechinia,kingii,untouched
+356,2,82,7.4,1.1525,11,1,0,0,0,0,0,0,0,0,0,1,1,Madhuca,mottleyana,untouched
+357,1,85,16.5,2.3175,14,0,0,0,0,0,0,0,0,0,0,0,0,Tetractomia,tetrandra,untouched
+358,6,85,23.7,2.575,18.3714725015518,0,0,0,0,0,0,0,0,0,0,0,0,Palaquium,ridleyii,untouched
+359,8,88,16.2,2.4125,13,0,0,0,0,0,0,0,0,0,0,0,0,Neoscortechinia,kingii,untouched
+360,7,89,20.2,2.7,28.5,0,0,0,0,0,0,0,0,0,0,0,0,Diospyros,areolata (bantamensis),untouched
+361,2,91,10.3,1.3,6,0,0,0,0,0,0,0,0,0,0,0,0,Horsfieldia,crassifolia,untouched
+362,1,93,9.9,1.95,10,0,0,0,0,0,0,0,0,0,0,0,0,Mesua,sp. 1,untouched
+363,4,94,20.5,1.725,16,0,0,0,0,0,0,0,0,0,0,0,0,Neoscortechinia,kingii,untouched
+364,3,95,7.8,1.025,11,1,0,0,0,0,0,0,0,0,0,1,1,Madhuca,mottleyana,untouched
+365,0,96,20.1,1.725,17,0,0,0,0,0,0,0,0,0,0,0,1,Dyera,polyphylla (lowii),untouched
+366,3,98,8.8,1.275,13,0,0,0,0,0,0,0,0,0,0,0,0,Neoscortechinia,kingii,untouched
+367,2,98,10.3,1.5,13,0,0,0,0,0,0,0,0,0,0,0,0,Blumeodendron,tokbrai (elateriospermum),untouched
+368,2,99,35,4.325,28.5,0,0,0,0,0,0,0,1,1,1,0,0,Xylopia,fusca,untouched
+369,4,98,7,1.675,9,0,0,0,0,0,0,0,0,0,0,0,0,Diospyros,areolata (bantamensis),untouched
+370,5,98,14.4,2.625,14,0,0,0,0,0,0,0,0,0,0,0,0,Calophyllum,soulattri,untouched
+371,4,99,19.3,3.45,16,0,0,0,0,0,0,0,0,0,0,0,0,Neoscortechinia,kingii,untouched
+372,11,95,28,3.6,23.1096970631482,0,0,0,0,0,0,0,0,0,0,0,0,Mesua,sp. 1,untouched
+373,9,94,15.9,2.1,16,0,0,0,0,0,0,0,0,0,0,0,0,Tetractomia,tetrandra,untouched
+374,7,95,14,1.825,16.5,0,0,0,0,0,0,0,0,0,0,0,0,Diospyros,sp. 1,untouched
+375,8,92,10.6,1.575,10,0,0,0,0,0,1,1,1,0,2,1,0,Maasia (Polyalthia),hypoleuca,untouched
+376,9,92,19.5,1.35,16.5,0,0,0,0,0,0,0,0,0,0,0,1,Dyera,polyphylla (lowii),untouched
+377,10,92,7.5,1.725,10,0,0,0,0,0,0,0,0,0,0,0,0,Blumeodendron,tokbrai (elateriospermum),untouched
+378,13,94,14.5,1,7.5,0,0,0,0,0,0,0,0,0,0,0,0,Syzygium,havilandii,untouched
+379,15,92,25.7,3.125,20.4084849302546,1,0,0,0,0,0,0,0,0,0,1,1,Madhuca,mottleyana,untouched
+380,14,98,10.4,1.525,14,0,0,1,1,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,untouched
+381,15,98,10.2,1.925,7,0,0,0,0,0,0,0,0,0,0,0,0,Diospyros,areolata (bantamensis),untouched
+382,13,99,14.4,2.45,15,0,0,0,0,0,0,0,0,0,0,0,0,Xylopia,cf. malayana,untouched
+383,17,99,23.3,2.8,17,0,0,0,0,0,0,0,0,0,0,0,0,Gymnacranthera,farquhariania,untouched
+384,18,99,16.5,2.75,15,0,0,0,0,0,0,0,0,0,0,0,0,Calophyllum,sclerophyllum,untouched
+385,18,98,8.1,1.75,9,0,0,0,0,0,0,0,0,0,0,0,0,Neoscortechinia,kingii,untouched
+386,19,99,39.2,3.725,26.6779073257169,0,0,0,0,0,0,0,0,0,0,0,0,Shorea,teysmanniana,untouched
+387,15,91,6.9,0.95,6,0,0,0,0,0,0,0,0,0,0,0,0,Calophyllum,hosei,untouched
+388,16,92,10.1,1.5,8,0,0,0,0,0,0,0,0,0,0,0,0,Gymnacranthera,farquhariania,untouched
+389,18,89,8.3,1.35,7,0,0,0,0,0,0,0,0,0,0,0,0,Gonystylus,bancanus,untouched
+390,18,88,17.5,2.725,14,0,0,0,0,0,0,0,0,0,0,0,0,Mesua,sp. 1,untouched
+391,19,87,8,1.4,8,0,0,0,0,0,0,0,0,0,0,0,0,Gymnacranthera,farquhariania,untouched
+392,18,87,16.9,1.6,16,0,0,0,0,0,0,0,0,0,0,0,0,Syzygium,sp. 4,untouched
+393,16,88,7.5,0.625,5,0,0,0,0,0,0,0,0,0,0,0,0,Stemonurus,cf. scorpiodes,untouched
+394,15,86,13.8,2.125,9,0,0,0,0,0,0,0,0,0,0,0,0,Horsfieldia,crassifolia,untouched
+395,10,84,7.8,1.55,8,0,0,0,0,0,0,0,0,0,0,0,0,Mesua,sp. 1,untouched
+396,10,83,13,2.625,15,0,0,0,0,0,0,0,0,0,0,0,0,Neoscortechinia,kingii,untouched
+397,18,83,7.3,0.825,9,0,0,0,0,0,1,1,1,0,1,0,0,Syzygium,sp. 1 cf. garcinifolia,untouched
+398,17,82,11.6,0.9,15,0,0,0,0,0,0,0,0,0,0,0,0,Sandoricum,beccanarium,untouched
+399,17,81,6.5,1.225,8,0,0,0,0,0,0,0,0,0,0,0,0,Syzygium,sp. 4,untouched
+400,16,80,10.1,1.55,12,0,0,0,0,0,0,0,0,0,0,0,0,Tetractomia,tetrandra,untouched
+401,84,80,31.8,4.025,23.8674547778763,0,0,0,0,0,0,0,1,1,1,0,0,Xylopia,fusca,untouched
+402,83,81,7.2,1.35,10,0,0,0,0,0,0,0,0,0,0,0,0,Syzygium,sp. 4,untouched
+403,82,84,7.3,2.35,7,0,0,0,0,0,0,0,0,0,0,0,0,Tetractomia,tetrandra,untouched
+404,84,85,6.8,1.325,7,0,0,0,0,0,0,0,0,0,0,0,0,Tetractomia,tetrandra,untouched
+405,86,84,10.4,3,8,0,0,0,0,0,0,0,0,0,0,0,0,Lithocarpus,conocarpus,untouched
+406,87,87,8.9,1.8,8,0,0,0,0,0,0,0,0,0,0,0,0,Calophyllum,sclerophyllum,untouched
+407,88,81,14.2,2.275,14,0,0,0,0,0,0,0,0,0,0,0,0,Shorea,teysmanniana,untouched
+408,82,88,33.8,2.925,22.7975250764976,0,0,0,0,0,0,0,0,0,0,0,0,Shorea,teysmanniana,untouched
+409,82,90,37.5,3.075,22.477490779432,1,0,0,0,0,0,0,0,0,0,1,1,Madhuca,mottleyana,untouched
+410,89,81,13,2.15,13,0,0,0,0,0,1,1,1,0,1,0,0,Syzygium,sp. 1 cf. garcinifolia,untouched
+411,81,90,23.4,4,16,0,0,0,0,0,0,0,0,0,0,0,0,Litsea,sp. 1 cf. resinosa,untouched
+412,81,93,10.8,2.9,11,0,0,0,0,0,0,0,0,0,1,1,0,Maasia (Polyalthia),hypoleuca,untouched
+413,82,94,28,2.425,18,0,0,0,0,0,0,0,0,0,0,0,1,Dyera,polyphylla (lowii),untouched
+414,83,100,31.8,4.325,30.0629601348423,0,0,0,0,0,0,0,1,1,1,0,0,Xylopia,fusca,untouched
+415,83,99,20.3,2.45,15,0,0,0,0,0,0,0,0,0,0,0,0,Campnosperma,coriaceum,untouched
+416,84,97,7.5,1.25,9,1,0,0,0,0,0,0,0,0,0,1,1,Madhuca,mottleyana,untouched
+417,85,98,12.5,3.2,9,1,0,0,0,0,0,0,0,0,1,1,0,Garcinia,bancana,untouched
+418,89,97,10.6,2.225,10,0,0,0,0,0,0,0,1,0,0,0,0,Memecylon,sp. 1,untouched
+419,92,98,18.5,2.05,17,0,0,0,0,0,0,0,0,0,0,0,0,Calophyllum,hosei,untouched
+420,90,97,6.8,0.8,7,0,0,0,0,0,0,0,0,0,0,0,0,Mezzetia,umbellata,untouched
+421,90,93,11.5,1.4,12,0,0,0,0,0,0,0,0,0,0,0,0,Horsfieldia,crassifolia,untouched
+422,95,99,7.2,1.625,7,0,0,0,0,0,1,1,0,0,1,0,0,Tetramerista,glabra,untouched
+423,91,96,6.8,1.425,8,0,0,0,0,0,0,0,0,0,0,0,0,Gonystylus,bancanus,untouched
+424,95,97,7,0.95,6,0,0,0,0,0,0,0,0,0,0,0,0,Ardisia,sp. 2,untouched
+425,94,97,9.1,2.1,10,0,0,0,0,0,0,0,0,0,0,0,0,Neoscortechinia,kingii,untouched
+426,94,95,17.7,3.525,14,0,0,0,0,0,0,0,0,0,0,0,0,Shorea,teysmanniana,untouched
+427,95,95,8.1,1.2,8,0,0,0,0,0,0,0,0,0,0,0,0,Neoscortechinia,kingii,untouched
+428,98,97,20.9,3,14,0,0,0,0,0,0,0,0,0,0,0,0,Litsea,cf. elliptica,untouched
+429,99,97,6.9,1.825,7,0,0,0,0,0,0,0,0,0,0,0,0,Xerospermum,laevigatum / noronhianum,untouched
+430,94,93,18.5,2.375,18,0,0,0,0,0,0,0,0,0,0,0,0,Palaquium,ridleyii,untouched
+431,93,93,15.9,2.05,13,0,0,0,0,0,0,0,0,0,0,0,0,Maasia (Polyalthia),glauca,untouched
+432,99,93,19.1,2.45,15,0,0,0,0,0,0,0,0,0,0,0,0,Campnosperma,coriaceum,untouched
+433,98,92,24,2.275,15,0,0,0,0,0,0,0,0,0,0,1,0,Santiria,sp. 1,untouched
+434,97,91,8,1.425,9,0,0,0,0,0,0,0,0,0,0,0,0,Syzygium,sp. 5 cf. zeylanicum,untouched
+435,97,84,15.6,3.175,13,0,0,0,0,0,0,0,0,0,0,0,0,Elaeocarpus,mastersii,untouched
+436,96,85,6.6,1.475,8,0,0,0,0,0,0,0,0,0,0,0,0,Stemonurus,cf. scorpiodes,untouched
+437,94,87,18.5,3.825,15,0,0,0,0,0,0,0,0,0,0,0,0,Litsea,sp. 1 cf. resinosa,untouched
+438,93,87,28,4.525,21.3388211354566,0,0,0,0,0,0,0,0,0,0,0,0,Campnosperma,coriaceum,untouched
+439,94,80,11.6,1.6,12,0,0,0,0,0,0,0,0,0,0,0,0,Syzygium,sp. 4,untouched
+440,92,86,7.8,1.425,8,1,0,0,0,0,0,0,0,0,1,1,0,Garcinia,bancana,untouched
+441,95,80,11,1.8,8,0,0,0,0,0,0,0,0,0,0,0,0,Syzygium,sp. 5 cf. zeylanicum,untouched
+442,24,7,17,1.775,12,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+443,20,13,10.2,1.5875,7.5,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+444,21,16,11.2,1.4875,7,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+445,20,20,7.1,1.0875,4.5,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+446,40,23,6.3,1.375,4.5,0,0,0,0,0,0,0,0,0,0,0,0,Syzygium,sp. 6 cf. campanulatum,survivor
+447,40,22,9.7,0.825,11,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+448,46,17,12.1,1.75,11,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+449,50,25,6.6,0.4875,3,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+450,49,14,7.2,1.025,6,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+451,38,15,8.6,1.275,7,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+452,37,14,6.7,1,4,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+453,36,14,10.4,1.75,7,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+454,37,18,10,1.825,7,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+455,34,14,11.5,1.5,8,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+456,32,15,9.5,0.875,7,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+457,31,17,7.6,0.75,6.5,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+458,28,11,7.8,0.8625,5.5,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+459,26,12,6.7,1.15,4.5,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+460,31,22,7.8,2.125,3,0,0,0,0,0,0,0,0,0,0,0,0,Syzygium,sp. 6 cf. campanulatum,survivor
+461,31,23,12.4,0.85,8,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+462,31,6,8.4,1.85,6.5,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+463,26,3,8.4,0.875,7.5,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+464,25,2,11.1,1.3125,10,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+465,26,1,9.7,1.6875,6,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+466,40,2,6.9,0.5,4,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+467,37,6,14,1.3125,11,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+468,48,2,11,1.25,10,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+469,49,6,6.2,1.85,4.5,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+470,49,9,9,1.4,4,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+471,45,1,6.8,1,4,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+472,47,12,7.7,1.3875,7,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+473,41,10,11,1.3,9,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+474,39,9,6.5,1.25,3,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+475,73,14,8.9,1.0625,5.5,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+476,71,14,9.6,2.1375,4.5,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+477,68,12,7.3,0.6,4,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+478,72,20,7.8,1.35,5.5,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+479,63,13,8.5,1.2375,6.5,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+480,62,12,7,1.0125,4.5,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+481,57,13,6.6,0.7375,3.5,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+482,53,11,7.9,1.0125,7,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+483,54,17,8.8,0.8875,7,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+484,64,21,8.5,1.05,5.5,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+485,63,21,6.3,0.925,3.5,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+486,58,21,8.4,0.975,6.5,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+487,59,21,6.4,1.125,3.8,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+488,62,5,11.8,1.05,8,0,0,0,0,0,0,0,0,0,0,0,0,Syzygium,sp. 6 cf. campanulatum,survivor
+489,63,1,8.2,1.475,5,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+490,56,9,8.4,0.9625,6.5,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+491,55,4,7.25,0.9125,7,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+492,53,7,10.2,0.9875,7.5,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+493,53,6,8.2,1.1625,7,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+494,52,10,9.8,1.3875,7,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+495,50,10,7.8,0.8375,6.5,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+496,52,1,7.1,0.775,7,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+497,60,10,6.1,1.075,4,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+498,68,1,6.6,1.05,4.5,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+499,70,8,6.6,0.625,6.5,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+500,74,6,9.2,1.375,6.5,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+501,78,8,7.2,0.7125,4.5,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+502,77,8,7.3,0.8375,5,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+503,76,6,7.7,0.9375,5.5,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+504,76,10,6.5,0.5625,5.5,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+505,76,14,7.1,0.75,6.5,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+506,76,16,8.9,0.95,7.5,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+507,77,16,7.1,1.475,5,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+508,79,22,6.7,1.65,7.5,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+509,20,37,19.9,2.375,10,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+510,23,45,8.3,1.85,4.5,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+511,23,50,7.8,1,6,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+512,38,26,15.6,2.625,8.5,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+513,43,26,7.9,0.8,6,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+514,46,27,8,1.75,6,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+515,50,26,8.3,0.925,6.5,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+516,44,30,11.8,1.225,7.5,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+517,48,34,6.6,0.9,4.5,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+518,38,34,7.2,0.75,5.5,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+519,39,35,8,1.1,5.5,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+520,42,36,8.3,1.475,5.5,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+521,45,42,7.2,0.95,4.5,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+522,46,43,8.8,1.275,5.5,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+523,45,50,12,1.15,7.5,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+524,43,49,9.1,1.925,4.5,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+525,35,48,18.9,2.25,9,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+526,31,46,8.6,1.1,6,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+527,27,44,8.8,1.05,4.5,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+528,26,44,6.9,0.7,5.5,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+529,33,41,9.5,0.925,6.5,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+530,33,38,12.4,1.7,8.5,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+531,31,38,8.4,0.925,6.5,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+532,28,38,7.7,1.275,6.5,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+533,31,35,6.4,1.275,3.5,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+534,33,35,14.7,1.8,10,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+535,50,33,14,2.1,9,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+536,32,33,7.1,1.275,4.5,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+537,33,29,9.2,0.8,6,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+538,30,26,6.5,0.775,4.5,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+539,27,25,8.4,0.875,4.5,0,0,0,0,0,0,0,0,0,0,0,0,Shorea,balangeran,survivor
+540,51,31,7.5,1.025,5.5,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+541,55,30,8.6,1.65,7,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+542,61,31,8.4,1.325,4,0,0,0,0,0,0,0,0,0,0,0,0,Syzygium,sp. 6 cf. campanulatum,survivor
+543,56,35,9.7,1.6,6,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+544,56,33,8.4,1.275,7.5,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+545,53,36,7.8,0.9,5.5,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+546,53,42,10.2,1.325,8,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+547,57,38,7.2,1.45,4,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+548,62,38,9.1,1.05,7.5,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+549,61,39,6.3,0.725,6,0,0,0,0,0,0,0,0,0,0,0,0,Cratoxylon,glaucum,survivor
+550,60,42,6.9,0.85,6,0,0,0,0,0,0,0,0,0,0,0,0,Cratoxylon,glaucum,survivor
+551,57,41,8.5,1.475,4.5,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+552,51,49,8.9,1.2,7,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+553,75,28,6,1,4,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+554,79,31,9.3,1.2,7,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+555,65,47,7.6,0.825,6,0,0,0,0,0,0,0,0,0,0,0,0,Cratoxylon,glaucum,survivor
+556,66,46,10.2,1.125,4,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+557,70,48,11.6,1.525,9.5,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+558,64,41,11.1,1.4,6,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+559,69,39,8.6,1.025,7,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+560,70,34,6.4,0.7,3.2,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+561,74,29,8.6,0.975,6,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+562,72,28,11.6,1.775,8.5,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+563,70,27,10.5,2.575,7.5,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+564,66,26,7.4,0.625,6,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+565,76,32,10.2,1.2875,8,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+566,75,37,8.1,1.1125,5.5,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+567,77,41,7.3,1.25,4,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+568,22,52,14.8,2.7375,7.5,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+569,22,57,6,0.625,4,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+570,24,58,7.3,0.8875,4.5,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+571,24,63,12.8,1.8875,9,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+572,21,65,7.2,0.625,4.5,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+573,24,69,7.1,0.775,7,0,0,0,0,0,0,0,0,0,0,0,0,Cratoxylon,glaucum,survivor
+574,24,70,10.5,1.5,8.5,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+575,24,71,8.6,0.4,8.5,0,0,0,0,0,0,0,0,0,0,0,0,Cratoxylon,glaucum,survivor
+576,24,72,9.9,0.675,8,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+577,22,74,7.2,0.6875,6,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+578,22,75,6.1,0.675,6,0,0,0,0,0,0,0,0,0,0,0,0,Cratoxylon,glaucum,survivor
+579,20,74,7.8,0.7375,5.5,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+580,31,51,6.8,1.08333333333333,7,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+581,32,51,7.8,0.966666666666667,6,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+582,29,57,9.1,0.8375,8,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+583,26,57,7.4,0.9,4,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+584,36,51,12.2,1.4875,8.5,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+585,36,52,10.5,1.55,9,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+586,35,59,12.8,1.925,8,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+587,38,61,7.4,1.2875,4.5,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+588,40,60,9.7,2.075,7,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+589,48,55,13.5,1.4,11,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+590,46,57,10.1,1.4125,8,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+591,44,61,6.5,1.55,4,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+592,49,62,6.2,1.4375,3,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+593,46,64,10.7,1.5875,7.5,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+594,48,67,7,0.9125,5,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+595,50,73,6.8,1.1,7.5,0,0,0,0,0,0,0,0,0,0,0,0,Cratoxylon,glaucum,survivor
+596,46,73,9,1.5075,4.5,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+597,44,72,10.5,0.9375,7,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+598,38,74,9.5,1.0875,6.5,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+599,27,73,7.5,0.925,6,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+600,27,66,8.8,1.6,6.5,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+601,70,59,11.3,1.375,11,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+602,63,56,12,1.325,11,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+603,74,63,6.2,1.15,6,0,0,0,0,0,0,0,0,0,0,0,0,Cratoxylon,glaucum,survivor
+604,74,67,9,1.65,7,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+605,68,65,8.5,0.9625,6,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+606,67,66,10.5,1.1375,6.5,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+607,70,70,10.1,3.15,7,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+608,74,73,6.3,0.5625,7.5,0,0,0,0,0,0,0,0,0,0,0,0,Cratoxylon,glaucum,survivor
+609,62,62,7.7,1.325,4.5,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+610,58,66,6.7,0.925,5.5,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+611,50,65,6.5,0.6625,4,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+612,54,55,10,1.175,7,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+613,58,58,11.7,1.3625,8,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+614,76,52,10.6,1.4625,7,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+615,80,63,6.4,0.7875,4,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+616,78,62,7.9,1.025,4.5,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+617,77,62,6.2,0.75,4,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+618,76,64,7.3,1.25,6,0,0,0,0,0,0,0,0,0,0,0,0,Cratoxylon,glaucum,survivor
+619,77,65,7.6,1.7,4.5,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+620,20,95,7,1.2875,7,0,0,0,0,0,0,0,0,0,0,0,0,Cratoxylon,glaucum,survivor
+621,21,94,6.1,0.8875,6,0,0,0,0,0,0,0,0,0,0,0,0,Mezzetia,umbellata,survivor
+622,24,91,7.6,1.0875,8.5,0,0,0,0,0,0,0,0,0,0,0,0,Cratoxylon,glaucum,survivor
+623,20,87,7.9,1.2625,7,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+624,24,87,6.2,0.75,6,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+625,23,84,6.6,0.8125,5.5,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+626,22,82,6.5,0.675,6,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+627,21,80,10.5,1.5875,7.5,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+628,20,78,9.3,1.225,7,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+629,31,93,10.1,1.675,6,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+630,30,92,7,0.55,5,0,0,0,0,0,0,0,0,0,0,0,0,Cratoxylon,glaucum,survivor
+631,33,92,13.9,1.525,6,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+632,25,75,12.9,1.35,6.2,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+633,40,91,6.4,0.85,4,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+634,40,100,10.1,1.7,6,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+635,46,99,7,0.95,5,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+636,50,84,6.9,0.925,3,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+637,50,82,6.3,0.6,3,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+638,45,83,10.1,1.4,4,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+639,41,88,9,1.6875,5,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+640,42,83,7.2,0.625,6,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+641,47,76,6.3,0.925,5,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+642,48,75,6.4,0.725,6.5,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+643,47,75,7.4,0.975,6.5,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+644,44,77,7.6,1.0625,7.5,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+645,40,78,6.6,0.85,7.5,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+646,39,78,6.2,0.675,6,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+647,38,76,6.8,1.525,4,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+648,36,83,6.4,0.7875,5,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+649,35,85,9.9,1.425,6.5,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+650,27,83,10.6,1.775,8,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+651,74,90,12,1.2475,6,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+652,73,93,6.1,0.725,4.5,0,0,0,0,0,0,0,0,0,0,0,0,Cratoxylon,glaucum,survivor
+653,71,91,9.4,1.2,5,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+654,70,97,7,1.375,4,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+655,66,91,12.4,1.85,8,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+656,63,91,8.3,1,3.3,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+657,63,88,7.9,1.0625,5,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+658,61,97,9.5,1.2125,7,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+659,60,98,7.3,1.2875,3,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+660,60,97,6.3,0.9875,3,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+661,54,99,7,1.3125,4,0,0,0,0,0,0,0,0,0,0,0,0,Cratoxylon,glaucum,survivor
+662,51,98,9.2,1.4625,6,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+663,53,92,6.8,0.9125,3.2,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+664,54,92,10.9,1.4375,8,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+665,53,91,7.7,0.925,4.1,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+666,57,92,10,1.9625,6,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+667,58,92,9.9,2.1,5.4,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+668,53,84,7.5,1.625,4,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+669,55,83,8.7,1.95,4.5,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+670,60,84,6.7,1.175,4,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+671,53,80,8.5,1.5,6,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+672,54,79,6.6,0.9,3.2,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+673,52,76,14.6,1.9125,10,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+674,59,76,9.3,1.275,4.2,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+675,55,92,6.5,1.0875,4,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+676,69,80,7,0.8,4,0,0,0,0,0,0,0,0,0,0,0,0,Cratoxylon,glaucum,survivor
+677,69,82,10.5,1.025,6,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+678,72,77,7.7,1.4375,3.2,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+679,76,76,7.5,1.25,6,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+680,80,81,8.4,1.2375,6,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+681,78,85,9.2,1.1875,6,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+682,76,87,6,0.8125,4,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+683,78,88,6.5,0.9375,4.5,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+684,77,94,7.6,0.85,5,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+685,78,94,6.8,1.1625,5,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
+686,80,98,10,1.425,6.5,0,0,0,0,0,0,0,0,0,0,0,0,Combretocarpus,rotundatus,survivor
