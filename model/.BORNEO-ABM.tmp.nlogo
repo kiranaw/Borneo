@@ -774,7 +774,7 @@ to from-csv
 
   ifelse burnscenario = TRUE
   [
-    file-open word (word "scenario/" burn-direction "/" burnt-proportion) ".csv"
+    file-open word (word "scenario/sout" burnt-proportion) ".csv"
   ]
   [file-open file-name]
   let headings csv:from-row file-read-line
@@ -2111,7 +2111,7 @@ burnt-proportion
 burnt-proportion
 0
 10
-4.0
+0.0
 1
 1
 NIL
