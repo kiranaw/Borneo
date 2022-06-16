@@ -1,0 +1,22 @@
+import _parent_._parent_._file_.model_globals._
+import _parent_._parent_._file_.model_null_AF._
+
+// drive the sensitivity analysis
+SensitivityMorris(
+    evaluation = model on env hook (workDirectory / "resultsnew" / "morris.csv"),
+    inputs = Seq(
+        energyIntake in (0.01 to 0.20),
+        energyGain in (100.0 to 500.0), 
+        initialSatiation in (-500.0 to 500.0),
+        basalEnergy in (0.1 to 10), 
+        brachiationSpeed in (0.1 to 2.0),
+        swaySpeed in (0.1 to 2.0),
+        climbSpeed in (0.1 to 2.0),
+        descentSpeed in (0.1 to 2.0),
+        probMoveNoFeed in (0.0 to 1.0),
+        walkSpeed in (0.1 to 1.0)
+    ),
+    outputs = Seq(totalEnergyIntake, energyExpenditure, walk, arborealMove, climbs, sway, climb, brachiation, descent, travelDistance, feedingBudget, travellingBudget, restingBudget) ,
+    sample = 100,
+    level = 10) hook (workDirectory / "results" / "sensitivity")
+    
