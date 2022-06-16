@@ -1,5 +1,5 @@
-import _parent_._parent_._file_.model_globals._
-import _parent_._parent_._file_.model_null_AF._
+import _parent_._file_.model_globals._
+import _parent_._file_.model_null_AF._
 
 // drive the sensitivity analysis
 SensitivityMorris(

@@ -1,0 +1,80 @@
+import _file_.model_globals._
+
+val model = 
+  NetLogo6Task(workDirectory / "../model/BORNEO-ABM.nlogo", Seq("random-seed ${seed}", "setup", "repeat 43200 [go]"), embedWorkspace = true, reuseWorkspace = true) set (
+    inputs += seed,
+    inputs += plotUpdate mapped "plot-update",
+    inputs += treeDist mapped "tree-dist",
+    inputs += fileName mapped "file-name",
+    inputs += bodyWeight mapped "body-weight",
+    inputs += energyIntake mapped "energy-intake",
+    inputs += energyGain mapped "energy-gain",
+    inputs += initialSatiation mapped "initial-satiation",
+    inputs += basalEnergy mapped "basal-energy",
+    inputs += walkSpeed mapped "walking-speed",
+    inputs += brachiationSpeed mapped "brachiation-speed",
+    inputs += swaySpeed mapped "sway-speed",
+    inputs += climbSpeed mapped "climb-speed",
+    inputs += descentSpeed mapped "descent-speed",
+    inputs += month mapped "month",
+    inputs += probMoveNoFeed mapped "prob-move-no-feed",
+    inputs += stochasticmonth mapped "stochastic-month",
+    inputs += burnProp mapped "burnt-proportion",
+    inputs += staticStartPos mapped "static-start-pos",
+    
+    outputs += totalEnergyIntake mapped "[cumulative-energy-gain] of one-of orangutans",
+    outputs += energyExpenditure mapped "[cumulative-movement-cost] of one-of orangutans + [basal-metabolic-cost] of one-of orangutans",
+    outputs += walk mapped "[freq-walk] of one-of orangutans",
+    outputs += sway mapped "[freq-sway] of one-of orangutans",
+    outputs += brachiation mapped "[freq-brachiate] of one-of orangutans",
+    outputs += arborealMove mapped "[freq-sway] of one-of orangutans + [freq-brachiate] of one-of orangutans",
+    outputs += terrestrialMove mapped "[freq-walk] of one-of orangutans",
+    outputs += climb mapped "[freq-climb] of one-of orangutans" ,
+    outputs += descent mapped "[freq-descent] of one-of orangutans",
+    outputs += climbs mapped "[freq-climb] of one-of orangutans + [freq-descent] of one-of orangutans",
+    outputs += travelDistance mapped "[cumulative-travel-length] of one-of orangutans",
+    outputs += feedingBudget mapped "[budget-feeding] of one-of orangutans",
+    outputs += travellingBudget mapped "[budget-travel] of one-of orangutans",
+    outputs += restingBudget mapped "[budget-resting] of one-of orangutans",
+    
+    //just for records
+    outputs += bodyWeight mapped "body-weight",
+    outputs += probMoveNoFeed mapped "prob-move-no-feed",
+    outputs += stochasticmonth mapped "stochastic-month",
+    outputs += burnProp mapped "burnt-proportion",
+    outputs += staticStartPos mapped "static-start-pos",
+    outputs += month mapped "month",
+    outputs += energyIntake mapped "energy-intake",
+    outputs += energyGain mapped "energy-gain",
+    outputs += initialSatiation mapped "initial-satiation",
+    outputs += basalEnergy mapped "basal-energy",
+    outputs += walkSpeed mapped "walking-speed",
+    outputs += brachiationSpeed mapped "brachiation-speed",
+    outputs += swaySpeed mapped "sway-speed",
+    outputs += climbSpeed mapped "climb-speed",
+    outputs += descentSpeed mapped "descent-speed",
+    
+    plotUpdate := false,
+    treeDist := "from-file",
+    fileName := "sebangau.csv",
+    
+    bodyWeight := 35.0, // female: 35 male: 74
+    energyIntake := 0.15,//5.5, // 1.0 - 10.0
+    energyGain := 100.0, // 10.0 - 500.0
+    initialSatiation := 0, // -500 - 500
+    basalEnergy := 5.0, // 1.0 - 1.5
+    walkSpeed := 0.5, // 0.5 - 1
+    brachiationSpeed := 0.5, // 0.5 - 2
+    swaySpeed := 0.5, // 0.5 - 2
+    climbSpeed := 0.5, // 0.5 - 2
+    descentSpeed := 0.5, // 0.5 - 2
+    probMoveNoFeed := 0.5,
+    month := 10,
+    
+    stochasticmonth := true,
+    staticStartPos := false,
+    burnProp := 5,
+    seed := 0
+  )
+
+model hook display //on env
