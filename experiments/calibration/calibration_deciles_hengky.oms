@@ -1,0 +1,62 @@
+import _parent_._file_.model_globals._
+import _parent_._file_.model_null_FM._
+
+//> quantile(activity_budgets_Hengky_filter$F, probs = seq(.1, .9, by = .1))
+//     10%      20%      30%      40%      50%      60%      70%      80%      90% 
+//50.32847 54.55556 60.78571 62.64706 65.38484 69.81579 76.46049 77.50456 79.00950 
+//> quantile(activity_budgets_Hengky_filter$R, probs = seq(.1, .9, by = .1))
+//      10%       20%       30%       40%       50%       60%       70%       80%       90% 
+// 9.020276 12.734221 14.922198 16.157664 18.255898 19.607681 24.375000 27.582789 35.044793 
+//> quantile(activity_budgets_Hengky_filter$T, probs = seq(.1, .9, by = .1))
+//     10%       20%       30%       40%       50%       60%       70%       80%       90% 
+// 6.339104  7.703133  9.531513 10.794094 11.718750 12.439024 14.370301 17.097222 24.396825 
+
+
+def feedingBudgetTest(d: Seq[Double]) = 
+  squareDistance(percentile(d, (10 to 90 by 10)), Seq(50.32847, 54.55556, 60.78571, 62.64706, 65.38484, 69.81579, 76.46049, 77.50456, 79.00950 ))
+  
+def restBudgetTest(d: Seq[Double]) = 
+ squareDistance(percentile(d, (10 to 90 by 10)), Seq(9.020276, 12.734221, 14.922198, 16.157664, 18.255898, 19.607681, 24.375000, 27.582789, 35.044793))
+
+def travelBudgetTest(d: Seq[Double]) = 
+  squareDistance(percentile(d, (10 to 90 by 10)), Seq(6.339104, 7.703133, 9.531513, 10.794094, 11.718750, 12.439024, 14.370301, 17.097222, 24.396825))
+  
+
+val env =
+  SLURMEnvironment(
+    "widyastu",
+    "taurus.hrsk.tu-dresden.de",
+    workDirectory = "/tmp",
+    sharedDirectory = "/scratch/ws/0/widyastu-100",
+    //sharedDirectory = "/lustre/ssd/ws/widyastu-widyastussd",
+    time = 2 hour,
+    memory = 3000 megabytes,
+    openMOLEMemory = 2000 megabytes,
+    //reservation = "p_peatfire_386",
+    nodes = 1,
+    threads = 2
+  )
+
+NSGA2Evolution(
+  evaluation = model,
+  objective = Seq(feedingBudget aggregate (feedingBudgetTest _), travellingBudget aggregate (travelBudgetTest _), restingBudget aggregate (restBudgetTest _)),
+  reject = "climbSpeed > (descentSpeed - 0.2) || brachiationSpeed > swaySpeed || walkSpeed > swaySpeed", //, "brachiationSpeed < swaySpeed", "walkSpeed < swaySpeed - 0.2" ),
+  genome = Seq(
+    //bodyWeight in (30.0 to 45.0),
+    energyIntake in (0.01 to 0.20),
+    energyGain in (100.0 to 500.0), //constrain 400
+    initialSatiation in (-500.0 to 500.0),
+    basalEnergy in (0.1 to 10), //constrain 1.5
+    brachiationSpeed in (0.1 to 2.0),
+    swaySpeed in (0.1 to 2.0),
+    climbSpeed in (0.1 to 2.0),
+    descentSpeed in (0.1 to 2.0),
+    probMoveNoFeed in (0.0 to 1.0),
+    walkSpeed in (0.1 to 1.0)
+    //month
+  ),
+  parallelism = 10000,
+  termination = 5000000, //number of evaluated individuals
+  stochastic = Stochastic(seed = seed, sample = 50),
+  distribution = Island(5 minutes)
+) hook (workDirectory / s"results_calibration_hengky3", frequency = 500) on env by 10

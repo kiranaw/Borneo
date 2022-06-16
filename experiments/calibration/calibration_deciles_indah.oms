@@ -1,0 +1,52 @@
+import _parent_._file_.model_globals._
+import _parent_._file_.model_null_AF._
+
+
+def feedingBudgetTest(d: Seq[Double]) = 
+  squareDistance(percentile(d, (10 to 90 by 10)), Seq(56.36566, 61.49001, 64.01339, 66.99379, 69.07783, 71.01007, 72.79412, 75.20000, 78.38859))
+
+def restBudgetTest(d: Seq[Double]) = 
+ squareDistance(percentile(d, (10 to 90 by 10)), Seq(8.388512, 11.046229, 12.687831, 14.404615, 16.463995, 18.644029, 20.654762, 24.480300, 27.761843))
+
+def travelBudgetTest(d: Seq[Double]) = 
+  squareDistance(percentile(d, (10 to 90 by 10)), Seq(6.763628, 10.302500, 11.816919, 12.925981, 14.396970, 15.692418, 16.444457, 17.689168, 19.721583))
+  
+  
+
+val env =
+  SLURMEnvironment(
+    "widyastu",
+    "taurus.hrsk.tu-dresden.de",
+    workDirectory = "/tmp",
+    sharedDirectory = "/scratch/ws/0/widyastu-100",
+    time = 2 hour,
+    memory = 3000 megabytes,
+    openMOLEMemory = 2000 megabytes,
+    //reservation = "p_peatfire_386",
+    nodes = 1,
+    threads = 2
+  )
+
+NSGA2Evolution(
+  evaluation = model,
+  objective = Seq(feedingBudget aggregate (feedingBudgetTest _), travellingBudget aggregate (travelBudgetTest _), restingBudget aggregate (restBudgetTest _)),
+  reject = "climbSpeed > (descentSpeed - 0.2) || brachiationSpeed > swaySpeed || walkSpeed > swaySpeed", //, "brachiationSpeed < swaySpeed", "walkSpeed < swaySpeed - 0.2" ),
+  genome = Seq(
+    //bodyWeight in (30.0 to 45.0),
+    energyIntake in (0.01 to 0.20),
+    energyGain in (100.0 to 500.0), //constrain 400
+    initialSatiation in (-500.0 to 500.0),
+    basalEnergy in (0.1 to 10), //constrain 1.5
+    brachiationSpeed in (0.1 to 2.0),
+    swaySpeed in (0.1 to 2.0),
+    climbSpeed in (0.1 to 2.0),
+    descentSpeed in (0.1 to 2.0),
+    probMoveNoFeed in (0.0 to 1.0),
+    walkSpeed in (0.1 to 1.0)
+    //month
+  ),
+  parallelism = 10000,
+  termination = 5000000, //number of evaluated individuals
+  stochastic = Stochastic(seed = seed, sample = 50),
+  distribution = Island(5 minutes)
+) hook (workDirectory / s"results_calibration_indah2", frequency = 500) on env by 10

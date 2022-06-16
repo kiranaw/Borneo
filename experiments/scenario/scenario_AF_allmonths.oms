@@ -1,0 +1,16 @@
+import _parent_._file_.model_globals._
+import _parent_._file_.model_AF_1_new_scenario_mid._ //use the model tailored for scenario!
+
+val burn = DirectSampling(
+  evaluation = 
+    Replication(
+      evaluation = model,
+      sample = 100,
+      seed = seed
+    ),
+  sampling =
+    (burnProp in (0.0 to 9.0 by 1.0)) x 
+    (month in (1.0 to 12.0 by 1.0))
+)
+
+burn hook (workDirectory / "scenario_burn_AF_allM_sp_g1nw_mid-ye.csv") by 10 on env
