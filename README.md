@@ -52,5 +52,5 @@ CSV file 3 contains XXXx
 With R script contained in XXXX 
 following fuigres are obtained  
 
-https://github.com/kiranaw/Borneo/blob/master/results/figures/calibration_result.png?raw=true 
+![resultfile](https://github.com/kiranaw/Borneo/blob/master/results/figures/calibration_result.png?raw=true) 
 
