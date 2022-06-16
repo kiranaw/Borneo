@@ -58,7 +58,6 @@ val model =
     treeDist := "from-file",
     fileName := "sebangau.csv",
     
-    //this should be taken from Genome 7
     bodyWeight := 35.0, // 30.0 - 45.0
     energyIntake := 0.05,//5.5, // 1.0 - 10.0
     energyGain := 317.66, // 10.0 - 500.0
