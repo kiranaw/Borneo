@@ -2110,8 +2110,8 @@ SLIDER
 burnt-proportion
 burnt-proportion
 0
-9
-1.0
+10
+4.0
 1
 1
 NIL
