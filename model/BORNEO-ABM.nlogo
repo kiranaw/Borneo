@@ -1776,23 +1776,6 @@ false
 PENS
 "default" 1.0 1 -16777216 true "" "if plot-update = TRUE [histogram [crown-diameter] of trees]"
 
-BUTTON
-1311
-453
-1374
-486
-NIL
-setup
-NIL
-1
-T
-OBSERVER
-NIL
-NIL
-NIL
-NIL
-1
-
 MONITOR
 1623
 312
