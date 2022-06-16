@@ -59,15 +59,15 @@ val model =
     fileName := "sebangau.csv",
     
     bodyWeight := 35.0, // female: 35 male: 74
-    energyIntake := 0.15,//5.5, // 1.0 - 10.0
-    energyGain := 100.0, // 10.0 - 500.0
-    initialSatiation := 0, // -500 - 500
-    basalEnergy := 5.0, // 1.0 - 1.5
-    walkSpeed := 0.5, // 0.5 - 1
-    brachiationSpeed := 0.5, // 0.5 - 2
-    swaySpeed := 0.5, // 0.5 - 2
-    climbSpeed := 0.5, // 0.5 - 2
-    descentSpeed := 0.5, // 0.5 - 2
+    energyIntake := 0.15,
+    energyGain := 100.0,
+    initialSatiation := 0, 
+    basalEnergy := 5.0, 
+    walkSpeed := 0.5, 
+    brachiationSpeed := 0.5, 
+    swaySpeed := 0.5, 
+    climbSpeed := 0.5, 
+    descentSpeed := 0.5, 
     probMoveNoFeed := 0.5,
     month := 10,
     

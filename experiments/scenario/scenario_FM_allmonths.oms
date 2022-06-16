@@ -1,5 +1,5 @@
 import _parent_._file_.model_globals._
-import _parent_._file_.model_FM_2_new_scenario_mid._ //use the model tailored for scenario!
+import _parent_._file_.model_FM_scenario._ //use the model tailored for scenario!
 
 val burn = DirectSampling(
   evaluation = 
