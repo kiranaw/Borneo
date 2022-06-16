@@ -1,9 +1,10 @@
-import _parent_._file_.model_globals._
-import _parent_._file_.model_null_AF._
+import _parent_._file_.model_globals._    // imports variable mapping between OpenmMOLE and Netlogo of the model_globals script
+import _parent_._file_.model_null_AF._    // imports the script that defines the model task 
 
-// drive the sensitivity analysis
+// drives the sensitivity analysis
 SensitivityMorris(
     evaluation = model on env hook (workDirectory / "resultsnew" / "morris.csv"),
+    // inputs whase sensitivity will be evaluated
     inputs = Seq(
         energyIntake in (0.01 to 0.20),
         energyGain in (100.0 to 500.0), 
@@ -16,7 +17,9 @@ SensitivityMorris(
         probMoveNoFeed in (0.0 to 1.0),
         walkSpeed in (0.1 to 1.0)
     ),
+    // outputs to be saved in the CSV file
     outputs = Seq(totalEnergyIntake, energyExpenditure, walk, arborealMove, climbs, sway, climb, brachiation, descent, travelDistance, feedingBudget, travellingBudget, restingBudget) ,
-    sample = 100,
-    level = 10) hook (workDirectory / "results" / "sensitivity")
+    sample = 100, // number of trajectories for Morris methods
+    level = 10 // number of elementary effects along each dimension of the input space (i.e. parameter)
+    ) hook (workDirectory / "results" / "sensitivity")
     
