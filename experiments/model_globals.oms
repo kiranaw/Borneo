@@ -1,3 +1,7 @@
+// in this file , we declare OpenMOLE variables.
+// One OpenMOLE variable is declared for each input or output of the Netlogo model that is to be mapped between Netlogo and OpenMOLE
+
+
 val treeDist = Val[String]
 val fileName = Val[String]
 val burnDirection = Val[String]
@@ -36,6 +40,8 @@ val travellingBudget = Val[Double]
 val restingBudget = Val[Double]
 val stochasticmonth = Val[Boolean]
 val burnProp = Val[Double]
+
+// this is the HPC environment used for computation
 
 val env =
   SLURMEnvironment(
