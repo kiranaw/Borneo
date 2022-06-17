@@ -18,7 +18,6 @@ val env =
     "taurus.hrsk.tu-dresden.de",
     workDirectory = "/tmp",
     sharedDirectory = "/scratch/ws/0/widyastu-100",
-//    sharedDirectory = "/lustre/ssd/ws/widyastu-widyastussd",
     time = 2 hour,
     memory = 3000 megabytes,
     openMOLEMemory = 2000 megabytes,
@@ -32,7 +31,6 @@ NSGA2Evolution(
   objective = Seq(feedingBudget aggregate (feedingBudgetTest _), travellingBudget aggregate (travelBudgetTest _), restingBudget aggregate (restBudgetTest _)),
   reject = "climbSpeed > (descentSpeed - 0.2) || brachiationSpeed > swaySpeed || walkSpeed > swaySpeed", //, "brachiationSpeed < swaySpeed", "walkSpeed < swaySpeed - 0.2" ),
   genome = Seq(
-    //bodyWeight in (30.0 to 45.0),
     energyIntake in (0.01 to 0.20),
     energyGain in (100.0 to 500.0), 
     initialSatiation in (-500.0 to 500.0),
@@ -43,7 +41,6 @@ NSGA2Evolution(
     descentSpeed in (0.1 to 2.0),
     probMoveNoFeed in (0.0 to 1.0),
     walkSpeed in (0.1 to 1.0)
-    //month
   ),
   parallelism = 10000,
   termination = 5000000, //number of evaluated individuals
