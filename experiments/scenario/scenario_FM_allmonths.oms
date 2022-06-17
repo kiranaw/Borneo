@@ -13,4 +13,4 @@ val burn = DirectSampling(
     (month in (1.0 to 12.0 by 1.0))
 )
 
-burn hook (workDirectory / "scenario_burn_FM_allM_sp_g2mid-.csv") by 10 on env
+burn hook (workDirectory / "scenario_burn_FM.csv") by 10 on env
