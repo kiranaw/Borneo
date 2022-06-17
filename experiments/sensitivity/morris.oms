@@ -3,7 +3,7 @@ import _parent_._file_.model_null_AF._    // imports the script that defines the
 
 // drives the sensitivity analysis
 SensitivityMorris(
-    evaluation = model on env hook (workDirectory / "resultsnew" / "morris.csv"),
+    evaluation = model on env hook (workDirectory / "results" / "morris.csv"),
     // inputs whase sensitivity will be evaluated
     inputs = Seq(
         energyIntake in (0.01 to 0.20),
