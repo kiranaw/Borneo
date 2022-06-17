@@ -15,4 +15,4 @@ val burn = DirectSampling(
 )
 
 // final line launch the experiment on an environment and gives the name of the results file
-burn hook (workDirectory / "scenario_burn_AF_allM_sp_g1nw_mid-ye.csv") by 10 on env
+burn hook (workDirectory / "scenario_burn_AF.csv") by 10 on env
