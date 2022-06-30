@@ -1,7 +1,5 @@
 # Borneo: arBOReal aNimal movEment mOdel
 
-[![DOI](https://sandbox.zenodo.org/badge/DOI/10.5072/zenodo.1074440.svg)](https://sandbox.zenodo.org/record/1074440#.Yqx4eNJBxhH)
-
 ## About 
 
 This is the repository containing the code presented in the paper submitted to [Frontiers in Ecology and Evolution](https://www.frontiersin.org/journals/ecology-and-evolution/sections/models-in-ecology-and-evolution#research-topics) 
