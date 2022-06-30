@@ -90,7 +90,7 @@ The sensitivity analysis has been conducted for an adult female.
 
 The calibration needs fitness functions as objectives: in our case they are quadratic distance between data and simulated distributions deciles.
 
-These Fitness functions are defined form line 6  to  13  in the https://github.com/kiranaw/Borneo/blob/master/experiments/calibration/calibration_deciles_adult_females.oms script, and then passed to the `NSGA2evlution` method as objectives.
+These Fitness functions are defined form line 6  to  13  in the https://github.com/kiranaw/Borneo/blob/master/experiments/calibration/calibrationAF.oms script, and then passed to the `NSGA2evlution` method as objectives.
 
 
 The parameter to be calibrated are listed as the `genome` sequence attribute of the NSGA2evolution method , from line 41 to 50.
