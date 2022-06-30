@@ -27,7 +27,7 @@ Authors: Kirana Widyastuti, Romain Reuillon, Paul Chapron, Wildan Abdussalam, Da
     + [Calibration](https://github.com/kiranaw/Borneo#calibration-1)
     + [Scenario](https://github.com/kiranaw/Borneo#scenario-1)
     + [Sensitivity](https://github.com/kiranaw/Borneo#sensitivity)
-    + [Figures](https://github.com/kiranaw/Borneo#figures)
+    + [Figures](https://github.com/kiranaw/Borneo/blob/master/README.md#figures)
 
 
 ## Organisation of the repository 
