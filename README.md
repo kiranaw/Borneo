@@ -27,7 +27,7 @@ Authors: Kirana Widyastuti, Romain Reuillon, Paul Chapron, Wildan Abdussalam, Da
     + [Calibration](https://github.com/kiranaw/Borneo#calibration-1)
     + [Scenario](https://github.com/kiranaw/Borneo#scenario-1)
     + [Sensitivity](https://github.com/kiranaw/Borneo#sensitivity)
-    + [Figure](https://github.com/kiranaw/Borneo#figure)
+    + [Figures](https://github.com/kiranaw/Borneo#figures)
 
 
 ## Organisation of the repository 
@@ -154,10 +154,6 @@ As file names may have changed, we give the content of each file
 
 `result_calibration_indah.csv`contains the Pareto Front solutions from the calibration against the data of Indah
 
-### Figures 
-
-Contains sample figures used in the paper
-
 ### Scenario 
 
 `scenario_burn_AF.csv` contains the simulation results of 100 replication of an Adult Female orangutan, with burnt proportion varying from 0 to 90%, for each month of the year 
@@ -175,7 +171,9 @@ Morris method produces three distinct files, one for each indice of sensitivity 
 - `mustar.csv` contains the $\mu*$ value for each parameter for which the sensitivity is computed (agregated absolute elementary values)
 - `sigma.csv` contains the $\sigma$ value for each parameter for which the sensitivity is computed (non linear effect of interaction between parameters )
 
+### Figures 
 
+Contains sample figures used in the paper
 
 
 
