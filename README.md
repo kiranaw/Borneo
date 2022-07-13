@@ -1,6 +1,6 @@
 # Borneo: arBOReal aNimal movEment mOdel
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.6783938.svg)](https://doi.org/10.5281/zenodo.6783938)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.6784851.svg)](https://doi.org/10.5281/zenodo.6784851)
 
 ## About 
 
