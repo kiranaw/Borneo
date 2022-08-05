@@ -156,7 +156,6 @@ to orangutan-move
       ;if there is no connected tree from here, rechecking this after removing a tree from the list (see above)
       ifelse path-route = [] or path-route = false or path-route = [false] ;accomodating from previous counting
       [
-        ;show "masuk sini"
         let dstn destination
         move-terrestrial ;walk to the destination tree
       ]
@@ -616,14 +615,12 @@ end
 
 to move-nearby
   ask orangutans[
-  ;select a fruiting tree that havent been visited, which is the nearest from me
-  let dest min-one-of other trees with [self != [one-of trees-here] of myself] [distance myself]; and targeted? = false]
+  ;select a non-fruiting tree which is the nearest from me
+  let dest min-one-of other trees with [color != red and self != [one-of trees-here] of myself] [distance myself]; and targeted? = false]
 
-  ifelse dest != nobody
+  if dest != nobody
   [set destination dest]
-  ;if there is no fruiting tree that can be visited, move to non-fruiting tree (at random)
-  [set destination one-of other trees with [color != red and self != [one-of trees-here] of myself]]
-
+  
   ;show the destination (make the target tree look bigger)
   ask trees-here
   [
