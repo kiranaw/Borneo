@@ -259,7 +259,7 @@ to calculate-climb-cost [move-category]
     ifelse [dbh] of next-tree < 20 and [dbh] of one-of trees-here < 20 ; if both trees are small (swaying trees), then no need for climbing
     [] ;print "=> no climb" ]
     [
-      ifelse [height] of next-tree > [height] of one-of trees-here
+      ifelse [height] of next-tree < [height] of one-of trees-here
       [
         let height-dif [height] of next-tree - [height] of one-of trees-here
         set move-cost descent abs(height-dif)
