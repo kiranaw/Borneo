@@ -4,7 +4,7 @@ breed [orangutans orangutan]
 globals [cumulative-energy-gain trees-in-row trees-in-col max-rows max-cols tree-counter row-counter col-counter starting-col starting-row isolated-trees number-of-trees]
 trees-own [energy-content fruiting-tree? transit-tree? targeted? neighbor-nodes close-neighbors crown-diameter height dbh temp-path visiting-orangutans]
 orangutans-own [descent-costs climb-costs walk-cost sway-cost brachiation-cost sway-dist brachiation-dist walk-dist climb-dist descent-dist budget-travel budget-feeding budget-resting freq-brachiate freq-sway freq-climb freq-walk freq-descent basal-metabolic-cost count-move-all current-activity feeding-count resting-count travelling-count energy-acquired? body-mass feed-wait-time move-wait-time time-to-reach-next-tree travel-time-required cumulative-travel-length travel-length move-duration time-budget count-walk count-descent count-climb count-brachiation count-sway total-expended-energy energy-reserve last-sway energy-reserve initial-location path-route destination pre-destination temp-path-me arm-length upcoming-link move-cost arm-length next-tree cumulative-movement-cost visited-fruiting-tree last-visited-fruiting-tree]
-patches-own [affecting-tree]
+patches-own [occupying-trees]
 links-own [link-type dist]
 
 to save-network-simple
@@ -498,7 +498,7 @@ to set-patches
   if show-grid = true
   [ask patches with [(pycor mod 2 = 0 and pxcor mod 2 != 0) or (pxcor mod 2 = 0 and pycor mod 2 != 0)]
     [set pcolor black + 1]]
-  ask patches [set affecting-tree turtle-set no-turtles]
+  ask patches [set occupying-trees turtle-set no-turtles]
 end
 
 to setup-forest
@@ -757,9 +757,9 @@ to establish-tree
       if show-crown = true and [dbh] of myself > 20
       [set pcolor (green) + [height] of myself mod 10]
 
-      ;each patch will record the id of tree which crown shadows the patch, it is saved in a "turtle-set" named "affecting-tree"
+      ;each patch will record the id of tree which crown shadows the patch, it is saved in a "turtle-set" named "occupying-trees"
       let newset turtle-set myself
-      set affecting-tree (turtle-set newset affecting-tree)
+      set occupying-trees (turtle-set newset occupying-trees)
     ]
   ]
 end
@@ -805,10 +805,10 @@ to from-csv
         ;[set pcolor green]
         [set pcolor (green) - [height] of myself mod 5]
 
-        ;each patch will record the id of tree which crown shadows the patch, it is saved in a "turtle-set" named "affecting-tree"
+        ;each patch will record the id of tree which crown shadows the patch, it is saved in a "turtle-set" named "occupying-trees"
         let newset turtle-set myself
         ;show newset
-        set affecting-tree (turtle-set newset affecting-tree);affecting-tree will always be zero at first because this is not executed sequentially
+        set occupying-trees (turtle-set newset occupying-trees);occupying-trees will always be zero at first because this is not executed sequentially
       ]
     ]
   ]
@@ -853,8 +853,8 @@ to link-trees
     ]
     ]
 
-    ;get the affecting-trees from the patches in-radius of my crown
-    set neighbor-nodes (turtle-set neighbor-nodes ([affecting-tree] of patches in-radius floor(crown-diameter))) ;/ 2)))
+    ;get the occupying-trees from the patches in-radius of my crown
+    set neighbor-nodes (turtle-set neighbor-nodes ([occupying-trees] of patches in-radius floor(crown-diameter))) ;/ 2)))
     ;set neighbor-nodes (turtle-set neighbor-nodes turtles-on neighbors) <-- what is this for?
 
 
