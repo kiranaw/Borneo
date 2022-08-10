@@ -81,7 +81,7 @@ to rest
 end
 
 to-report check-hunger
-  ifelse [esatiation] of one-of orangutans < 0
+  ifelse [satiation] of one-of orangutans < 0
   [
     ask orangutans [set color yellow]
     report TRUE
