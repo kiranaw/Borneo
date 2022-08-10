@@ -551,7 +551,7 @@ to set-orangutans
     set arm-length 1
     ifelse static-start-pos = true
       [set initial-location one-of trees with [xcor = 1 and ycor = 93]]
-      [set initial-location one-of trees with [count my-links > 0 and any? orangutans-here = false]]
+      [set initial-location one-of trees with [color != red and count my-links > 0 and any? orangutans-here = false]]
     set visited-fruiting-tree []
     set-energy-reserve
     ifelse initial-location != nobody
