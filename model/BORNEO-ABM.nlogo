@@ -3,7 +3,7 @@ breed [trees tree]
 breed [orangutans orangutan]
 globals [cumulative-energy-gain trees-in-row trees-in-col max-rows max-cols tree-counter row-counter col-counter starting-col starting-row isolated-trees number-of-trees]
 trees-own [energy-content fruiting-tree? transit-tree? targeted? neighbor-nodes close-neighbors crown-diameter height dbh temp-path visiting-orangutans]
-orangutans-own [descent-costs climb-costs walk-cost sway-cost brachiation-cost sway-dist brachiation-dist walk-dist climb-dist descent-dist budget-travel budget-feeding budget-resting freq-brachiate freq-sway freq-climb freq-walk freq-descent basal-metabolic-cost count-move-all current-activity feeding-count resting-count travelling-count energy-acquired? body-mass feed-wait-time move-wait-time time-to-reach-next-tree travel-time-required cumulative-travel-length travel-length move-duration time-budget count-walk count-descent count-climb count-brachiation count-sway total-expended-energy energy-reserve last-sway energy-reserve initial-location path-route destination pre-destination temp-path-me arm-length upcoming-link move-cost arm-length next-tree cumulative-movement-cost visited-fruiting-tree last-visited-fruiting-tree]
+orangutans-own [descent-costs climb-costs walk-cost sway-cost brachiation-cost sway-dist brachiation-dist walk-dist climb-dist descent-dist budget-travel budget-feeding budget-resting freq-brachiate freq-sway freq-climb freq-walk freq-descent basal-metabolic-cost count-move-all current-activity feeding-count resting-count travelling-count energy-acquired? body-mass feed-wait-time move-wait-time time-to-reach-next-tree travel-time-required cumulative-travel-length travel-length move-duration time-budget count-walk count-descent count-climb count-brachiation count-sway total-expended-energy last-sway satiation initial-location path-route destination pre-destination temp-path-me arm-length upcoming-link move-cost arm-length next-tree cumulative-movement-cost visited-fruiting-tree last-visited-fruiting-tree]
 patches-own [occupying-trees]
 links-own [link-type dist]
 
@@ -81,7 +81,7 @@ to rest
 end
 
 to-report check-hunger
-  ifelse [energy-reserve] of one-of orangutans < 0
+  ifelse [esatiation] of one-of orangutans < 0
   [
     ask orangutans [set color yellow]
     report TRUE
@@ -96,7 +96,7 @@ to expend-basal-energy
   ask orangutans
   [
     let energy-spent 1 / 3600 * (basal-energy * body-mass)
-    set energy-reserve energy-reserve - energy-spent
+    set satiation satiation - energy-spent
     set basal-metabolic-cost basal-metabolic-cost + energy-spent ;+ cumulative-movement-cost
   ]
 end
@@ -177,7 +177,7 @@ to gain-energy
 
   if feed-wait-time = time-to-acquire-energy
   [
-    set energy-reserve energy-reserve + item 0 [energy-content] of trees-here
+    set satiation satiation + item 0 [energy-content] of trees-here
     set cumulative-energy-gain cumulative-energy-gain + item 0 [energy-content] of trees-here
     set energy-acquired? TRUE
     set feed-wait-time 0
@@ -309,7 +309,7 @@ to calculate-arboreal-cost
   [
     calculate-climb-cost "arboreal"
     set cumulative-movement-cost cumulative-movement-cost + move-cost ;add the descent / climb cost
-    set energy-reserve energy-reserve - move-cost
+    set satiation satiation - move-cost
 
     if [link-type] of upcoming-link = "sway"
     [
@@ -329,7 +329,7 @@ to calculate-arboreal-cost
       set count-brachiation count-brachiation + 1
     ]
     set cumulative-movement-cost cumulative-movement-cost + move-cost ;add the sway / brachiate cost
-    set energy-reserve energy-reserve - move-cost
+    set satiation satiation - move-cost
   ]
 end
 
@@ -337,18 +337,18 @@ end
 to calculate-terrestrial-cost
   calculate-climb-cost "descent to ground" ;calculate descent cost -> move-cost
   set cumulative-movement-cost cumulative-movement-cost + move-cost ; add the descent cost
-  set energy-reserve energy-reserve - move-cost
+  set satiation satiation - move-cost
 
   set move-cost walk distance destination
   set walk-cost walk-cost + move-cost
   ;output-print (word "locomotor type: walk on ground, energy cost: " move-cost " kCal")
   set cumulative-movement-cost cumulative-movement-cost + move-cost ; add the walking cost
-  set energy-reserve energy-reserve - move-cost
+  set satiation satiation - move-cost
   set count-walk count-walk + 1
 
   calculate-climb-cost "climb from ground" ;calculate climb cost -> move-cost
   set cumulative-movement-cost cumulative-movement-cost + move-cost ; add the climbing cost
-  set energy-reserve energy-reserve - move-cost
+  set satiation satiation - move-cost
 end
 
 to move-terrestrial
@@ -553,7 +553,7 @@ to set-orangutans
       [set initial-location one-of trees with [xcor = 1 and ycor = 93]]
       [set initial-location one-of trees with [color != red and count my-links > 0 and any? orangutans-here = false]]
     set visited-fruiting-tree []
-    set-energy-reserve
+    set-satiation
     ifelse initial-location != nobody
     [move-to initial-location]
     [move-to one-of trees]
@@ -563,8 +563,8 @@ to set-orangutans
   ]
 end
 
-to set-energy-reserve
-  set energy-reserve initial-satiation
+to set-satiation
+  set satiation initial-satiation
 end
 
 to find-route
@@ -1576,7 +1576,7 @@ MONITOR
 1124
 441
 satiation
-[energy-reserve] of one-of orangutans
+[satiation] of one-of orangutans
 2
 1
 11
@@ -1597,7 +1597,7 @@ true
 false
 "" ""
 PENS
-"default" 1.0 0 -16777216 true "" "if plot-update = true [plot [energy-reserve] of one-of orangutans]"
+"default" 1.0 0 -16777216 true "" "if plot-update = true [plot [satiation] of one-of orangutans]"
 
 TEXTBOX
 907
@@ -2452,7 +2452,7 @@ setup
     <metric>[count-climb] of one-of orangutans</metric>
     <metric>[cumulative-movement-cost] of one-of orangutans</metric>
     <metric>[cumulative-energy-gain] of one-of orangutans</metric>
-    <metric>[energy-reserve] of one-of orangutans</metric>
+    <metric>[satiation] of one-of orangutans</metric>
     <enumeratedValueSet variable="avg-dbh">
       <value value="30"/>
     </enumeratedValueSet>
