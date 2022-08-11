@@ -3,7 +3,7 @@ breed [trees tree]
 breed [orangutans orangutan]
 globals [cumulative-energy-gain trees-in-row trees-in-col max-rows max-cols tree-counter row-counter col-counter starting-col starting-row isolated-trees number-of-trees]
 trees-own [energy-content fruiting-tree? transit-tree? targeted? neighbor-nodes close-neighbors crown-diameter height dbh temp-path visiting-orangutans]
-orangutans-own [descent-costs climb-costs walk-cost sway-cost brachiation-cost sway-dist brachiation-dist walk-dist climb-dist descent-dist budget-travel budget-feeding budget-resting freq-brachiate freq-sway freq-climb freq-walk freq-descent basal-metabolic-cost count-move-all current-activity feeding-count resting-count travelling-count energy-acquired? body-mass feed-wait-time move-wait-time time-to-reach-next-tree travel-time-required cumulative-travel-length travel-length move-duration time-budget count-walk count-descent count-climb count-brachiation count-sway total-expended-energy last-sway satiation initial-location path-route target-tree pre-target temp-path-me arm-length upcoming-link move-cost arm-length next-tree cumulative-movement-cost visited-fruiting-tree last-visited-fruiting-tree]
+orangutans-own [descent-costs climb-costs walk-cost sway-cost brachiation-cost sway-dist brachiation-dist walk-dist climb-dist descent-dist budget-travel budget-feeding budget-resting freq-brachiate freq-sway freq-climb freq-walk freq-descent basal-metabolic-cost count-move-all current-activity feeding-count resting-count travelling-count energy-acquired? body-mass feed-wait-time move-wait-time time-to-reach-next-tree travel-time-required cumulative-travel-length travel-length move-duration time-budget count-walk count-descent count-climb count-brachiation count-sway total-expended-energy last-sway satiation initial-location path-route target-tree pre-destination temp-path-me arm-length upcoming-link move-cost arm-length next-tree cumulative-movement-cost visited-fruiting-tree last-visited-fruiting-tree]
 patches-own [occupying-trees]
 links-own [link-type dist]
 
@@ -578,10 +578,10 @@ to find-route
     [
       ;show "no arboreal link"
       ;find a route that can get me as close as possible to the fruiting tree
-      set pre-target get-alternative-route
+      set pre- get-alternative-route
       ask trees-here
       [
-        set temp-path nw:turtles-on-path-to [pre-target] of myself
+        set temp-path nw:turtles-on-path-to [pre-destination] of myself
       ]
     ]
 
@@ -601,7 +601,7 @@ to select-target
   ;if there is no fruiting tree that can be visited, move to non-fruiting tree (at random)
   [set target-tree one-of other trees with [color != red and self != [one-of trees-here] of myself]]
 
-  ;show the target (make the target tree look bigger)
+  ;show the destination (make the target tree look bigger)
   ask trees-here
   [
     set size 1
@@ -621,7 +621,7 @@ to move-nearby
   if dest != nobody
   [set target-tree dest]
 
-  ;show the target (make the target tree look bigger)
+  ;show the destination (make the target tree look bigger)
   ask trees-here
   [
     set size 1
@@ -642,10 +642,10 @@ to move-nearby
     [
       ;show "no arboreal link"
       ;find a route that can get me as close as possible to the fruiting tree
-      set pre-target get-alternative-route
+      set pre-destination get-alternative-route
       ask trees-here
       [
-        set temp-path nw:turtles-on-path-to [pre-target] of myself
+        set temp-path nw:turtles-on-path-to [pre-destination] of myself
       ]
     ]
 
@@ -658,14 +658,14 @@ to move-nearby
 end
 
 to-report get-alternative-route
-  ;identify the tree that is the nearest to target tree, but still connected to me
-  ;from the target tree, examine the immediate neighbors (use radius)
+  ;identify the tree that is the nearest to destination tree, but still connected to me
+  ;from the destination tree, examine the immediate neighbors (use radius)
   let nearest-connected-tree nobody
   ask target-tree ;tree agent
   [
     let origin one-of [trees-here] of myself
     ;print one-of [trees-here] of myself
-    ;find a nearest tree from the target tree which is still connected to my tree
+    ;find a nearest tree from the destination tree which is still connected to my tree
     set nearest-connected-tree one-of other trees with [nw:path-to one-of [trees-here] of one-of orangutans != false] with-min [distance one-of [trees-here] of myself]
     ;what if there is no nearest connected tree (both are isolated)
 
