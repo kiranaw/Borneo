@@ -4,7 +4,7 @@
 
 ## About 
 
-This is the repository containing the code presented in the paper submitted to [Frontiers in Ecology and Evolution](https://www.frontiersin.org/journals/ecology-and-evolution/sections/models-in-ecology-and-evolution#research-topics) 
+This is the repository containing the code presented in the [article](https://www.frontiersin.org/articles/10.3389/fevo.2022.983337/full) published in [Frontiers in Ecology and Evolution](https://www.frontiersin.org/journals/ecology-and-evolution/sections/models-in-ecology-and-evolution#research-topics) 
 
 Title: Assessing the impact of disturbances of the forest structure on the arboreal movement of orangutans - an agent-based modelling approach 
 
